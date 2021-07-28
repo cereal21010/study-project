@@ -10,7 +10,7 @@ import java.util.Date;
 public class BoardDTO {
     private int seq;
     private String title;
-    private String contents;
+    private String content;
     private int writerSeq;
     private String writer;
     private Date createdDate;

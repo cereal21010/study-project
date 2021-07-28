@@ -62,6 +62,9 @@
             $('#btnSave').on('click', function () {
                 _this.save();
             });
+            $('#btnList').on('click', function () {
+                window.location = '/board/list'
+            });
         },
 
         save : function(){
@@ -72,12 +75,14 @@
                 content: $('#content').val()
             };
 
+            console.log(data);
+
             $.ajax({
                 type: 'POST',
                 url: '/api/board/save',
                 dataType: 'json',
-                contentType: 'application/json; charset=urf-8',
-                data: JSON.stringify(data)
+                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+                data: data
             }).done(function (){
                 alert('글이 등록되었습니다.');
                 window.location.href = '/board/list'
@@ -87,7 +92,7 @@
         }
     };
 
-    // main.init();
+    main.init();
 </script>
 </body>
 </html>

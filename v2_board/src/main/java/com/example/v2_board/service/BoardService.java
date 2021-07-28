@@ -16,4 +16,8 @@ public class BoardService {
     public List<BoardDTO> getAll() throws Exception{
         return boardMapper.getAll();
     }
+
+    public int insert(BoardDTO dto) throws Exception{
+        return boardMapper.insert(dto);
+    }
 }

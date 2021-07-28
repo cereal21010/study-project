@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface BoardMapper {
     public List<BoardDTO> getAll();
+    public int insert(BoardDTO dto);
 }

@@ -7,4 +7,9 @@
         SELECT * FROM board
     </select>
 
+    <insert id="insert" parameterType="com.example.v2_board.dto.BoardDTO">
+        INSERT INTO board(title, content, writerSeq, writer, createdDate, modifiedDate, category)
+                VALUE(#{title}, #{content}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category})
+    </insert>
+
 </mapper>
