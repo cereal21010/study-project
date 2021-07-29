@@ -51,7 +51,7 @@
                         <c:forEach var="board" items="${boardList}">
                             <tr>
                                 <td><c:out value="${board.seq}"/></td>
-                                <td><c:out value="${board.title}"/></td>
+                                <td><a href="<c:url value="/board/content/${board.seq}"/> "><c:out value="${board.title}"/></a></td>
                                 <td><c:out value="${board.writer}"/></td>
                                 <td><c:out value="${board.createdDateConvert()}"/></td>
                                 <td><c:out value="${board.modifiedDateConvert()}"/></td>

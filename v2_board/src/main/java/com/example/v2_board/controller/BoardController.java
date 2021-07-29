@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,14 @@ public class BoardController {
     public String boardForm(){
         log.info("-- board form --");
         return "board/form";
+    }
+
+    @GetMapping("/content/{seq}")
+    public String boardContent(Model model, @PathVariable("seq") int seq) throws Exception {
+        log.info("-- board content --");
+        BoardDTO board =  boardService.getOne(seq);
+        model.addAttribute("board", board);
+        return "board/content";
     }
 
 }

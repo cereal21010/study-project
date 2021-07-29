@@ -28,4 +28,12 @@ public class BoardApi {
         return "000";
     }
 
+    @PostMapping("/delete")
+    @ResponseBody
+    public String deleteBoard(@ModelAttribute BoardDTO dto) throws Exception {
+        log.info("-- api board delete --");
+        boardService.delete(dto.getSeq());
+        return "000";
+    }
+
 }

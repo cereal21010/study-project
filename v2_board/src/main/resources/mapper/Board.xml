@@ -4,12 +4,25 @@
 
 <mapper namespace="com.example.v2_board.mapper.BoardMapper">
     <select id="getAll" resultType="com.example.v2_board.dto.BoardDTO">
-        SELECT * FROM board
+        SELECT *
+          FROM board
     </select>
 
     <insert id="insert" parameterType="com.example.v2_board.dto.BoardDTO">
-        INSERT INTO board(title, content, writerSeq, writer, createdDate, modifiedDate, category)
-                VALUE(#{title}, #{content}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category})
+        INSERT INTO board( title, content, writerSeq, writer, createdDate, modifiedDate, category )
+         VALUE( #{title}, #{content}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category} )
     </insert>
+
+    <select id="getOne" parameterType="int" resultType="com.example.v2_board.dto.BoardDTO">
+        SELECT *
+          FROM board
+         WHERE seq = #{seq};
+    </select>
+    
+    <delete id="delete" parameterType="int">
+        DELETE
+          FROM board
+         WHERE seq = #{seq};
+    </delete>
 
 </mapper>

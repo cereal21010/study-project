@@ -20,4 +20,12 @@ public class BoardService {
     public int insert(BoardDTO dto) throws Exception{
         return boardMapper.insert(dto);
     }
+
+    public BoardDTO getOne(int seq) throws Exception{
+        return boardMapper.getOne(seq);
+    }
+
+    public int delete(int seq) throws Exception{
+        return boardMapper.delete(seq);
+    }
 }
