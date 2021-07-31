@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/api/board")
@@ -22,10 +25,12 @@ public class BoardApi {
     @ResponseBody
     public String saveBoard(@ModelAttribute BoardDTO dto) throws Exception{
         log.info("-- api board save --");
+//        Map<String, Object> map = new HashMap<>();
         dto.setWriterSeq(1);
-        dto.setWriter("testerLee");
+        dto.setWriter("user01");
         boardService.insert(dto);
-        return "000";
+//        map.put("result", "000");
+        return "{result:'saveok'}";
     }
 
     @PostMapping("/delete")

@@ -75,18 +75,17 @@
                 content: $('#content').val()
             };
 
-            console.log(data);
-
             $.ajax({
                 type: 'POST',
                 url: '/api/board/save',
                 dataType: 'json',
-                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
                 data: data
-            }).done(function (){
+            }).done(function (reponse){
+                console.log('success');
                 alert('글이 등록되었습니다.');
                 window.location.href = '/board/list'
             }).fail(function (error){
+                console.log('fail');
                 alert(JSON.stringify(error));
             });
         }
