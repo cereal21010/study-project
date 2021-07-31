@@ -7,3 +7,8 @@ https://khstar.tistory.com/entry/Intellij-CE-%EC%97%90%EC%84%9C-springboot%EC%99
 
 - @RequiredArgsConstructor 를 이용한 의존성 주입
 https://webdevtechblog.com/requiredargsconstructor-%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%9D%98%EC%A1%B4%EC%84%B1-%EC%A3%BC%EC%9E%85-dependency-injection-4f1b0ac33561
+
+
+
+- 스프링 AJAX 여러유형 사용 예시
+https://myjamong.tistory.com/17
