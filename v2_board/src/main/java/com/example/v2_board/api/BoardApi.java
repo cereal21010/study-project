@@ -23,22 +23,24 @@ public class BoardApi {
 
     @PostMapping("/save")
     @ResponseBody
-    public String saveBoard(@ModelAttribute BoardDTO dto) throws Exception{
+    public Map<String, Object> saveBoard(BoardDTO dto) throws Exception{
         log.info("-- api board save --");
-//        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         dto.setWriterSeq(1);
         dto.setWriter("user01");
         boardService.insert(dto);
-//        map.put("result", "000");
-        return "{result:'saveok'}";
+        map.put("result", "000");
+        return map;
     }
 
     @PostMapping("/delete")
     @ResponseBody
-    public String deleteBoard(@ModelAttribute BoardDTO dto) throws Exception {
+    public Map<String, Object> deleteBoard(@ModelAttribute BoardDTO dto) throws Exception {
         log.info("-- api board delete --");
+        Map<String, Object> map = new HashMap<>();
         boardService.delete(dto.getSeq());
-        return "000";
+        map.put("result", "0000");
+        return map;
     }
 
 }

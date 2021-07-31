@@ -13,11 +13,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script>
-        $(document).on('click', '#btnList', function(){
-            location.href = "${pageContext.request.contextPath}/board/getBoardList";
-        });
-    </script>
 </head>
 <style>
     body {
@@ -92,13 +87,9 @@
                 seq: ${board.seq}
             };
 
-            console.log(data);
-
             $.ajax({
                 type: 'POST',
                 url: '/api/board/delete',
-                dataType: 'json',
-                contentType: 'application/x-www-form-urlencoded; charset=utf-8',
                 data: data
             }).done(function (){
                 alert('게시글이 삭제되었습니다.');
