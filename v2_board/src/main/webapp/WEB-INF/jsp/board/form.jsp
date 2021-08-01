@@ -26,29 +26,41 @@
 <article>
     <div class="container" role="main">
         <h2>Board Form</h2>
-<form action="/api/board/save" method="post">
         <div class="mb-3">
+            <c:set var="board" scope="session" value="${board}"></c:set>    <%--scope 영역 확인--%>
             <label for="title">제목</label>
-            <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요">
+            <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요"
+                   <c:if test="${not empty board}">value="${board.title}" </c:if>>
         </div>
 
         <div class="mb-3">
             <label for="writer">작성자</label>
-            <input type="text" class="form-control" name="writer" id="writer" placeholder="이름을 입력해 주세요">
+            <input type="text" class="form-control" name="writer" id="writer" placeholder="이름을 입력해 주세요"
+                   <c:if test="${not empty board}">value="${board.writer}" </c:if>>
         </div>
 
         <div class="mb-3">
             <label for="content">내용</label>
-            <textarea class="form-control" rows="5" name="content" id="content" placeholder="내용을 입력해 주세요" ></textarea>
+            <textarea class="form-control" rows="5" name="content" id="content" placeholder="내용을 입력해 주세요"
+                   > <c:if test="${not empty board}">${board.content} </c:if> </textarea>
         </div>
 
         <div class="mb-3">
             <label for="category">카테고리</label>
-            <input type="text" class="form-control" name="category" id="category" placeholder="카테고리를 입력해 주세요">
+            <input type="text" class="form-control" name="category" id="category" placeholder="카테고리를 입력해 주세요"
+                   <c:if test="${not empty board}">value="${board.category}" </c:if>>
         </div>
-</form>
+
         <div >
-            <button type="button" class="btn btn-sm btn-primary" id="btnSave">저장</button>
+            <c:choose>
+                <c:when test="${not empty board}">
+                    <button type="button" class="btn btn-sm btn-primary" id="btnEdit">저장</button>
+                </c:when>
+                <c:otherwise>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnRegister">등록</button>
+                </c:otherwise>
+            </c:choose>
+
             <button type="button" class="btn btn-sm btn-primary" id="btnList">목록</button>
         </div>
     </div>
@@ -59,8 +71,11 @@
     let main = {
         init : function() {
             let _this = this;
-            $('#btnSave').on('click', function () {
+            $('#btnRegister').on('click', function () {
                 _this.save();
+            });
+            $('#btnEdit').on('click', function () {
+                _this.edit();
             });
             $('#btnList').on('click', function () {
                 window.location = '/board/list'
@@ -77,7 +92,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/board/save',
+                url: '/api/board/register',
                 dataType: 'json',
                 data: data
             }).done(function (reponse){
@@ -88,7 +103,32 @@
                 console.log('fail');
                 alert(JSON.stringify(error));
             });
+        },
+
+        edit : function(){
+            let data = {
+                title: $('#title').val(),
+                writer: $('#writer').val(),
+                category: $('#category').val(),
+                content: $('#content').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/board/update',
+                dataType: 'json',
+                data: data
+            }).done(function (reponse){
+                console.log('success');
+                alert('글이 수정되었습니다.');
+                window.location.href = '/board/content/${board.seq}'
+            }).fail(function (error){
+                console.log('fail');
+                alert(JSON.stringify(error));
+            });
         }
+
+
     };
 
     main.init();

@@ -5,24 +5,20 @@ import com.example.v2_board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/api/board")
 @Slf4j
 public class BoardApi {
 
     private final BoardService boardService;
 
-    @PostMapping("/save")
-    @ResponseBody
+    @PostMapping("/register")
     public Map<String, Object> saveBoard(BoardDTO dto) throws Exception{
         log.info("-- api board save --");
         Map<String, Object> map = new HashMap<>();
@@ -34,12 +30,20 @@ public class BoardApi {
     }
 
     @PostMapping("/delete")
-    @ResponseBody
-    public Map<String, Object> deleteBoard(@ModelAttribute BoardDTO dto) throws Exception {
+    public Map<String, Object> deleteBoard(BoardDTO dto) throws Exception{
         log.info("-- api board delete --");
         Map<String, Object> map = new HashMap<>();
         boardService.delete(dto.getSeq());
-        map.put("result", "0000");
+        map.put("result", "000");
+        return map;
+    }
+
+    @PostMapping("/update")
+    public Map<String, Object> updateBoard(BoardDTO dto) throws Exception{
+        log.info("-- api board update --");
+        Map<String, Object> map = new HashMap<>();
+        boardService.update(dto);
+        map.put("result", "000");
         return map;
     }
 

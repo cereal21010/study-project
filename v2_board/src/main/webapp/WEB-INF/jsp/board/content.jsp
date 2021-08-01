@@ -61,7 +61,7 @@
         </div>
 
         <div style="margin-top : 20px">
-            <button type="button" class="btn btn-sm btn-primary" id="btnUpdate">수정</button>
+            <button type="button" class="btn btn-sm btn-primary" id="btnEdit">수정</button>
             <button type="button" class="btn btn-sm btn-primary" id="btnDelete">삭제</button>
             <button type="button" class="btn btn-sm btn-primary" id="btnList">목록</button>
         </div>
@@ -80,6 +80,9 @@
                 if(confirm('게시글을 삭제 하시겠습니까?')) {
                     _this.delete();
                 }
+            });
+            $('#btnEdit').on('click', function () {
+                window.location = '/board/edit/${board.seq}'
             });
         },
         delete : function(){

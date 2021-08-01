@@ -50,4 +50,13 @@ public class BoardController {
         return "board/content";
     }
 
+    @GetMapping("/edit/{seq}")
+    public String boardEdit(Model model, @PathVariable("seq") int seq) throws Exception{
+        //작성자 본인인지 확인하는 로직 추가해야뎅..
+        log.info("-- board edit --");
+        BoardDTO board = boardService.getOne(seq);
+        model.addAttribute("board", board);
+        return "board/form";
+    }
+
 }

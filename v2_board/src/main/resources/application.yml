@@ -1,7 +1,9 @@
 spring:
   .datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/myboard?serverTimezone=UTC&characterEncoding=UTF-8
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/myboard?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://localhost:3306/myboard?characterEncoding=UTF-8&serverTimezone=UTC
     username: cereal
     password: cereal
 
@@ -14,3 +16,12 @@ spring:
 
 server:
   port: 80
+
+logging:
+  level:
+    jdbc.sqlonly: debug
+    org.springframework.web: error
+    com.zaxxer.hikari.HikariDataSource: error
+    sql: error
+    jdbc: off
+

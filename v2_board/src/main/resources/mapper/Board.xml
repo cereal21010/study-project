@@ -3,17 +3,22 @@
 
 
 <mapper namespace="com.example.v2_board.mapper.BoardMapper">
-    <select id="getAll" resultType="com.example.v2_board.dto.BoardDTO">
+    <select id="getAll" resultType="BoardDTO">
         SELECT *
           FROM board
     </select>
+    
+    <select id="selectList" resultType="">
 
-    <insert id="insert" parameterType="com.example.v2_board.dto.BoardDTO">
+        LIMIT ${ pageNum}, ${ contentNum}
+    </select>
+
+    <insert id="insert" parameterType="BoardDTO">
         INSERT INTO board( title, content, writerSeq, writer, createdDate, modifiedDate, category )
          VALUE( #{title}, #{content}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category} )
     </insert>
 
-    <select id="getOne" parameterType="int" resultType="com.example.v2_board.dto.BoardDTO">
+    <select id="getOne" parameterType="int" resultType="BoardDTO">
         SELECT *
           FROM board
          WHERE seq = #{seq};
@@ -24,5 +29,14 @@
           FROM board
          WHERE seq = #{seq};
     </delete>
+
+    <update id="update" parameterType="BoardDTO">
+        UPDATE board
+           SET title = #{title}
+             , content = #{content}
+             , modifiedDate = #{modifiedDate}
+             , category = #{category}
+         WHERE seq = #{seq}
+    </update>
 
 </mapper>

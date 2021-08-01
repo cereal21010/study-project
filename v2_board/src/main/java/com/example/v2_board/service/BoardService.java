@@ -28,4 +28,8 @@ public class BoardService {
     public int delete(int seq) throws Exception{
         return boardMapper.delete(seq);
     }
+
+    public int update(BoardDTO dto) throws Exception{
+        return boardMapper.update(dto);
+    }
 }

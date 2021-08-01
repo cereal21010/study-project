@@ -9,4 +9,5 @@ public interface BoardMapper {
     public int insert(BoardDTO dto);
     public BoardDTO getOne(int seq);
     public int delete(int seq);
+    public int update(BoardDTO dto);
 }
