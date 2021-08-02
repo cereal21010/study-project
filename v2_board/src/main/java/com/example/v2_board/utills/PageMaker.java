@@ -1,5 +1,8 @@
 package com.example.v2_board.utills;
 
+import lombok.ToString;
+
+
 public class PageMaker {
     private int totalCount;	// 전체 데이터 갯수
     private int pageNum;	//현재 페이지 번호

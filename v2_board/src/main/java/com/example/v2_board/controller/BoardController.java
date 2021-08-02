@@ -2,18 +2,21 @@ package com.example.v2_board.controller;
 
 import com.example.v2_board.dto.BoardDTO;
 import com.example.v2_board.service.BoardService;
+import com.example.v2_board.utills.PageMaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -29,9 +32,14 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public String boardList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+    public String boardList(Model model
+                            , @RequestParam(defaultValue = "1") String pageNum
+                            , @RequestParam(defaultValue = "10") String contentNum ) throws Exception {
         log.info("-- board list --");
-        List<BoardDTO> boardList = boardService.getAll();
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("pageNum", pageNum);
+        paramMap.put("contentNum", contentNum);
+        List<BoardDTO> boardList = boardService.selectList(paramMap);
         model.addAttribute("boardList", boardList);
         return "board/list";
     }

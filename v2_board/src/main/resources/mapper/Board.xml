@@ -7,10 +7,15 @@
         SELECT *
           FROM board
     </select>
-    
-    <select id="selectList" resultType="">
 
-        LIMIT ${ pageNum}, ${ contentNum}
+    <select id="getAllCount" resultType="int">
+        SELECT COUNT(*) FROM board
+    </select>
+
+    <select id="selectList" parameterType="java.util.HashMap" resultType="BoardDTO">
+        SELECT *
+          FROM board
+              LIMIT ${ pageNum}, ${ contentNum}
     </select>
 
     <insert id="insert" parameterType="BoardDTO">
