@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Setter @Getter
 public class BoardDTO {
@@ -13,17 +14,15 @@ public class BoardDTO {
     private String content;
     private int writerSeq;
     private String writer;
-    private Date createdDate;
-    private Date modifiedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
     private String category;
 
     public String createdDateConvert(){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        return df.format(this.createdDate);
+        return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public String modifiedDateConvert(){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        return df.format(this.modifiedDate);
+        return this.modifiedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

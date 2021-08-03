@@ -34,13 +34,15 @@ public class BoardController {
     @GetMapping("/list")
     public String boardList(Model model
                             , @RequestParam(defaultValue = "1") String pageNum
-                            , @RequestParam(defaultValue = "10") String contentNum ) throws Exception {
+                            , @RequestParam(defaultValue = "10") String contentNum
+                            , @RequestParam(required = false) String searchType
+                            , @RequestParam(required = false) String keyword ) throws Exception {
         log.info("-- board list --");
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("pageNum", pageNum);
-        paramMap.put("contentNum", contentNum);
-        List<BoardDTO> boardList = boardService.selectList(paramMap);
+
+        PageMaker pm = boardService.getPageMaker(pageNum, contentNum);
+        List<BoardDTO> boardList = boardService.selectList(searchType, keyword, pm);
         model.addAttribute("boardList", boardList);
+        model.addAttribute("pm", pm);
         return "board/list";
     }
 

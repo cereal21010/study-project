@@ -27,7 +27,7 @@
     <div class="container" role="main">
         <h2>Board Form</h2>
         <div class="mb-3">
-            <c:set var="board" scope="session" value="${board}"></c:set>    <%--scope 영역 확인--%>
+            <c:set var="board" value="${board}"></c:set>    <%--scope 영역 확인--%>
             <label for="title">제목</label>
             <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요"
                    <c:if test="${not empty board}">value="${board.title}" </c:if>>
@@ -107,6 +107,7 @@
 
         edit : function(){
             let data = {
+                seq:'${board.seq}',
                 title: $('#title').val(),
                 writer: $('#writer').val(),
                 category: $('#category').val(),

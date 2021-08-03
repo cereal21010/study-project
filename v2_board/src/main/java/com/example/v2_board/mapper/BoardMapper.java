@@ -14,5 +14,5 @@ public interface BoardMapper {
     public int delete(int seq);
     public int update(BoardDTO dto);
     public int getAllCount();
-    public List<BoardDTO> selectList(Map<String, String> paramMap);
+    public List<BoardDTO> selectList(Map<String, Object> paramMap);
 }

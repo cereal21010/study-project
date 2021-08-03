@@ -6,6 +6,7 @@ import com.example.v2_board.utills.PageMaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,12 @@ public class BoardService {
         return boardMapper.getAll();
     }
 
-    public List<BoardDTO> selectList(Map<String, String> paramMap) throws Exception{
+    public List<BoardDTO> selectList(String searchType, String keyword, PageMaker pm) throws Exception{
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("pageNum", pm.startList());
+        paramMap.put("contentNum", pm.getContentNum());
+        paramMap.put("searchType", searchType);
+        paramMap.put("keyword", keyword);
         return boardMapper.selectList(paramMap);
     }
 

@@ -140,4 +140,8 @@ public class PageMaker {
             this.lastblock++;
         }
     }
+
+    public int startList(){
+        return this.pageNum * contentNum ;
+    }
 }

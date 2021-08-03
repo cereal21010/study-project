@@ -15,7 +15,18 @@
     <select id="selectList" parameterType="java.util.HashMap" resultType="BoardDTO">
         SELECT *
           FROM board
-              LIMIT ${ pageNum}, ${ contentNum}
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="searchType=='title' and keyword != null and keyword != '' ">
+                AND title like CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType=='content' and keyword != null and keyword != '' ">
+                AND content like CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType=='writer' and keyword != null and keyword != '' ">
+                AND writer like CONCAT('%', #{keyword}, '%')
+            </if>
+        </trim>
+              LIMIT #{ pageNum}, #{ contentNum}
     </select>
 
     <insert id="insert" parameterType="BoardDTO">
@@ -39,7 +50,7 @@
         UPDATE board
            SET title = #{title}
              , content = #{content}
-             , modifiedDate = #{modifiedDate}
+             , modifiedDate = NOW()
              , category = #{category}
          WHERE seq = #{seq}
     </update>
