@@ -39,10 +39,12 @@ public class BoardController {
                             , @RequestParam(required = false) String keyword ) throws Exception {
         log.info("-- board list --");
 
-        PageMaker pm = boardService.getPageMaker(pageNum, contentNum);
+        PageMaker pm = boardService.getPageMaker(pageNum, contentNum, searchType, keyword);
         List<BoardDTO> boardList = boardService.selectList(searchType, keyword, pm);
         model.addAttribute("boardList", boardList);
         model.addAttribute("pm", pm);
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("keyword", keyword);
         return "board/list";
     }
 

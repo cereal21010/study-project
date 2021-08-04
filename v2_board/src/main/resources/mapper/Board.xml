@@ -8,8 +8,20 @@
           FROM board
     </select>
 
-    <select id="getAllCount" resultType="int">
-        SELECT COUNT(*) FROM board
+    <select id="getAllCount" parameterType="HashMap" resultType="int">
+        SELECT COUNT(*)
+          FROM board
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            <if test="searchType=='title' and keyword != null and keyword != '' ">
+                AND title like CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType=='content' and keyword != null and keyword != '' ">
+                AND content like CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="searchType=='writer' and keyword != null and keyword != '' ">
+                AND writer like CONCAT('%', #{keyword}, '%')
+            </if>
+        </trim>
     </select>
 
     <select id="selectList" parameterType="java.util.HashMap" resultType="BoardDTO">

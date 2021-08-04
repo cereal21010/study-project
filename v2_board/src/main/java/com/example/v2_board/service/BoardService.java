@@ -45,10 +45,13 @@ public class BoardService {
         return boardMapper.update(dto);
     }
 
-    public PageMaker getPageMaker(String pageNum, String contentNum) throws Exception{
+    public PageMaker getPageMaker(String pageNum, String contentNum, String searchType, String keyword) throws Exception{
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("searchType", searchType);
+        paramMap.put("keyword", keyword);
         return PageMaker.createPageMaker( Integer.parseInt(pageNum)
                                         , Integer.parseInt(contentNum)
-                                        , boardMapper.getAllCount() );
+                                        , boardMapper.getAllCount(paramMap) );
     }
 
 }

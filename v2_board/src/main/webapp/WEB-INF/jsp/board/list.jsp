@@ -41,11 +41,11 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th>NO</th>
-                        <th>제목</th>
-                        <th>작성자</th>
-                        <th>작성일</th>
-                        <th>수정일</th>
+                        <th class="column" id="no">NO</th>
+                        <th class="column" id="title">제목</th>
+                        <th class="column" id="writer">작성자</th>
+                        <th class="column" id="createdDate">작성일</th>
+                        <th class="column" id="modifiedDate">수정일</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,7 +72,7 @@
                 </c:if>
 
                 <c:forEach begin="${pm.startPage}" end="${pm.endPage}" var="idx">
-                    <li class="page-item <c:out value="${(pm.pageNum+1) == idx ? 'active' : ''}"/>"><a class="page-link" href="/board/list?pageNum=${idx}"> ${idx} </a></li>
+                    <li class="page-item <c:out value="${(pm.pageNum+1) == idx ? 'active' : ''}"/>"><a class="page-link" href="#;" onclick="pageMove(${idx})"> ${idx} </a></li>
                 </c:forEach>
 
                 <c:if test="${pm.next}">
@@ -86,8 +86,8 @@
             <div class="w100" style="padding-right:10px">
                 <select class="form-control form-control-sm" name="searchType" id="searchType">
                     <option value="title">제목</option>
-                    <option value="Content">본문</option>
-                    <option value="reg_id">작성자</option>
+                    <option value="content">본문</option>
+                    <option value="writer">작성자</option>
                 </select>
             </div>
             <div class="w300" style="padding-right:10px">
@@ -111,12 +111,33 @@
     $('#btnSearch').on('click', function(){
        // e.preventDefault();
         let url = '/board/list'
-        url += '?searchType=' + $('#searchType option:selected').val();
-        url += '&keyword=' + $('#keyword').val();
-        console.log(url);
+        if($('#keyword').val() !== '') {
+            url += '?searchType=' + $('#searchType option:selected').val();
+            url += '&keyword=' + $('#keyword').val();
+            window.location = url;
+        }
         window.location = url;
     });
 
+    pageMove = function( pageNum ){
+        let url = '/board/list?pageNum='+pageNum;
+        if($('#keyword').val() !== '') {
+          url += '&searchType=' + $('#searchType option:selected').val();
+          url += '&keyword=' + $('#keyword').val();
+        }
+        window.location = url;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // $('#searchType option:selected')
+        // $('#keyword')
+        if(${not empty keyword} ){
+            $('#keyword').val('${keyword}');
+            $('#searchType').val('${searchType}').prop("selected", true);
+        }else{
+
+        }
+    });
 
 </script>
 

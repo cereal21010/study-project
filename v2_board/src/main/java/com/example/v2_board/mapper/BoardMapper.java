@@ -13,6 +13,6 @@ public interface BoardMapper {
     public BoardDTO getOne(int seq);
     public int delete(int seq);
     public int update(BoardDTO dto);
-    public int getAllCount();
+    public int getAllCount(Map<String, Object> paramMap);
     public List<BoardDTO> selectList(Map<String, Object> paramMap);
 }
