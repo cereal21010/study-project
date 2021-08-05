@@ -12,3 +12,8 @@ https://webdevtechblog.com/requiredargsconstructor-%EB%A5%BC-%EC%9D%B4%EC%9A%A9%
 
 - 스프링 AJAX 여러유형 사용 예시
 https://myjamong.tistory.com/17
+
+
+
+-@ModelAttribute 와 커맨드 객체
+https://webdevtechblog.com/modelattribute-%EC%99%80-%EC%BB%A4%EB%A7%A8%EB%93%9C-%EA%B0%9D%EC%B2%B4-command-object-42c14f268324
