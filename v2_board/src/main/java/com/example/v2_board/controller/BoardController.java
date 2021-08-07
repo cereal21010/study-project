@@ -1,6 +1,7 @@
 package com.example.v2_board.controller;
 
 import com.example.v2_board.dto.BoardDTO;
+import com.example.v2_board.dto.SearchDTO;
 import com.example.v2_board.service.BoardService;
 import com.example.v2_board.utills.PageMaker;
 import lombok.RequiredArgsConstructor;
@@ -32,42 +33,40 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public String boardList(Model model
-                            , @RequestParam(defaultValue = "1") String pageNum
-                            , @RequestParam(defaultValue = "10") String contentNum
-                            , @RequestParam(required = false) String searchType
-                            , @RequestParam(required = false) String keyword ) throws Exception {
+    public String boardList(Model model, SearchDTO searchDTO) throws Exception {
         log.info("-- board list --");
 
-        PageMaker pm = boardService.getPageMaker(pageNum, contentNum, searchType, keyword);
-        List<BoardDTO> boardList = boardService.selectList(searchType, keyword, pm);
+        PageMaker pm = boardService.getPageMaker(searchDTO);
+        List<BoardDTO> boardList = boardService.selectList(searchDTO);
         model.addAttribute("boardList", boardList);
         model.addAttribute("pm", pm);
-        model.addAttribute("searchType", searchType);
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchDTO", searchDTO);
         return "board/list";
     }
 
     @GetMapping("/form")
-    public String boardForm(){
+    public String boardForm(Model model, SearchDTO searchDTO){
         log.info("-- board form --");
+        model.addAttribute("searchDTO", searchDTO);
         return "board/form";
     }
 
     @GetMapping("/content/{seq}")
-    public String boardContent(Model model, @PathVariable("seq") int seq) throws Exception {
+    public String boardContent(Model model, @PathVariable("seq") int seq, SearchDTO searchDTO) throws Exception {
         log.info("-- board content --");
         BoardDTO board =  boardService.getOne(seq);
         model.addAttribute("board", board);
+        model.addAttribute("searchDTO", searchDTO);
         return "board/content";
     }
 
     @GetMapping("/edit/{seq}")
-    public String boardEdit(Model model, @PathVariable("seq") int seq) throws Exception{
+    public String boardEdit(Model model, @PathVariable("seq") int seq, SearchDTO searchDTO) throws Exception{
         //작성자 본인인지 확인하는 로직 추가해야뎅..
         log.info("-- board edit --");
         BoardDTO board = boardService.getOne(seq);
         model.addAttribute("board", board);
+        model.addAttribute("searchDTO", searchDTO);
         return "board/form";
     }
 

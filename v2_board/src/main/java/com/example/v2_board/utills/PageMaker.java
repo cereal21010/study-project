@@ -136,7 +136,7 @@ public class PageMaker {
     public void setLastblock(int lastblock) {
         this.lastblock = totalCount / (5*this.contentNum);
 
-        if(totalCount %(5*this.contentNum)>0){
+        if(totalCount %(5*this.contentNum)>0 || this.lastblock <= 0){
             this.lastblock++;
         }
     }

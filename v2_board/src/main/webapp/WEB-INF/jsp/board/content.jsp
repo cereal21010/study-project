@@ -74,18 +74,18 @@
         init : function() {
             let _this = this;
             $('#btnList').on('click', function () {
-                window.location = '/board/list'
+                window.location = _this.urlFunction('/board/list');
             });
             $('#btnDelete').on('click', function () {
                 if(confirm('게시글을 삭제 하시겠습니까?')) {
-                    _this.delete();
+                    _this.delete(_this);
                 }
             });
             $('#btnEdit').on('click', function () {
-                window.location = '/board/edit/${board.seq}'
+                window.location = _this.urlFunction('/board/edit/${board.seq}');
             });
         },
-        delete : function(){
+        delete : function(_this){
             let data = {
                 seq: ${board.seq}
             };
@@ -96,10 +96,19 @@
                 data: data
             }).done(function (){
                 alert('게시글이 삭제되었습니다.');
-                window.location.href = '/board/list'
+                window.location = _this.urlFunction('/board/list');
             }).fail(function (error){
                 alert(JSON.stringify(error));
             });
+        },
+        urlFunction : function(url){
+            url += '?pageNum='+'${searchDTO.pageNum}';
+            url += '&contentNum='+'${searchDTO.contentNum}';
+            url += '&searchType='+'${searchDTO.searchType}';
+            url += '&keyword='+'${searchDTO.keyword}';
+            url += '&sort='+'${searchDTO.sort}';
+            url += '&order='+'${searchDTO.order}';
+            return url;
         }
     };
 

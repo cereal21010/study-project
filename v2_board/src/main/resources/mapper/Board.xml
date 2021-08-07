@@ -8,7 +8,7 @@
           FROM board
     </select>
 
-    <select id="getAllCount" parameterType="HashMap" resultType="int">
+    <select id="getAllCount" parameterType="com.example.v2_board.dto.SearchDTO" resultType="int">
         SELECT COUNT(*)
           FROM board
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -24,7 +24,7 @@
         </trim>
     </select>
 
-    <select id="selectList" parameterType="java.util.HashMap" resultType="BoardDTO">
+    <select id="selectList" parameterType="com.example.v2_board.dto.SearchDTO" resultType="BoardDTO">
         SELECT *
           FROM board
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -38,7 +38,7 @@
                 AND writer like CONCAT('%', #{keyword}, '%')
             </if>
         </trim>
-              LIMIT #{ pageNum}, #{ contentNum}
+              LIMIT #{ startContentNum}, #{ contentNum}
     </select>
 
     <insert id="insert" parameterType="BoardDTO">

@@ -55,13 +55,15 @@
             <c:choose>
                 <c:when test="${not empty board}">
                     <button type="button" class="btn btn-sm btn-primary" id="btnEdit">저장</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnCancel">취소</button>
                 </c:when>
                 <c:otherwise>
                     <button type="button" class="btn btn-sm btn-primary" id="btnRegister">등록</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="btnList">목록</button>
                 </c:otherwise>
             </c:choose>
 
-            <button type="button" class="btn btn-sm btn-primary" id="btnList">목록</button>
+
         </div>
     </div>
 </article>
@@ -78,8 +80,21 @@
                 _this.edit();
             });
             $('#btnList').on('click', function () {
-                window.location = '/board/list'
+                window.location = _this.urlFunction('/board/list');
             });
+            $('#btnCancel').on('click', function () {
+                window.location = _this.urlFunction('/board/content/${board.seq}');
+            });
+        },
+
+        urlFunction : function(url){
+            url += '?pageNum='+'${searchDTO.pageNum}';
+            url += '&contentNum='+'${searchDTO.contentNum}';
+            url += '&searchType='+'${searchDTO.searchType}';
+            url += '&keyword='+'${searchDTO.keyword}';
+            url += '&sort='+'${searchDTO.sort}';
+            url += '&order='+'${searchDTO.order}';
+            return url;
         },
 
         save : function(){

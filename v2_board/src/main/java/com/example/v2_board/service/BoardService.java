@@ -1,6 +1,7 @@
 package com.example.v2_board.service;
 
 import com.example.v2_board.dto.BoardDTO;
+import com.example.v2_board.dto.SearchDTO;
 import com.example.v2_board.mapper.BoardMapper;
 import com.example.v2_board.utills.PageMaker;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +21,14 @@ public class BoardService {
         return boardMapper.getAll();
     }
 
-    public List<BoardDTO> selectList(String searchType, String keyword, PageMaker pm) throws Exception{
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("pageNum", pm.startList());
-        paramMap.put("contentNum", pm.getContentNum());
-        paramMap.put("searchType", searchType);
-        paramMap.put("keyword", keyword);
-        return boardMapper.selectList(paramMap);
+    public List<BoardDTO> selectList(SearchDTO dto) throws Exception{
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("pageNum", pm.startList());
+//        paramMap.put("contentNum", pm.getContentNum());
+//        paramMap.put("searchType", searchType);
+//        paramMap.put("keyword", keyword);
+        dto.setStartContentNum( (dto.getPageNum()-1) * dto.getContentNum() );
+        return boardMapper.selectList(dto);
     }
 
     public int insert(BoardDTO dto) throws Exception{
@@ -45,13 +47,13 @@ public class BoardService {
         return boardMapper.update(dto);
     }
 
-    public PageMaker getPageMaker(String pageNum, String contentNum, String searchType, String keyword) throws Exception{
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("searchType", searchType);
-        paramMap.put("keyword", keyword);
-        return PageMaker.createPageMaker( Integer.parseInt(pageNum)
-                                        , Integer.parseInt(contentNum)
-                                        , boardMapper.getAllCount(paramMap) );
+    public PageMaker getPageMaker(SearchDTO dto) throws Exception{
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put("searchType", searchType);
+//        paramMap.put("keyword", keyword);
+        return PageMaker.createPageMaker( dto.getPageNum()
+                                        , dto.getContentNum()
+                                        , boardMapper.getAllCount(dto) );
     }
 
 }

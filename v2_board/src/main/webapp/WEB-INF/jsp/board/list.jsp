@@ -25,11 +25,10 @@
 <body>
 <article>
     <div class="container">
+
         <div class="table-responsive">
 
             <h2>Board List</h2>
-
-
 
             <table class="table table-striped table-sm">
                 <colgroup>
@@ -50,29 +49,39 @@
                 </thead>
                 <tbody>
                 <%--<tr><td colspan="5" align="center">데이터가 없습니다.</td></tr>--%>
-                    <c:forEach var="board" items="${boardList}">
+                <c:choose>
+                    <c:when test="${boardList.size() > 0}">
+                        <c:forEach var="board" items="${boardList}">
+                            <tr>
+                                <td><c:out value="${board.seq}"/></td>
+                                <td><a href="#;" onclick="moveContent(${board.seq})"><c:out value="${board.title}"/></a></td>
+                                <td><c:out value="${board.writer}"/></td>
+                                <td><c:out value="${board.createdDateConvert()}"/></td>
+                                <td><c:out value="${board.modifiedDateConvert()}"/></td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
                         <tr>
-                            <td><c:out value="${board.seq}"/></td>
-                            <td><a href="<c:url value="/board/content/${board.seq}"/> "><c:out value="${board.title}"/></a></td>
-                            <td><c:out value="${board.writer}"/></td>
-                            <td><c:out value="${board.createdDateConvert()}"/></td>
-                            <td><c:out value="${board.modifiedDateConvert()}"/></td>
+                            <td colspan="5" style="text-align: center">조회된 게시글이 없습니다.</td>
                         </tr>
-                    </c:forEach>
+                    </c:otherwise>
+                </c:choose>
                 </tbody>
             </table>
+
             <button type="button" class="btn btn-sm btn-primary" id = "writeBtn" >글쓰기</button>
         </div>
         <!-- pagination{s} -->
 
-        <div id="paginationBox">
+        <div id="paginationBox" style="display: inline-block">
             <ul class="pagination">
                 <c:if test="${pm.prev}">
                     <li class="page-item"><a class="page-link" href="/board/list?pageNum=${pm.startPage - 1}" >Previous</a></li>
                 </c:if>
 
                 <c:forEach begin="${pm.startPage}" end="${pm.endPage}" var="idx">
-                    <li class="page-item <c:out value="${(pm.pageNum+1) == idx ? 'active' : ''}"/>"><a class="page-link" href="#;" onclick="pageMove(${idx})"> ${idx} </a></li>
+                    <li class="page-item <c:out value="${(pm.pageNum+1) == idx ? 'active' : ''}"/>"><a class="page-link" href="#;" onclick="movePage(${idx})"> ${idx} </a></li>
                 </c:forEach>
 
                 <c:if test="${pm.next}">
@@ -81,6 +90,9 @@
             </ul>
         </div>
         <!-- pagination{e} -->
+        <div class="w100" style="display: inline-block">
+            <input type="text" class="form-control form-control-sm" name="contentNum" id="contentNum">
+        </div>
         <!-- search{s} -->
         <div class="form-group row justify-content-center">
             <div class="w100" style="padding-right:10px">
@@ -105,22 +117,41 @@
 
 <script>
     $('#writeBtn').on('click', function (){
-        window.location = '/board/form'
+        /*data = {
+            pageNum : '${searchDTO.pageNum}',
+            contentNum : '${searchDTO.contentNum}',
+            searchType : '${searchDTO.searchType}',
+            keyword : '${searchDTO.keyword}',
+            sort : '${searchDTO.sort}',
+            order : '${searchDTO.order}'
+        }*/
+        let url = '/board/form';
+        url += '?pageNum='+'${searchDTO.pageNum}';
+        url += '&contentNum='+'${searchDTO.contentNum}';
+        url += '&searchType='+'${searchDTO.searchType}';
+        url += '&keyword='+'${searchDTO.keyword}';
+        url += '&sort='+'${searchDTO.sort}';
+        url += '&order='+'${searchDTO.order}';
+
+        window.location = url;
     });
 
     $('#btnSearch').on('click', function(){
        // e.preventDefault();
         let url = '/board/list'
+        url += '?contentNum='+$('#contentNum').val()
         if($('#keyword').val() !== '') {
-            url += '?searchType=' + $('#searchType option:selected').val();
+            url += '&searchType=' + $('#searchType option:selected').val();
             url += '&keyword=' + $('#keyword').val();
             window.location = url;
         }
         window.location = url;
     });
 
-    pageMove = function( pageNum ){
-        let url = '/board/list?pageNum='+pageNum;
+    movePage = function( pageNum ){
+        let url = '/board/list';
+        url += '?contentNum='+$('#contentNum').val();
+        url += '&pageNum='+pageNum;
         if($('#keyword').val() !== '') {
           url += '&searchType=' + $('#searchType option:selected').val();
           url += '&keyword=' + $('#keyword').val();
@@ -128,12 +159,25 @@
         window.location = url;
     }
 
+    moveContent = function(seq){
+        let url = '/board/content/'+seq;
+        url += '?pageNum='+'${searchDTO.pageNum}';
+        url += '&contentNum='+'${searchDTO.contentNum}';
+        url += '&searchType='+'${searchDTO.searchType}';
+        url += '&keyword='+'${searchDTO.keyword}';
+        url += '&sort='+'${searchDTO.sort}';
+        url += '&order='+'${searchDTO.order}';
+
+        window.location = url;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         // $('#searchType option:selected')
         // $('#keyword')
-        if(${not empty keyword} ){
-            $('#keyword').val('${keyword}');
-            $('#searchType').val('${searchType}').prop("selected", true);
+        $('#contentNum').val('${searchDTO.contentNum}');
+        if(${not empty searchDTO.keyword} ){
+            $('#keyword').val('${searchDTO.keyword}');
+            $('#searchType').val('${searchDTO.searchType}').prop("selected", true);
         }else{
 
         }
