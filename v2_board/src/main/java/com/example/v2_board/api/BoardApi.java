@@ -20,7 +20,7 @@ public class BoardApi {
     private final BoardService boardService;
 
     @PostMapping("/register")
-    public Map<String, Object> saveBoard(@RequestParam("file")MultipartFile files, BoardDTO dto) throws Exception{
+    public Map<String, Object> saveBoard(@RequestParam("files")MultipartFile files, BoardDTO dto) throws Exception{
         log.info("-- api board save --");
         Map<String, Object> map = new HashMap<>();
         dto.setWriterSeq(1);

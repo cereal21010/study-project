@@ -53,8 +53,8 @@
             </div>
 
             <div class="mb-3">
-                <label for="file">첨부파일</label>
-                <input type="file" class="form-control" name="file" id="file" >
+                <label for="files">첨부파일</label>
+                <input type="file" class="form-control" name="files" id="files" >
             </div>
 
         </form>
@@ -106,14 +106,13 @@
 
         save : function(){
 
-            let form = $('#boardForm').serialize();
+            let form = $('#boardForm')[0];
 
             $.ajax({
                 type: 'POST',
                 url: '/api/board/register',
+                data: new FormData(form),
                 enctype: 'multipart/form-data',
-                data: form,
-                dataType: 'json',
                 processData: false,
                 contentType: false,
                 cache: false
