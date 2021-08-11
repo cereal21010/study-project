@@ -13,6 +13,6 @@ public class SearchDTO {
     String searchType;
     String keyword;
     String sort;
-    String order;
+    String order = "desc";
 
 }

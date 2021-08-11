@@ -34,6 +34,7 @@ public class BoardController {
 
     @GetMapping("/list")
     public String boardList(Model model, SearchDTO searchDTO) throws Exception {
+        //검색을 했을 때는 다시 1페이지로 ( 현재는 3페이지에서 검색했을 경우 3페이지 그대로 있다 )  
         log.info("-- board list --");
 
         PageMaker pm = boardService.getPageMaker(searchDTO);

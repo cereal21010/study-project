@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class BoardApi {
     private final BoardService boardService;
 
     @PostMapping("/register")
-    public Map<String, Object> saveBoard(BoardDTO dto) throws Exception{
+    public Map<String, Object> saveBoard(@RequestParam("file")MultipartFile files, BoardDTO dto) throws Exception{
         log.info("-- api board save --");
         Map<String, Object> map = new HashMap<>();
         dto.setWriterSeq(1);

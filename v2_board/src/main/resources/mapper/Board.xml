@@ -38,6 +38,14 @@
                 AND writer like CONCAT('%', #{keyword}, '%')
             </if>
         </trim>
+        <choose>
+            <when test=" sort != null and sort != '' ">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY createdDate DESC
+            </otherwise>
+        </choose>
               LIMIT #{ startContentNum}, #{ contentNum}
     </select>
 

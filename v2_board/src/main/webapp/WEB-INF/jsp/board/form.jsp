@@ -26,31 +26,38 @@
 <article>
     <div class="container" role="main">
         <h2>Board Form</h2>
-        <div class="mb-3">
-            <c:set var="board" value="${board}"></c:set>    <%--scope 영역 확인--%>
-            <label for="title">제목</label>
-            <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요"
-                   <c:if test="${not empty board}">value="${board.title}" </c:if>>
-        </div>
+        <form id="boardForm">
+            <div class="mb-3">
+                <c:set var="board" value="${board}"></c:set>    <%--scope 영역 확인--%>
+                <label for="title">제목</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요"
+                       <c:if test="${not empty board}">value="${board.title}" </c:if>>
+            </div>
 
-        <div class="mb-3">
-            <label for="writer">작성자</label>
-            <input type="text" class="form-control" name="writer" id="writer" placeholder="이름을 입력해 주세요"
-                   <c:if test="${not empty board}">value="${board.writer}" </c:if>>
-        </div>
+            <div class="mb-3">
+                <label for="writer">작성자</label>
+                <input type="text" class="form-control" name="writer" id="writer" placeholder="이름을 입력해 주세요"
+                       <c:if test="${not empty board}">value="${board.writer}" </c:if>>
+            </div>
 
-        <div class="mb-3">
-            <label for="content">내용</label>
-            <textarea class="form-control" rows="5" name="content" id="content" placeholder="내용을 입력해 주세요"
-                   > <c:if test="${not empty board}">${board.content} </c:if> </textarea>
-        </div>
+            <div class="mb-3">
+                <label for="content">내용</label>
+                <textarea class="form-control" rows="5" name="content" id="content" placeholder="내용을 입력해 주세요"
+                       > <c:if test="${not empty board}">${board.content} </c:if> </textarea>
+            </div>
 
-        <div class="mb-3">
-            <label for="category">카테고리</label>
-            <input type="text" class="form-control" name="category" id="category" placeholder="카테고리를 입력해 주세요"
-                   <c:if test="${not empty board}">value="${board.category}" </c:if>>
-        </div>
+            <div class="mb-3">
+                <label for="category">카테고리</label>
+                <input type="text" class="form-control" name="category" id="category" placeholder="카테고리를 입력해 주세요"
+                       <c:if test="${not empty board}">value="${board.category}" </c:if>>
+            </div>
 
+            <div class="mb-3">
+                <label for="file">첨부파일</label>
+                <input type="file" class="form-control" name="file" id="file" >
+            </div>
+
+        </form>
         <div >
             <c:choose>
                 <c:when test="${not empty board}">
@@ -98,18 +105,18 @@
         },
 
         save : function(){
-            let data = {
-                title: $('#title').val(),
-                writer: $('#writer').val(),
-                category: $('#category').val(),
-                content: $('#content').val()
-            };
+
+            let form = $('#boardForm').serialize();
 
             $.ajax({
                 type: 'POST',
                 url: '/api/board/register',
+                enctype: 'multipart/form-data',
+                data: form,
                 dataType: 'json',
-                data: data
+                processData: false,
+                contentType: false,
+                cache: false
             }).done(function (reponse){
                 console.log('success');
                 alert('글이 등록되었습니다.');
