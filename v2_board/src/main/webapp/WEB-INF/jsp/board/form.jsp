@@ -54,7 +54,7 @@
 
             <div class="mb-3">
                 <label for="files">첨부파일</label>
-                <input type="file" class="form-control" name="files" id="files" >
+                <input type="file" class="form-control" name="files" id="files" multiple>
             </div>
 
         </form>

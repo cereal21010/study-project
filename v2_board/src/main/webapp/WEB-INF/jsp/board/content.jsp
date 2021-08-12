@@ -58,6 +58,13 @@
             </div>
             <div class="board_content">${board.content}</div>
             <div class="board_tag">category : <c:out value="${board.category}"/></div>
+
+            <span>파일 목록</span>
+            <div class="form-group" style="border: 1px solid #dbdbdb;">
+                <c:forEach var="file" items="${files}">
+                    <a href="#;" onclick="">${file.originalName}</a></br>
+                </c:forEach>
+            </div>
         </div>
 
         <div style="margin-top : 20px">

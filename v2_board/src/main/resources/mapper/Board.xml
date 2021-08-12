@@ -49,7 +49,7 @@
               LIMIT #{ startContentNum}, #{ contentNum}
     </select>
 
-    <insert id="insert" parameterType="BoardDTO">
+    <insert id="insert" parameterType="BoardDTO" useGeneratedKeys="true" keyProperty="seq">
         INSERT INTO board( title, content, writerSeq, writer, createdDate, modifiedDate, category )
          VALUE( #{title}, #{content}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category} )
     </insert>

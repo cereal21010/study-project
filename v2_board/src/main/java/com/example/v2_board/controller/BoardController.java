@@ -1,8 +1,10 @@
 package com.example.v2_board.controller;
 
 import com.example.v2_board.dto.BoardDTO;
+import com.example.v2_board.dto.FileDTO;
 import com.example.v2_board.dto.SearchDTO;
 import com.example.v2_board.service.BoardService;
+import com.example.v2_board.service.FileService;
 import com.example.v2_board.utills.PageMaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class BoardController {
 
     private final BoardService boardService;
+    private final FileService fileService;
 
     @GetMapping("/hello")
     public String hello(){
@@ -56,7 +59,9 @@ public class BoardController {
     public String boardContent(Model model, @PathVariable("seq") int seq, SearchDTO searchDTO) throws Exception {
         log.info("-- board content --");
         BoardDTO board =  boardService.getOne(seq);
+        List<FileDTO> files = fileService.selectList(board.getSeq());
         model.addAttribute("board", board);
+        model.addAttribute("files", files);
         model.addAttribute("searchDTO", searchDTO);
         return "board/content";
     }
