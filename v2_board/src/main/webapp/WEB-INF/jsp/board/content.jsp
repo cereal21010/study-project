@@ -62,7 +62,7 @@
             <span>파일 목록</span>
             <div class="form-group" style="border: 1px solid #dbdbdb;">
                 <c:forEach var="file" items="${files}">
-                    <a href="#;" onclick="">${file.originalName}</a></br>
+                    <a href="/api/board/downloadFile?seq=${file.seq}">${file.originalName}</a></br>
                 </c:forEach>
             </div>
         </div>

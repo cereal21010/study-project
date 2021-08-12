@@ -150,8 +150,8 @@
             });
         }
 
-
     };
+
 
     main.init();
 </script>

@@ -1,6 +1,7 @@
 package com.example.v2_board.api;
 
 import com.example.v2_board.dto.BoardDTO;
+import com.example.v2_board.dto.FileDTO;
 import com.example.v2_board.service.BoardService;
 import com.example.v2_board.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -11,13 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,31 @@ public class BoardApi {
         if( !files.get(0).isEmpty() ){
             fileService.saveFile(files, dto);
 //            files.stream().map(file -> uploadFile(file)).collect(Collectors.toList());
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/downloadFile")
+    public ResponseEntity<?> downloadFile(HttpServletResponse response, @RequestParam("seq")int seq) {
+        try {
+            FileDTO dto = fileService.getOne(seq);
+            //dto가 null일 경우 에러 처리
+            String fileName = new String( dto.getSaveName().toString().getBytes("euc-kr"), "iso-8859-1" );
+            String orgFileName = new String( dto.getOriginalName().toString().getBytes("euc-kr"), "iso-8859-1" );
+            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board\\file_dir"+dto.getSaveName());
+            String mimeType = URLConnection.guessContentTypeFromName(fileName);
+            if( mimeType == null ) {
+                mimeType = "application/octet-stream";
+            }
+            response.setContentType(mimeType);
+            response.setHeader("Content-Disposition", "attachment; filename=\""+orgFileName+"\"");
+            response.setContentLength( (int)file.length() );
+            InputStream inputStream = new BufferedInputStream( new FileInputStream(file) );
+            FileCopyUtils.copy( inputStream, response.getOutputStream() );
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1,25 +1,13 @@
 package com.example.v2_board.service;
 
-import com.example.v2_board.configuration.FileUploadProperties;
 import com.example.v2_board.dto.BoardDTO;
 import com.example.v2_board.dto.FileDTO;
 import com.example.v2_board.mapper.FileMapper;
 import com.example.v2_board.utills.FileUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -48,15 +36,15 @@ public class FileService {
         return fileMapper.selectList(boardSeq);
     }
 
+    public FileDTO getOne(int seq) throws Exception {
+        return fileMapper.getOne(seq);
+    }
+
     public void saveFile(List<MultipartFile> files, BoardDTO dto) throws Exception {
         List<FileDTO> fileInfos = new FileUtils().parseFileInfo(dto, files);
         for( FileDTO fileInfo : fileInfos ){
             fileMapper.insert(fileInfo);
         }
-
-    }
-
-    public void DownloadFile(int seq) {
 
     }
 
