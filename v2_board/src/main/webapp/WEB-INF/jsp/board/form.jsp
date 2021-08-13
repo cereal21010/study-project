@@ -129,6 +129,13 @@
 
             let form = $('#boardForm')[0];
 
+            fileList = $('#files')[0].files;
+            for( let i=0; i < fileList.length; i++ ){
+                console.log(fileList[i])
+                if( !checkExtension(fileList[i].name) ) {
+                    return false;
+                }
+            }
 
             $.ajax({
                 type: 'POST',
@@ -149,15 +156,6 @@
         },
 
         edit : function(){
-            let data = {
-                seq:'${board.seq}',
-                title: $('#title').val(),
-                writer: $('#writer').val(),
-                category: $('#category').val(),
-                content: $('#content').val(),
-                deleteFileList: main.deleteFileList
-            };
-
             let formData = new FormData( $('#boardForm')[0] );
             formData.append('deleteFileList', main.deleteFileList);
 
@@ -179,8 +177,8 @@
             });
         },
 
-        /*changeFile : function(){
-            fileList = $('#files')[0].files;
+        fileCheck : function(){
+            /*fileList = $('#files')[0].files;
             let tag = '';
             for( let i=0; i < fileList.length; i++ ){
                 tag += '<div>'
@@ -188,13 +186,30 @@
                 tag += '<button type="button" class="btn btn-warning btn-circle" onclick="deleteFile(this)"><i class="fa fa-times">X</i></button>'
                 tag += '</div>'
             }
-            $('#fileList').html(tag);
-        }*/
+            $('#fileList').html(tag);*/
+            fileList = $('#files')[0].files;
+
+            for( let i=0; i < fileList.length; i++ ){
+                if( !checkExtension(fileList[i].name) ) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
     };
     deleteFile = function(_this, seq){
         main.deleteFileList.push(seq)
         _this.parentNode.remove();
+    }
+
+    checkExtension = function (fileName){
+        let regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
+        if( regex.test(fileName) ) {
+            alert('해당 종류의 파일은 업로드할 수 없습니다.(',(fileName),')');
+            return false;
+        }
+        return true
     }
 
     document.addEventListener('DOMContentLoaded', () => {
