@@ -59,12 +59,14 @@
             <div class="board_content">${board.content}</div>
             <div class="board_tag">category : <c:out value="${board.category}"/></div>
 
+            <c:if test="${files.size() > 0}">
             <span>파일 목록</span>
             <div class="form-group" style="border: 1px solid #dbdbdb;">
                 <c:forEach var="file" items="${files}">
                     <a href="/api/board/downloadFile?seq=${file.seq}">${file.originalName}</a></br>
                 </c:forEach>
             </div>
+            </c:if>
         </div>
 
         <div style="margin-top : 20px">

@@ -14,10 +14,25 @@
         SELECT *
           FROM file
          WHERE boardSeq = #{boardSeq}
+           AND deleteYn = 'N'
     </select>
 
     <insert id="insert" parameterType="FileDTO">
         INSERT INTO file(originalName, saveName, saveSize, createdDate, deletedDate, boardSeq)
         VALUES(#{originalName}, #{saveName}, #{saveSize}, NOW(), NOW(), #{boardSeq})
     </insert>
+
+    <update id="deleteOne" parameterType="FileDTO">
+        UPDATE file
+        SET deleteYn = 'Y'
+          , deletedDate = NOW()
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="deleteBoard" parameterType="int">
+        UPDATE file
+        SET deleteYn = 'Y'
+          , deletedDate = NOW()
+        WHERE boardSeq = #{boardSeq}
+    </update>
 </mapper>

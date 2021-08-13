@@ -8,4 +8,6 @@ public interface FileMapper {
     public List<FileDTO> selectList(int BoardSeq);
     public void insert(FileDTO dto);
     public FileDTO getOne(int seq);
+    public void deleteOne(FileDTO dto);
+    public void deleteBoard(int boardSeq);
 }

@@ -29,6 +29,7 @@
         <form id="boardForm">
             <div class="mb-3">
                 <c:set var="board" value="${board}"></c:set>    <%--scope 영역 확인--%>
+                <c:if test="${not empty board}"><input type="hidden" name="seq" id="seq" value="${board.seq}" > </c:if>
                 <label for="title">제목</label>
                 <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요"
                        <c:if test="${not empty board}">value="${board.title}" </c:if>>
@@ -37,7 +38,7 @@
             <div class="mb-3">
                 <label for="writer">작성자</label>
                 <input type="text" class="form-control" name="writer" id="writer" placeholder="이름을 입력해 주세요"
-                       <c:if test="${not empty board}">value="${board.writer}" </c:if>>
+                       <c:if test="${not empty board}">value="${board.writer}" </c:if> disabled>
             </div>
 
             <div class="mb-3">
@@ -48,16 +49,33 @@
 
             <div class="mb-3">
                 <label for="category">카테고리</label>
-                <input type="text" class="form-control" name="category" id="category" placeholder="카테고리를 입력해 주세요"
-                       <c:if test="${not empty board}">value="${board.category}" </c:if>>
+
+                <select class="form-control form-control-sm" name="category" id="category">
+                    <option value="free">free</option>
+                    <option value="question">question</option>
+                    <option value="community">community</option>
+                </select>
             </div>
 
             <div class="mb-3">
-                <label for="files">첨부파일</label>
+                <c:if test="${files.size() <= 0}">
+                    <label for="files">첨부파일</label>
+                </c:if>
                 <input type="file" class="form-control" name="files" id="files" multiple>
+                <c:if test="${files.size() > 0}">
+                    <div id="fileList" class="form-group" style="border: 1px solid #dbdbdb;">
+                        <c:forEach var="file" items="${files}">
+                            <div>
+                                <span> ${file.originalName} &nbsp </span>
+                                <button id="${file.seq}" type='button' class="btn btn-warning btn-circle" onclick="deleteFile(this, ${file.seq})"><i class="fa fa-times">X</i></button>
+                            </div>
+                        </c:forEach>
+                    </div>
+                </c:if>
             </div>
 
         </form>
+
         <div >
             <c:choose>
                 <c:when test="${not empty board}">
@@ -80,6 +98,7 @@
     let main = {
         init : function() {
             let _this = this;
+
             $('#btnRegister').on('click', function () {
                 _this.save();
             });
@@ -94,6 +113,8 @@
             });
         },
 
+        deleteFileList : new Array(),
+
         urlFunction : function(url){
             url += '?pageNum='+'${searchDTO.pageNum}';
             url += '&contentNum='+'${searchDTO.contentNum}';
@@ -107,6 +128,7 @@
         save : function(){
 
             let form = $('#boardForm')[0];
+
 
             $.ajax({
                 type: 'POST',
@@ -132,14 +154,21 @@
                 title: $('#title').val(),
                 writer: $('#writer').val(),
                 category: $('#category').val(),
-                content: $('#content').val()
+                content: $('#content').val(),
+                deleteFileList: main.deleteFileList
             };
+
+            let formData = new FormData( $('#boardForm')[0] );
+            formData.append('deleteFileList', main.deleteFileList);
 
             $.ajax({
                 type: 'POST',
                 url: '/api/board/update',
-                dataType: 'json',
-                data: data
+                data: formData,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false
             }).done(function (reponse){
                 console.log('success');
                 alert('글이 수정되었습니다.');
@@ -148,10 +177,31 @@
                 console.log('fail');
                 alert(JSON.stringify(error));
             });
-        }
+        },
+
+        /*changeFile : function(){
+            fileList = $('#files')[0].files;
+            let tag = '';
+            for( let i=0; i < fileList.length; i++ ){
+                tag += '<div>'
+                tag += '<span>' + fileList[i].name + '</span>'
+                tag += '<button type="button" class="btn btn-warning btn-circle" onclick="deleteFile(this)"><i class="fa fa-times">X</i></button>'
+                tag += '</div>'
+            }
+            $('#fileList').html(tag);
+        }*/
 
     };
+    deleteFile = function(_this, seq){
+        main.deleteFileList.push(seq)
+        _this.parentNode.remove();
+    }
 
+    document.addEventListener('DOMContentLoaded', () => {
+        if(${not empty board} ){
+            $('#category').val('${board.category}').prop("selected", true);
+        }
+    });
 
     main.init();
 </script>

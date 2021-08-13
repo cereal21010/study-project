@@ -66,7 +66,9 @@ public class BoardController {
         //작성자 본인인지 확인하는 로직 추가해야뎅..
         log.info("-- board edit --");
         BoardDTO board = boardService.getOne(seq);
+        List<FileDTO> files = fileService.selectList(board.getSeq());
         model.addAttribute("board", board);
+        model.addAttribute("files", files);
         model.addAttribute("searchDTO", searchDTO);
         return "board/form";
     }

@@ -45,7 +45,6 @@ public class BoardApi {
 
         if( !files.get(0).isEmpty() ){
             fileService.saveFile(files, dto);
-//            files.stream().map(file -> uploadFile(file)).collect(Collectors.toList());
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -58,7 +57,7 @@ public class BoardApi {
             //dto가 null일 경우 에러 처리
             String fileName = new String( dto.getSaveName().toString().getBytes("euc-kr"), "iso-8859-1" );
             String orgFileName = new String( dto.getOriginalName().toString().getBytes("euc-kr"), "iso-8859-1" );
-            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board\\file_dir"+dto.getSaveName());
+            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board\\file_dir\\"+dto.getSaveName());
             String mimeType = URLConnection.guessContentTypeFromName(fileName);
             if( mimeType == null ) {
                 mimeType = "application/octet-stream";
@@ -75,6 +74,8 @@ public class BoardApi {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
     /*@PostMapping("/uploadFile")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -120,10 +121,21 @@ public class BoardApi {
     }
 
     @PostMapping("/update")
-    public Map<String, Object> updateBoard(BoardDTO dto) throws Exception{
+    public Map<String, Object> updateBoard(@RequestParam("deleteFileList")List<Integer> deleteFileList
+                                         , @RequestParam("files") List<MultipartFile> files
+                                         , BoardDTO dto) throws Exception{
         log.info("-- api board update --");
         Map<String, Object> map = new HashMap<>();
         boardService.update(dto);
+        if( !files.get(0).isEmpty() ){
+            fileService.saveFile(files, dto);
+        }
+        for(Integer seq : deleteFileList){
+            FileDTO fileDTO = fileService.getOne(seq);
+            if( fileDTO != null ) {
+                fileService.deleteOne(fileDTO);
+            }
+        }
         map.put("result", "000");
         return map;
     }

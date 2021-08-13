@@ -45,7 +45,10 @@ public class FileService {
         for( FileDTO fileInfo : fileInfos ){
             fileMapper.insert(fileInfo);
         }
+    }
 
+    public void deleteOne(FileDTO dto) throws Exception {
+        fileMapper.deleteOne(dto);
     }
 
     /*public String saveFile(MultipartFile multipartFile) {
