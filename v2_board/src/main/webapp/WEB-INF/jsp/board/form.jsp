@@ -129,13 +129,12 @@
 
             let form = $('#boardForm')[0];
 
-            fileList = $('#files')[0].files;
-            for( let i=0; i < fileList.length; i++ ){
-                console.log(fileList[i])
-                if( !checkExtension(fileList[i].name) ) {
-                    return false;
-                }
-            }
+            // fileList = $('#files')[0].files;
+            // for( let i=0; i < fileList.length; i++ ){
+            //     if( !checkExtension(fileList[i].name) ) {
+            //         return false;
+            //     }
+            // }
 
             $.ajax({
                 type: 'POST',
@@ -158,6 +157,13 @@
         edit : function(){
             let formData = new FormData( $('#boardForm')[0] );
             formData.append('deleteFileList', main.deleteFileList);
+
+            fileList = $('#files')[0].files;
+            for( let i=0; i < fileList.length; i++ ){
+                if( !checkExtension(fileList[i].name) ) {
+                    return false;
+                }
+            }
 
             $.ajax({
                 type: 'POST',
@@ -206,7 +212,7 @@
     checkExtension = function (fileName){
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
         if( regex.test(fileName) ) {
-            alert('해당 종류의 파일은 업로드할 수 없습니다.(',(fileName),')');
+            alert('해당 종류의 파일은 업로드할 수 없습니다.(' + fileName + ')');
             return false;
         }
         return true

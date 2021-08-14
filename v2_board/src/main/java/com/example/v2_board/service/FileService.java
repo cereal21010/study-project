@@ -5,9 +5,11 @@ import com.example.v2_board.dto.FileDTO;
 import com.example.v2_board.mapper.FileMapper;
 import com.example.v2_board.utills.FileUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 @Service
@@ -41,15 +43,41 @@ public class FileService {
     }
 
     public void saveFile(List<MultipartFile> files, BoardDTO dto) throws Exception {
+
         List<FileDTO> fileInfos = new FileUtils().parseFileInfo(dto, files);
         for( FileDTO fileInfo : fileInfos ){
-            fileMapper.insert(fileInfo);
+            if(isPermisionFileMimeType(fileInfo.getSaveName())) {
+                throw new Exception("잘못된 확장자 입니다.");
+            }else {
+                fileMapper.insert(fileInfo);
+            }
         }
     }
 
     public void deleteOne(FileDTO dto) throws Exception {
         fileMapper.deleteOne(dto);
     }
+
+
+
+    private boolean isPermisionFileMimeType( String saveName ) throws Exception {
+
+        final String[] PERMISSION_FILE_EXT_ARR = {"exe", "sh", "zip", "alz"};
+
+        String ext = saveName.substring(saveName.lastIndexOf(".") + 1).toLowerCase();
+        boolean isPermisionFileMimeType = false;
+
+        for( int i = 0; i < PERMISSION_FILE_EXT_ARR.length; i++ ) {
+            if( PERMISSION_FILE_EXT_ARR[i].equals(ext) ) {
+                isPermisionFileMimeType = true;
+                break;
+            }
+        }
+
+        return isPermisionFileMimeType;
+
+    }
+
 
     /*public String saveFile(MultipartFile multipartFile) {
         String fileName = multipartFile.getOriginalFilename();
