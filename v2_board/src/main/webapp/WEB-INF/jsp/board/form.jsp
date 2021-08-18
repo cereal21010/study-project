@@ -129,12 +129,12 @@
 
             let form = $('#boardForm')[0];
 
-            // fileList = $('#files')[0].files;
-            // for( let i=0; i < fileList.length; i++ ){
-            //     if( !checkExtension(fileList[i].name) ) {
-            //         return false;
-            //     }
-            // }
+            fileList = $('#files')[0].files;
+            for( let i=0; i < fileList.length; i++ ){
+                if( !checkExtension(fileList[i].name) ) {
+                    return false;
+                }
+            }
 
             $.ajax({
                 type: 'POST',
@@ -184,15 +184,7 @@
         },
 
         fileCheck : function(){
-            /*fileList = $('#files')[0].files;
-            let tag = '';
-            for( let i=0; i < fileList.length; i++ ){
-                tag += '<div>'
-                tag += '<span>' + fileList[i].name + '</span>'
-                tag += '<button type="button" class="btn btn-warning btn-circle" onclick="deleteFile(this)"><i class="fa fa-times">X</i></button>'
-                tag += '</div>'
-            }
-            $('#fileList').html(tag);*/
+
             fileList = $('#files')[0].files;
 
             for( let i=0; i < fileList.length; i++ ){

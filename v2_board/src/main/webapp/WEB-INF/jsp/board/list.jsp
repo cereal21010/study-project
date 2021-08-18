@@ -139,13 +139,13 @@
         },
 
         movePage : function( pageNum ){
-            let url = '/board/list';
-            url += '?contentNum='+$('#contentNum').val();
-            url += '&pageNum='+pageNum;
-            if($('#keyword').val() !== '') {
-                url += '&searchType=' + $('#searchType option:selected').val();
-                url += '&keyword=' + $('#keyword').val();
-            }
+            // let url = '/board/list';
+            // url += '?contentNum='+$('#contentNum').val();
+            // url += '&pageNum='+pageNum;
+            // if($('#keyword').val() !== '') {
+            //     url += '&searchType=' + $('#searchType option:selected').val();
+            //     url += '&keyword=' + $('#keyword').val();
+            // }
             window.location = main.urlFunction('/board/list',undefined,undefined,pageNum);
         },
 
