@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.v2_board.mapper.FileMapper">
+
+    <select id="getOne" parameterType="int" resultType="FileDTO">
+        SELECT *
+          FROM file
+         WHERE seq = #{seq}
+    </select>
+
+    <select id="selectList" parameterType="int" resultType="FileDTO">
+        SELECT *
+          FROM file
+         WHERE boardSeq = #{boardSeq}
+           AND deleteYn = 'N'
+    </select>
+
+    <insert id="insert" parameterType="FileDTO">
+        INSERT INTO file(originalName, saveName, saveSize, createdDate, deletedDate, boardSeq)
+        VALUES(#{originalName}, #{saveName}, #{saveSize}, NOW(), NOW(), #{boardSeq})
+    </insert>
+
+    <update id="deleteOne" parameterType="FileDTO">
+        UPDATE file
+        SET deleteYn = 'Y'
+          , deletedDate = NOW()
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="deleteBoard" parameterType="int">
+        UPDATE file
+        SET deleteYn = 'Y'
+          , deletedDate = NOW()
+        WHERE boardSeq = #{boardSeq}
+    </update>
+</mapper>
