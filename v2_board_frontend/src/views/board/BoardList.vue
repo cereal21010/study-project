@@ -3,18 +3,30 @@
     <b-table
         striped
         hover
-        :items="items"
+        :items="boardList"
         :fields="fields"
     ></b-table>
-    <b-button @click="writeContent">글쓰기</b-button>
+    <b-pagination v-model="currentPage" :total-rows="rows" :per-page="perPage" align="center"></b-pagination>
+    <b-button @click="goWrite">글쓰기</b-button>
   </div>
-
-
 </template>
 
 <script>
+
 export default {
-  name: 'app',
+  name: "BoardList",
+
+  props: {
+    query: {
+      type: Object,
+      default: () => {
+
+      }
+    }
+  },
+
+  inject: ['boardService'],
+
   data() {
     return {
       fields: [
@@ -37,33 +49,29 @@ export default {
         {
           key: "modifiedDate",
           label: "수정일"
-        },
+        }
       ],
-      items: []
-
+      boardList: []
     }
   },
-  mounted(){
-    this.getList();
+
+  mounted() {
+    this.fetchList();
   },
 
-  methods:{
-    getList(){
-      this.$axios.get("http://localhost/api/board/list")
-      .then((res)=>{
-        console.log(res);
-        this.items = res.data
-      })
-      .then((err)=>{
-        console.log(err);
-      })
+  methods: {
+    async fetchList() {
+      const result = await this.boardService.getBoardList();
+      this.boardList = result;
+      console.log(result);
     },
-    writeContent() {
+    goWrite() {
       this.$router.push({
-        path: "/board/create"
-      });
+        path: `board/write`
+      })
     }
   }
+
 }
 </script>
 

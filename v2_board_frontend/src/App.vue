@@ -1,15 +1,12 @@
 <template>
   <div id="app">
-<!--    <img alt="Vue logo" src="./assets/logo.png">-->
-    <Header />
-
-    <router-view />
-
+    <Header/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-import Header from "@/components/common/Header";
+import Header from './views/layout/Header'
 
 export default {
   name: 'App',
