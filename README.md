@@ -17,3 +17,7 @@ https://myjamong.tistory.com/17
 
 - @ModelAttribute 와 커맨드 객체
 https://webdevtechblog.com/modelattribute-%EC%99%80-%EC%BB%A4%EB%A7%A8%EB%93%9C-%EA%B0%9D%EC%B2%B4-command-object-42c14f268324
+
+
+-Spring에서 axios post으로 보낸 요청 매개변수를 못받는 문제
+https://live-everyday.tistory.com/219
