@@ -22,3 +22,17 @@
 
 ### Spring에서 axios post으로 보낸 요청 매개변수를 못받는 문제
 - https://live-everyday.tistory.com/219
+
+
+### [JS] 브라우저 기본 이벤트와 버블링,캡쳐링 방지
+- https://velog.io/@proshy/JS-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EA%B8%B0%EB%B3%B8-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%99%80-%EB%B2%84%EB%B8%94%EB%A7%81-%EB%B0%A9%EC%A7%80
+
+### VUEJS remove Element From Lists?
+```
+methods: {
+  removeElement: function (index) {
+    this.items.splice(index, 1);
+  }
+}
+```
+
