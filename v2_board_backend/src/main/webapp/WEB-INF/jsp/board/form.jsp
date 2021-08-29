@@ -138,7 +138,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/board/register',
+                url: '/api/board/save',
                 data: new FormData(form),
                 enctype: 'multipart/form-data',
                 processData: false,

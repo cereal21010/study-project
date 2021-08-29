@@ -45,13 +45,15 @@ public class FileService {
 
     public void saveFile(List<MultipartFile> files, BoardDTO dto) throws Exception {
 
-        List<FileDTO> fileInfos = fileUtils.parseFileInfo(dto, files);
-        for( FileDTO fileInfo : fileInfos ){
-            if(isPermissionFileMimeType(fileInfo.getSaveName())) {
+        for( MultipartFile file : files ){
+            if(isPermissionFileMimeType(file.getOriginalFilename())) {
                 throw new Exception("잘못된 확장자 입니다.");
-            }else {
-                fileMapper.insert(fileInfo);
             }
+        }
+
+        List<FileDTO> fileInfos = fileUtils.parseFileInfo(dto, files);
+        for( FileDTO fileInfo : fileInfos ) {
+            fileMapper.insert(fileInfo);
         }
     }
 

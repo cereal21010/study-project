@@ -18,7 +18,7 @@ public class FileUtils {
 
         List<FileDTO> fileList =  new ArrayList<>();
 
-        File target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board\\file_dir");
+        File target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir");
         if(!target.exists()) target.mkdirs();
 
         for(MultipartFile file : files) {
@@ -34,7 +34,7 @@ public class FileUtils {
             log.info("content type: "+file.getContentType());
             log.info("================== file   END ==================");
 
-            target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board\\file_dir", saveFileName);
+            target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir", saveFileName);
             file.transferTo(target);
 
             FileDTO fileDTO = new FileDTO();
