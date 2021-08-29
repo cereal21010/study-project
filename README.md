@@ -29,6 +29,16 @@
 
 ### VUEJS remove Element From Lists?
 ```
+data: {
+  items: [
+    { message: 'Foo' },
+    { message: 'Bar' },
+    { message: 'Bar1' },
+    { message: 'Bar2' },
+    { message: 'Bar3' },
+    { message: 'Bar4' }
+  ]
+},
 methods: {
   removeElement: function (index) {
     this.items.splice(index, 1);
