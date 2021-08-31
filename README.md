@@ -46,3 +46,6 @@ methods: {
 }
 ```
 
+### MVVM과 VUE.JS
+- https://goodteacher.tistory.com/195
+
