@@ -49,3 +49,7 @@ methods: {
 ### MVVM과 VUE.JS
 - https://goodteacher.tistory.com/195
 
+
+### 범위를 가지는 CSS
+- https://vue-loader-v14.vuejs.org/kr/features/scoped-css.html
+
