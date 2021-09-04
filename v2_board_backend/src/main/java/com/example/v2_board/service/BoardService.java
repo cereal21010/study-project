@@ -21,6 +21,10 @@ public class BoardService {
         return boardMapper.getAll();
     }
 
+    public int totalCount(SearchDTO dto) throws Exception{
+        return boardMapper.getAllCount(dto);
+    }
+
     public List<BoardDTO> selectList(SearchDTO dto) throws Exception{
 //        Map<String, Object> paramMap = new HashMap<>();
 //        paramMap.put("pageNum", pm.startList());

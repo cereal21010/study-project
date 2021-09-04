@@ -14,5 +14,8 @@ public class SearchDTO {
     String keyword;
     String sort;
     String order = "desc";
+    int totalCount = 0;
+
+
 
 }

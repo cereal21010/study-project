@@ -18,12 +18,15 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,11 +47,12 @@ public class BoardApi {
         //검색을 했을 때는 다시 1페이지로 ( 현재는 3페이지에서 검색했을 경우 3페이지 그대로 있다 )
         log.info("-- api board list --");
 
-        PageMaker pagination = boardService.getPageMaker(searchDTO);
+//        PageMaker pagination = boardService.getPageMaker(searchDTO);
         List<BoardDTO> boardList = boardService.selectList(searchDTO);
+        searchDTO.setTotalCount( boardService.totalCount(searchDTO) );
         Map<String, Object> response = new HashMap<>();
         response.put("boardList", boardList);
-        response.put("pagination", pagination);
+        response.put("search", searchDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -64,27 +68,16 @@ public class BoardApi {
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
-    /*@PostMapping("/save")
-    public ResponseEntity<?> saveBoard(@RequestParam("files") List<MultipartFile> files, BoardDTO dto) throws Exception{
-        log.info("-- api board save --");
+    @RequestMapping(value = "/insert", method = {RequestMethod.POST})
+    public ResponseEntity<?> saveBoard( @RequestPart("requestBody") BoardDTO dto
+                                    , HttpServletRequest request ) throws Exception{
+        log.info("-- api board insert --");
 
         dto.setWriterSeq(1);
         dto.setWriter("user01");
-        boardService.insert(dto);
 
-        if( !files.get(0).isEmpty() ){
-            fileService.saveFile(files, dto);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }*/
-
-    @RequestMapping(value = "/save", method = {RequestMethod.POST})
-    public ResponseEntity<?> saveBoard(@RequestParam(value = "files", required = false) List<MultipartFile> files, BoardDTO dto) throws Exception{
-        log.info("-- api board save --");
-
-        dto.setWriterSeq(1);
-        dto.setWriter("user01");
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        List<MultipartFile> files = multipartRequest.getFiles("files");
 
         try {
             boardService.insert(dto);
@@ -98,8 +91,6 @@ public class BoardApi {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -134,16 +125,15 @@ public class BoardApi {
     }
 
 
-
-
-
     @GetMapping("/downloadFile")
     public void downloadFile(HttpServletResponse response, @RequestParam("seq")int seq) {
         try {
             FileDTO dto = fileService.getOne(seq);
             //dto가 null일 경우 에러 처리
-            String fileName = new String( dto.getSaveName().toString().getBytes("euc-kr"), "iso-8859-1" );
-            String orgFileName = new String( dto.getOriginalName().toString().getBytes("euc-kr"), "iso-8859-1" );
+            String fileName = new String( dto.getSaveName().toString().getBytes("utf-8"), "iso-8859-1" );
+//            String orgFileName = new String( dto.getOriginalName().toString().getBytes("utf-8"), "iso-8859-1" );
+            String orgFileName = URLEncoder.encode(dto.getOriginalName(), "utf-8");
+
             File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir\\"+dto.getSaveName());
             String mimeType = URLConnection.guessContentTypeFromName(fileName);
             if( mimeType == null ) {

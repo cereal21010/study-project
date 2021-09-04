@@ -10,17 +10,23 @@ export class BoardService {
         return axios
             .get(this.testUrl+`/api/board/list`, {params: params})
             .then(response => {
-                return response;
+                return response.data;
             })
             .catch((e)=>{ console.log(e) });
     }
 
 
     insertBoard(boardDetail, uploadFiles) {
+
         const formData = new FormData();
-        formData.append('title', boardDetail.title );
-        formData.append('contents', boardDetail.contents);
-        formData.append('category', boardDetail.category);
+        // formData.append('title', boardDetail.title );
+        // formData.append('contents', boardDetail.contents);
+        // formData.append('category', boardDetail.category);
+        const json = JSON.stringify(boardDetail);
+        const blob = new Blob([json], {
+            type: 'application/json'
+        });
+        formData.append('requestBody', blob);
         if( uploadFiles.length > 0 ) {
             for (let index = 0; index < uploadFiles.length; index++) {
                 formData.append('files', uploadFiles[index]);
@@ -29,7 +35,7 @@ export class BoardService {
 
 
         return axios
-            .post(this.testUrl+`/api/board/save`, formData, {
+            .post(this.testUrl+`/api/board/insert`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 }
@@ -103,6 +109,8 @@ export class BoardService {
                 }
                 link.href = url;
                 fileName = fileName.replace(/"/gi,"");
+                fileName = fileName.replace(/\+/g," ");
+                fileName = decodeURIComponent(fileName)
                 link.setAttribute('download', `${fileName}`);
                 link.style.cssText = 'display:none';
                 document.body.appendChild(link);

@@ -56,7 +56,7 @@
             <div class="board_info_box">
                 <span class="board_author"><c:out value="${board.writer}"/>,</span><span class="board_date"><c:out value="${board.modifiedDateConvert()}"/></span>
             </div>
-            <div class="board_content">${board.content}</div>
+            <div class="board_content">${board.contents}</div>
             <div class="board_tag">category : <c:out value="${board.category}"/></div>
 
             <c:if test="${files.size() > 0}">
