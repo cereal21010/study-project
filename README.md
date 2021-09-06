@@ -53,3 +53,8 @@ methods: {
 ### 범위를 가지는 CSS
 - https://vue-loader-v14.vuejs.org/kr/features/scoped-css.html
 
+### CORS 개념과 에러 해결
+- https://evan-moon.github.io/2020/05/21/about-cors/
+- https://coding-groot.tistory.com/91
+- https://shinsunyoung.tistory.com/86 (spring boot에서 cors 설정)
+
