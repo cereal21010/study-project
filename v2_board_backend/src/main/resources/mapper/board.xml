@@ -3,12 +3,12 @@
 
 
 <mapper namespace="com.example.v2_board.mapper.BoardMapper">
-    <select id="getAll" resultType="BoardDTO">
+    <select id="getAll" resultType="BoardVO">
         SELECT *
           FROM board
     </select>
 
-    <select id="getAllCount" parameterType="com.example.v2_board.dto.SearchDTO" resultType="int">
+    <select id="getAllCount" parameterType="com.example.v2_board.vo.SearchVO" resultType="int">
         SELECT COUNT(*)
           FROM board
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -24,7 +24,7 @@
         </trim>
     </select>
 
-    <select id="selectList" parameterType="com.example.v2_board.dto.SearchDTO" resultType="BoardDTO">
+    <select id="selectList" parameterType="com.example.v2_board.vo.SearchVO" resultType="BoardVO">
         SELECT *
           FROM board
         <trim prefix="WHERE" prefixOverrides="AND|OR">
@@ -46,15 +46,15 @@
                 ORDER BY createdDate DESC
             </otherwise>
         </choose>
-              LIMIT #{ startContentNum}, #{ contentNum}
+              LIMIT #{ startContentNum}, #{ endContentNum}
     </select>
 
-    <insert id="insert" parameterType="BoardDTO" useGeneratedKeys="true" keyProperty="seq">
-        INSERT INTO board( title, contents, writerSeq, writer, createdDate, modifiedDate, category )
-         VALUE( #{title}, #{contents}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category} )
+    <insert id="insert" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO board( title, contents, writerSeq, writer, createdDate, modifiedDate, category, password )
+         VALUE( #{title}, #{contents}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category}, #{password} )
     </insert>
 
-    <select id="getOne" parameterType="int" resultType="BoardDTO">
+    <select id="getOne" parameterType="int" resultType="BoardVO">
         SELECT *
           FROM board
          WHERE seq = #{seq};
@@ -66,13 +66,19 @@
          WHERE seq = #{seq};
     </delete>
 
-    <update id="update" parameterType="BoardDTO">
+    <update id="update" parameterType="BoardVO">
         UPDATE board
            SET title = #{title}
              , contents = #{contents}
              , modifiedDate = NOW()
              , category = #{category}
          WHERE seq = #{seq}
+    </update>
+    
+    <update id="addViewCount" parameterType="BoardVO">
+        update board
+           set viewCount = #{viewCount}
+         where seq = #{seq}
     </update>
 
 </mapper>

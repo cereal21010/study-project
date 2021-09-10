@@ -20,7 +20,7 @@ public class MyBatisConfig {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setDataSource((javax.sql.DataSource) dataSource);
-        sqlSessionFactory.setTypeAliasesPackage("com.example.v2_board.dto");
+        sqlSessionFactory.setTypeAliasesPackage("com.example.v2_board.vo");
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         sqlSessionFactory.setMapperLocations(resolver.getResources("classpath:mapper/*.xml"));
         return sqlSessionFactory.getObject(); //factory를 만들어서 bean에 등록

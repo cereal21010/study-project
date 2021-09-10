@@ -6,6 +6,15 @@ export class BoardService {
         this.testUrl = 'http://localhost'
     }
 
+    moreGetBoardList(params) {
+        return axios
+            .get(this.testUrl+`/api/board/moreList`, {params: params})
+            .then(response => {
+                return response.data;
+            })
+            .catch((e)=>{ console.log(e) });
+    }
+
     getBoardList(params) {
         return axios
             .get(this.testUrl+`/api/board/list`, {params: params})
@@ -51,7 +60,7 @@ export class BoardService {
         return axios
             .get(this.testUrl+`/api/board/detail/`+seq)
             .then(response => {
-                return response;
+                return response.data;
             })
             .catch((e) => { console.log(e); });
     }
@@ -119,6 +128,15 @@ export class BoardService {
             })
             .catch((e) => { console.log(e); });
 
+    }
+
+    getChangedBoardList(seq) {
+        return axios
+            .get(this.testUrl+`/api/board/changes/`+seq)
+            .then(response => {
+                return response.data;
+            })
+            .catch((e) => { console.log(e); });
     }
 
 }

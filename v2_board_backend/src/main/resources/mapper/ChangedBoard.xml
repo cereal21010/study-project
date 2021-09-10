@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.v2_board.mapper.ChangedBoardMapper">
+
+    <select id="getBoardList" parameterType="int" resultType="ChangedBoardVO">
+        select *
+          from changed_board
+         where originBoardSeq = #{boardSeq}
+    </select>
+
+    <insert id="insertChangedBoard" parameterType="ChangedBoardVO">
+        insert into changed_board(title, content, writer, category, changedDate, originBoardSeq)
+        values (#{title}, #{content}, #{writer}, #{category}, now(), #{originBoardSeq})
+    </insert>
+</mapper>

@@ -1,7 +1,7 @@
 package com.example.v2_board.utills;
 
-import com.example.v2_board.dto.BoardDTO;
-import com.example.v2_board.dto.FileDTO;
+import com.example.v2_board.vo.BoardVO;
+import com.example.v2_board.vo.FileVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,11 +12,11 @@ import java.util.*;
 @Component
 @Slf4j
 public class FileUtils {
-    public List<FileDTO> parseFileInfo(BoardDTO dto, List<MultipartFile> files) throws Exception{
+    public List<FileVO> parseFileInfo(BoardVO vo, List<MultipartFile> files) throws Exception{
 
-        int boardSeq = dto.getSeq();
+        int boardSeq = vo.getSeq();
 
-        List<FileDTO> fileList =  new ArrayList<>();
+        List<FileVO> fileList =  new ArrayList<>();
 
         File target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir");
         if(!target.exists()) target.mkdirs();
@@ -37,13 +37,13 @@ public class FileUtils {
             target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir", saveFileName);
             file.transferTo(target);
 
-            FileDTO fileDTO = new FileDTO();
+            FileVO fileVO = new FileVO();
 
-            fileDTO.setOriginalName(orgFileName);
-            fileDTO.setSaveName(saveFileName);
-            fileDTO.setSaveSize(saveFileSize);
-            fileDTO.setBoardSeq(boardSeq);
-            fileList.add(fileDTO);
+            fileVO.setOriginalName(orgFileName);
+            fileVO.setSaveName(saveFileName);
+            fileVO.setSaveSize(saveFileSize);
+            fileVO.setBoardSeq(boardSeq);
+            fileList.add(fileVO);
         }
         return fileList;
 

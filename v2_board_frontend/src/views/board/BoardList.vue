@@ -32,6 +32,14 @@
             @head-clicked="goSort"
         ></b-table>
 
+        <b-col lg="11" class="pb-2">
+            <b-button
+                size="lg"
+                @click="moreGetBoardList"
+
+            >더 보기</b-button>
+        </b-col>
+
         <b-form-select
             v-model="searchParams.contentNum"
             :options="contentOptions"
@@ -51,15 +59,23 @@
 
 
         <b-button @click="goWrite">글쓰기</b-button>
+
+        <password-modal
+            v-if="showModal"
+            :clickedBoard="clickedBoard"
+            @close-modal="closeModal"
+            @password-check="passwordCheck"
+        ></password-modal>
     </div>
 </template>
 
 <script>
 // import Vue from "vue";
 
+import PasswordModal from "../../components/PasswordModal";
 export default {
     name: "BoardList",
-
+    components: {PasswordModal},
     props: {
         query: {
             type: Object,
@@ -73,6 +89,7 @@ export default {
 
     data() {
         return {
+
             testObject: {},
             fields: [
                 {
@@ -94,7 +111,7 @@ export default {
                 {
                     key: "modifiedDate",
                     label: "수정일"
-                }
+                },
             ],
 
             boardList: [],
@@ -110,7 +127,10 @@ export default {
                 searchType: 'title',
                 keyword: '',
                 sort: 'createdDate',
-                order: 'desc'
+                order: 'desc',
+                startContentNum: 0,
+                endContentNum: 1,   //fetch 때 쿼리에서 사용할 limit에 들어갈 변수
+                listLength: 0,
             },
 
             selectOptions: [
@@ -125,6 +145,9 @@ export default {
                 {value: 30, text: '30'},
             ],
 
+            showModal: false,
+
+            clickedBoard: {},
         }
     },
 
@@ -142,11 +165,19 @@ export default {
     methods: {
 
         async fetchList() {
+            this.searchParams.startContentNum = 0;
+            this.searchParams.endContentNum = this.searchParams.listLength > 0 ? this.searchParams.listLength : 10;
+            const {boardList, search} = await this.boardService.moreGetBoardList(this.searchParams);
+            this.boardList.push(...boardList);
+            this.searchParams = search;
+            this.searchParams.listLength = this.boardList.length;
+        },
+        /*async fetchList() {
             const {boardList, search} = await this.boardService.getBoardList(this.searchParams);
             this.boardList.push(...boardList);
             this.pagination.totalCount = search.totalCount;
             this.searchParams.pageNum = search.pageNum;
-        },
+        },*/
         /* promise로 처리했을 때
         fetchList() {
             this.boardService.getBoardList(this.searchParams).then(function ({boardList, search}){
@@ -173,11 +204,29 @@ export default {
             })
         },
 
+        closeModal() {
+            this.showModal = false;
+        },
+
+        passwordCheck(pwCheck) {
+            if(pwCheck){
+                this.$router.push({
+                    path: `/board/view/${this.clickedBoard.seq}`,
+                    query: this.searchParams
+                })
+            }
+        },
+
         goView(row) {
-            this.$router.push({
-                path: `/board/view/${row.seq}`,
-                query: this.searchParams
-            })
+            this.clickedBoard = row;
+            if( this.clickedBoard.password !== null ){
+                this.showModal = true;
+            }else {
+                this.$router.push({
+                    path: `/board/view/${row.seq}`,
+                    query: this.searchParams
+                })
+            }
         },
 
         async gotoPage(page) {
@@ -189,8 +238,11 @@ export default {
         },
 
         async doSearch() {
-            this.searchParams["pageNum"] = 1;
-            const {boardList, search} = await this.boardService.getBoardList(this.searchParams);
+            /*this.searchParams["pageNum"] = 1;
+            const {boardList, search} = await this.boardService.getBoardList(this.searchParams);*/
+            this.searchParams.startContentNum = 0;
+            this.searchParams.endContentNum = this.searchParams.listLength > 0 ? this.searchParams.listLength : 10;
+            const {boardList, search} = await this.boardService.moreGetBoardList(this.searchParams);
             this.boardList = boardList;
             this.searchParams.totalCount = search.totalCount;
         },
@@ -203,16 +255,33 @@ export default {
                 this.searchParams["order"] = 'desc'
             }
 
-            const {boardList, search} = await this.boardService.getBoardList(this.searchParams);
+            // const {boardList, search} = await this.boardService.getBoardList(this.searchParams);
+            this.searchParams.startContentNum = 0;
+            this.searchParams.endContentNum = this.searchParams.listLength > 0 ? this.searchParams.listLength : 10;
+            const {boardList, search} = await this.boardService.moreGetBoardList(this.searchParams);
             this.boardList = boardList;
             this.searchParams.totalCount = search.totalCount;
         },
 
-        async contentNumChange() {
+        /*async contentNumChange() {
             this.searchParams["pageNum"] = 1;
             const {boardList, search} = await this.boardService.getBoardList(this.searchParams);
             this.boardList = boardList;
             this.searchParams.totalCount = search.totalCount;
+        },*/
+
+        async contentNumChange() {
+            // const {boardList} = await this.boardService.moreGetBoardList(this.searchParams);
+            // this.boardList = boardList;
+        },
+
+        async moreGetBoardList(){
+            this.searchParams.startContentNum = this.boardList.length;
+            this.searchParams.endContentNum = this.searchParams.contentNum;
+            const {boardList, search} = await  this.boardService.moreGetBoardList(this.searchParams);
+            this.boardList.push(...boardList);
+            this.searchParams = search;
+            this.searchParams.listLength = this.boardList.length;
         },
 
     },

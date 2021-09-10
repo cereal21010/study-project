@@ -1,90 +1,119 @@
 package com.example.v2_board.api;
 
-import com.example.v2_board.dto.BoardDTO;
-import com.example.v2_board.dto.FileDTO;
-import com.example.v2_board.dto.SearchDTO;
+import com.example.v2_board.service.CommentService;
+import com.example.v2_board.service.RecommendService;
+import com.example.v2_board.vo.*;
 import com.example.v2_board.service.BoardService;
 import com.example.v2_board.service.FileService;
-import com.example.v2_board.utills.PageMaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/board")
 @Slf4j
-@CrossOrigin(origins = "http://localhost:8080", exposedHeaders = {"Content-Disposition"})
 public class BoardApi {
 
     private final BoardService boardService;
     private final FileService fileService;
+    private final CommentService commentService;
+    private final RecommendService recommendService;
 
-    @RequestMapping(value = "/list", method = {RequestMethod.GET})
-    public ResponseEntity<?> boardList(Model model, SearchDTO searchDTO) throws Exception {
-        //검색을 했을 때는 다시 1페이지로 ( 현재는 3페이지에서 검색했을 경우 3페이지 그대로 있다 )
-        log.info("-- api board list --");
+    @RequestMapping(value = "/comment/insert", method = RequestMethod.POST)
+    public ResponseEntity<?> insertComment(CommentVO vo ) {
 
-//        PageMaker pagination = boardService.getPageMaker(searchDTO);
-        List<BoardDTO> boardList = boardService.selectList(searchDTO);
-        searchDTO.setTotalCount( boardService.totalCount(searchDTO) );
+//        try {
+//            commentService.insertCommnet(vo);
+//        }catch ( Exception e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        }
+        System.out.println(vo);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/moreList", method = {RequestMethod.GET})
+    public ResponseEntity<?> moreGetList(SearchVO searchVO) throws Exception {
+        log.info("-- api more list --");
+
+        List<BoardVO> boardList = boardService.moreGetList(searchVO);
         Map<String, Object> response = new HashMap<>();
         response.put("boardList", boardList);
-        response.put("search", searchDTO);
+        response.put("search", searchVO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/list", method = {RequestMethod.GET})
+    public ResponseEntity<?> boardList(Model model, SearchVO searchVO) throws Exception {
+        log.info("-- api board list --");
+
+//        PageMaker pagination = boardService.getPageMaker(searchVO);
+        List<BoardVO> boardList = boardService.selectList(searchVO);
+        searchVO.setTotalCount( boardService.totalCount(searchVO) );
+        Map<String, Object> response = new HashMap<>();
+        response.put("boardList", boardList);
+        response.put("search", searchVO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/detail/{seq}", method = {RequestMethod.GET})
-    public ResponseEntity<?> boarddetail(@PathVariable("seq") int seq, SearchDTO searchDTO) throws Exception {
-        log.info("-- board content --");
-        BoardDTO board =  boardService.getOne(seq);
-        List<FileDTO> files = fileService.selectList(board.getSeq());
+    public ResponseEntity<?> boardDetail(@PathVariable("seq") int seq) throws Exception {
+        log.info("-- board detail --");
+
+        int testMemberSeq = 2;
+
+        boardService.addViewCount( boardService.getOne(seq) );   //조회수 증가
+        BoardVO boardDetail =  boardService.getOne(seq);
+        List<FileVO> files = fileService.selectList(boardDetail.getSeq());
+        List<CommentVO> comments = commentService.getCommentList(seq);
+        int recommendCount = recommendService.getReCommendCount(seq);
+        Boolean isRecommended = recommendService.isRecommended(seq, testMemberSeq); //테스트로 memberSeq: 1, 2
+        
         Map<String, Object> response = new HashMap<>();
-        response.put("board", board);
+        response.put("boardDetail", boardDetail);
         response.put("files", files);
-//        List<FileDTO> files = fileService.selectList(board.getSeq());
+        response.put("comments", comments);
+        response.put("recommendCount", recommendCount);
+        response.put("isRecommended", isRecommended);
+//        List<FileVO> files = fileService.selectList(board.getSeq());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/insert", method = {RequestMethod.POST})
-    public ResponseEntity<?> saveBoard( @RequestPart("requestBody") BoardDTO dto
+    public ResponseEntity<?> saveBoard( @RequestPart("requestBody") BoardVO vo
                                     , HttpServletRequest request ) throws Exception{
         log.info("-- api board insert --");
 
-        dto.setWriterSeq(1);
-        dto.setWriter("user01");
+        vo.setWriterSeq(1);
+        vo.setWriter("user01");
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files = multipartRequest.getFiles("files");
 
         try {
-            boardService.insert(dto);
+            boardService.insert(vo);
 
-            if( files != null ) {
+            System.out.println(files.size());
+
+            if( files != null && files.size() > 0) {
                 if (!files.get(0).isEmpty()) {
-                    fileService.saveFile(files, dto);
+                    fileService.saveFile(files, vo);
                 }
             }
         }catch (Exception e){
@@ -106,18 +135,22 @@ public class BoardApi {
     @RequestMapping(value = "/update", method = {RequestMethod.PUT})
     public ResponseEntity<?> updateBoard(@RequestParam(value = "files", required = false) List<MultipartFile> files
                                          , @RequestParam(value = "deleteFileList", required = false) List<Integer> deleteFileList
-                                         , BoardDTO dto) throws Exception{
+                                         , BoardVO vo) throws Exception{
         log.info("-- api board update --");
-        boardService.update(dto);
+
+        BoardVO boardVO = boardService.getOne(vo.getSeq());
+        boardService.insertChangedBoard( boardVO );
+
+        boardService.update(vo);
         if( files != null ) {
             if (!files.get(0).isEmpty()) {
-                fileService.saveFile(files, dto);
+                fileService.saveFile(files, vo);
             }
         }
         for(Integer seq : deleteFileList){
-            FileDTO fileDTO = fileService.getOne(seq);
-            if( fileDTO != null ) {
-                fileService.deleteOne(fileDTO);
+            FileVO fileVO = fileService.getOne(seq);
+            if( fileVO != null ) {
+                fileService.deleteOne(fileVO);
             }
         }
 
@@ -128,13 +161,13 @@ public class BoardApi {
     @GetMapping("/downloadFile")
     public void downloadFile(HttpServletResponse response, @RequestParam("seq")int seq) {
         try {
-            FileDTO dto = fileService.getOne(seq);
-            //dto가 null일 경우 에러 처리
-            String fileName = new String( dto.getSaveName().toString().getBytes("utf-8"), "iso-8859-1" );
-//            String orgFileName = new String( dto.getOriginalName().toString().getBytes("utf-8"), "iso-8859-1" );
-            String orgFileName = URLEncoder.encode(dto.getOriginalName(), "utf-8");
+            FileVO vo = fileService.getOne(seq);
+            //vo가 null일 경우 에러 처리
+            String fileName = new String( vo.getSaveName().toString().getBytes("utf-8"), "iso-8859-1" );
+//            String orgFileName = new String( vo.getOriginalName().toString().getBytes("utf-8"), "iso-8859-1" );
+            String orgFileName = URLEncoder.encode(vo.getOriginalName(), "utf-8");
 
-            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir\\"+dto.getSaveName());
+            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir\\"+vo.getSaveName());
             String mimeType = URLConnection.guessContentTypeFromName(fileName);
             if( mimeType == null ) {
                 mimeType = "application/octet-stream";
@@ -152,69 +185,22 @@ public class BoardApi {
 //        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/changes/{boardSeq}", method = RequestMethod.GET)
+    public ResponseEntity getChangedBoardList(@PathVariable("boardSeq") int boardSeq) throws Exception {
 
-
-    /*@PostMapping("/uploadFile")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
-        log.info("-- api board upload file --");
-        if( file.isEmpty() ){ return new ResponseEntity<>(HttpStatus.BAD_REQUEST);}
-        String fileName = fileService.saveFile(file);
-        String downloadURI = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(fileName).toUriString();
-        log.info(downloadURI);
-        return new ResponseEntity<>(downloadURI, HttpStatus.OK);
-    }*/
-
-    /*@GetMapping("/download")
-    public ResponseEntity<?> downloadFile(String fileName, HttpServletRequest request) {
-        Resource resource = null;
-        String contentType = null;
+        Map<String, Object> response = new HashMap<>();
         try {
-            resource = fileService.loadFile(fileName);
-            contentType = request.getServletContext().getMimeType( resource.getFile().getAbsolutePath() );
-        } catch (FileNotFoundException e) {
+            BoardVO boardDetail = boardService.getOne(boardSeq);
+            List<ChangedBoardVO> changedBoardVOList = boardService.getChangedBoardList(boardSeq);
+
+            response.put("boardDetail", boardDetail);
+            response.put("changedBoardList", changedBoardVOList);
+        } catch(Exception e){
             e.printStackTrace();
-        } catch (IOException e) {
-            log.info("Could not determine file type.");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-        if( contentType == null ){
-            contentType = "application/octet-stream";
-        }
-
-        return ResponseEntity.ok()
-                .contentType( MediaType.parseMediaType(contentType) )
-                .header( HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"" )
-                .body(resource);
-
-    }*/
-
-    /*@PostMapping("/delete")
-    public Map<String, Object> deleteBoard(BoardDTO dto) throws Exception{
-        log.info("-- api board delete --");
-        Map<String, Object> map = new HashMap<>();
-        boardService.delete(dto.getSeq());
-        map.put("result", "000");
-        return map;
-    }*/
-
-    /*@PostMapping("/update")
-    public Map<String, Object> updateBoard(@RequestParam("deleteFileList")List<Integer> deleteFileList
-                                         , @RequestParam("files") List<MultipartFile> files
-                                         , BoardDTO dto) throws Exception{
-        log.info("-- api board update --");
-        Map<String, Object> map = new HashMap<>();
-        boardService.update(dto);
-        if( !files.get(0).isEmpty() ){
-            fileService.saveFile(files, dto);
-        }
-        for(Integer seq : deleteFileList){
-            FileDTO fileDTO = fileService.getOne(seq);
-            if( fileDTO != null ) {
-                fileService.deleteOne(fileDTO);
-            }
-        }
-        map.put("result", "000");
-        return map;
-    }*/
 
 }

@@ -1,15 +1,13 @@
 package com.example.v2_board.service;
 
-import com.example.v2_board.dto.BoardDTO;
-import com.example.v2_board.dto.FileDTO;
+import com.example.v2_board.vo.BoardVO;
+import com.example.v2_board.vo.FileVO;
 import com.example.v2_board.mapper.FileMapper;
 import com.example.v2_board.utills.FileUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 @Service
@@ -35,15 +33,15 @@ public class FileService {
         }
     }*/
 
-    public List<FileDTO> selectList(int boardSeq) throws Exception {
+    public List<FileVO> selectList(int boardSeq) throws Exception {
         return fileMapper.selectList(boardSeq);
     }
 
-    public FileDTO getOne(int seq) throws Exception {
+    public FileVO getOne(int seq) throws Exception {
         return fileMapper.getOne(seq);
     }
 
-    public void saveFile(List<MultipartFile> files, BoardDTO dto) throws Exception {
+    public void saveFile(List<MultipartFile> files, BoardVO vo) throws Exception {
 
         for( MultipartFile file : files ){
             if(isPermissionFileMimeType(file.getOriginalFilename())) {
@@ -51,14 +49,14 @@ public class FileService {
             }
         }
 
-        List<FileDTO> fileInfos = fileUtils.parseFileInfo(dto, files);
-        for( FileDTO fileInfo : fileInfos ) {
+        List<FileVO> fileInfos = fileUtils.parseFileInfo(vo, files);
+        for( FileVO fileInfo : fileInfos ) {
             fileMapper.insert(fileInfo);
         }
     }
 
-    public void deleteOne(FileDTO dto) throws Exception {
-        fileMapper.deleteOne(dto);
+    public void deleteOne(FileVO vo) throws Exception {
+        fileMapper.deleteOne(vo);
     }
 
 

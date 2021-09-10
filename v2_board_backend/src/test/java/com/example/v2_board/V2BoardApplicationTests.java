@@ -1,6 +1,5 @@
 package com.example.v2_board;
 
-import com.example.v2_board.dto.BoardDTO;
 import com.example.v2_board.service.BoardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

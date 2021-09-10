@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import BoardList from '../views/board/BoardList'
 import BoardWrite from "../views/board/BoardWrite";
 import BoardView from "../views/board/BoardView";
+import Changes from "../views/board/Changes";
 
 Vue.use(VueRouter)
 
@@ -12,7 +13,6 @@ const router = new VueRouter({
         {
             path: '/',
             component: BoardList,
-            // name: BoardList,
             props: route => ({ query: route.query })
         },
         {
@@ -24,21 +24,23 @@ const router = new VueRouter({
         {
             path: '/board/write',
             component: BoardWrite,
-            // name: BoardWrite,
             props: route => ({ query: route.query })
         },
         {
             path: '/board/view/:seq',
             component: BoardView,
-            // name: BoardView,
             props: route => ( Object.assign( {query: route.query}, route.params) )
         },
         {
             path: '/board/update/:seq',
             component: BoardWrite,
-            // name: BoardWrite,
             props: route => ( Object.assign( {query: route.query}, route.params) )
-        }
+        },
+        {
+            path: '/board/changes/:seq',
+            component: Changes,
+            props: route => ( Object.assign( {query: route.query}, route.params) )
+        },
     ]
 });
 

@@ -116,12 +116,12 @@
         deleteFileList : new Array(),
 
         urlFunction : function(url){
-            url += '?pageNum='+'${searchDTO.pageNum}';
-            url += '&contentNum='+'${searchDTO.contentNum}';
-            url += '&searchType='+'${searchDTO.searchType}';
-            url += '&keyword='+'${searchDTO.keyword}';
-            url += '&sort='+'${searchDTO.sort}';
-            url += '&order='+'${searchDTO.order}';
+            url += '?pageNum='+'${searchVO.pageNum}';
+            url += '&contentNum='+'${searchVO.contentNum}';
+            url += '&searchType='+'${searchVO.searchType}';
+            url += '&keyword='+'${searchVO.keyword}';
+            url += '&sort='+'${searchVO.sort}';
+            url += '&order='+'${searchVO.order}';
             return url;
         },
 
@@ -138,7 +138,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/api/board/save',
+                url: '/board/insert',
                 data: new FormData(form),
                 enctype: 'multipart/form-data',
                 processData: false,

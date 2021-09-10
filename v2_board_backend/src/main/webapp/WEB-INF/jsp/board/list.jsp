@@ -122,7 +122,7 @@
             let _this = this;
             $('.column').on('click', function () {
                 let sort = $(this).attr('id');
-                let order = '${searchDTO.order}'
+                let order = '${searchVO.order}'
                 if( order === '' || order === 'asc' ){
                     order = 'desc';
                 }else {
@@ -158,8 +158,8 @@
             if( pageNum !== undefined ){
                 url += '?pageNum='+pageNum;
             } else{
-                if( '${searchDTO.pageNum}' !== '' ){
-                    url += '?pageNum='+'${searchDTO.pageNum}';
+                if( '${searchVO.pageNum}' !== '' ){
+                    url += '?pageNum='+'${searchVO.pageNum}';
                 }
             }
             url += '&contentNum='+$('#contentNum').val();
@@ -167,18 +167,18 @@
                 url += '&searchType=' + $('#searchType option:selected').val();
                 url += '&keyword=' + $('#keyword').val();
             } else{
-                if( '${searchDTO.keyword}' !== '' ){
-                    url += '&searchType=' + '${searchDTO.searchType}';
-                    url += '&keyword=' + '${searchDTO.keyword}';
+                if( '${searchVO.keyword}' !== '' ){
+                    url += '&searchType=' + '${searchVO.searchType}';
+                    url += '&keyword=' + '${searchVO.keyword}';
                 }
             }
             if( sort !== undefined ) {
                 url += '&sort=' + sort;
                 url += '&order=' + order;
             } else{
-                if( '${searchDTO.sort}' !== '' ){
-                    url += '&sort=' + '${searchDTO.sort}';
-                    url += '&order=' + '${searchDTO.order}';
+                if( '${searchVO.sort}' !== '' ){
+                    url += '&sort=' + '${searchVO.sort}';
+                    url += '&order=' + '${searchVO.order}';
                 }
             }
             return url;
@@ -187,10 +187,10 @@
 
     //초기화..  =$(document).ready(function(){ //실행될 코드 });
     document.addEventListener('DOMContentLoaded', () => {
-        $('#contentNum').val('${searchDTO.contentNum}');
-        if(${not empty searchDTO.keyword} ){
-            $('#keyword').val('${searchDTO.keyword}');
-            $('#searchType').val('${searchDTO.searchType}').prop("selected", true);
+        $('#contentNum').val('${searchVO.contentNum}');
+        if(${not empty searchVO.keyword} ){
+            $('#keyword').val('${searchVO.keyword}');
+            $('#searchType').val('${searchVO.searchType}').prop("selected", true);
         }
     });
 

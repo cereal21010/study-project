@@ -17,6 +17,13 @@
                 ></b-form-select>
             </div>
 
+            <div>
+                <b-form-checkbox v-model="passwordMode" name="check-button" switch>
+                    set password
+                </b-form-checkbox>
+                <b-input v-model="boardDetail.password" placeholder="비밀 번호를 입력해주세요." :disabled="!passwordMode"></b-input>
+            </div>
+
             <file-upload
                 :select-files="selectFiles"
                 @select-files="selectFileListAdd"
@@ -64,7 +71,8 @@ export default {
                 seq: this.seq,
                 title: '',
                 contents: '',
-                category: 'free'
+                category: 'free',
+                password: ''
             },
 
             contentOptions: [
@@ -79,7 +87,9 @@ export default {
 
             selectFiles: [],
 
-            updateMode: this.seq !== undefined ? true : false
+            updateMode: this.seq !== undefined ? true : false,
+
+            passwordMode: false
         }
     },
 

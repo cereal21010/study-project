@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.v2_board.mapper.CommentMapper">
+    <select id="getCommentList" parameterType="int" resultType="com.example.v2_board.vo.CommentVO">
+        select *
+          from comment
+         where boardSeq = #{boardSeq}
+    </select>
+
+    <insert id="insertComment" parameterType="CommentVO">
+        insert into comment(writer, content, boardSeq)
+        values( #{writer}, #{content}, #{boardSeq} );
+    </insert>
+
+    <delete id="deleteComment" parameterType="int">
+        delete
+          from comment
+         where seq = #{seq};
+    </delete>
+    
+</mapper>    
