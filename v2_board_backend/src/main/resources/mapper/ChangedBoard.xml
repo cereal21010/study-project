@@ -3,10 +3,11 @@
 
 <mapper namespace="com.example.v2_board.mapper.ChangedBoardMapper">
 
-    <select id="getBoardList" parameterType="int" resultType="ChangedBoardVO">
+    <select id="getBoardList" parameterType="int" resultType="com.example.v2_board.vo.ChangedBoardVO">
         select *
           from changed_board
          where originBoardSeq = #{boardSeq}
+         order by changedDate desc
     </select>
 
     <insert id="insertChangedBoard" parameterType="ChangedBoardVO">

@@ -15,5 +15,5 @@ public interface BoardMapper {
     public int update(BoardVO vo);
     public int getAllCount(SearchVO vo);
     public List<BoardVO> selectList(SearchVO vo);
-    public void addViewCount(BoardVO vo);
+    public void increaseViewCount(BoardVO vo);
 }

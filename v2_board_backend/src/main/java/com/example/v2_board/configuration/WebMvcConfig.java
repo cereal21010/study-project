@@ -14,6 +14,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:8080")
+                .exposedHeaders("content-disposition")
                 .allowedMethods(
                         HttpMethod.GET.name(),
                         HttpMethod.HEAD.name(),

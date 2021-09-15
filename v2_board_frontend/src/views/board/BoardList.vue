@@ -1,6 +1,5 @@
 <template>
-    <div>
-        <br>
+    <div class="m-5">
         <!--  검색 창  -->
         <b-input-group class="mt-3">
             <b-input-group-prepend>
@@ -60,22 +59,14 @@
 
         <b-button @click="goWrite">글쓰기</b-button>
 
-        <password-modal
-            v-if="showModal"
-            :clickedBoard="clickedBoard"
-            @close-modal="closeModal"
-            @password-check="passwordCheck"
-        ></password-modal>
     </div>
 </template>
 
 <script>
 // import Vue from "vue";
 
-import PasswordModal from "../../components/PasswordModal";
 export default {
     name: "BoardList",
-    components: {PasswordModal},
     props: {
         query: {
             type: Object,
@@ -144,10 +135,6 @@ export default {
                 {value: 20, text: '20'},
                 {value: 30, text: '30'},
             ],
-
-            showModal: false,
-
-            clickedBoard: {},
         }
     },
 
@@ -204,29 +191,11 @@ export default {
             })
         },
 
-        closeModal() {
-            this.showModal = false;
-        },
-
-        passwordCheck(pwCheck) {
-            if(pwCheck){
-                this.$router.push({
-                    path: `/board/view/${this.clickedBoard.seq}`,
-                    query: this.searchParams
-                })
-            }
-        },
-
         goView(row) {
-            this.clickedBoard = row;
-            if( this.clickedBoard.password !== null ){
-                this.showModal = true;
-            }else {
-                this.$router.push({
-                    path: `/board/view/${row.seq}`,
-                    query: this.searchParams
-                })
-            }
+            this.$router.push({
+                path: `/board/view/${row.seq}`,
+                query: this.searchParams
+            })
         },
 
         async gotoPage(page) {

@@ -68,9 +68,15 @@ public class BoardService {
                                         , boardMapper.getAllCount(vo) );
     }
 
-    public void addViewCount(BoardVO vo) {
+    /*public void addViewCount(BoardVO vo) {
         vo.setViewCount( vo.getViewCount() + 1 );
         boardMapper.addViewCount(vo);
+    }*/
+
+    public void increaseViewCount(int boardSeq) throws Exception {
+        BoardVO vo = getOne(boardSeq);
+        vo.setViewCount( vo.getViewCount() + 1 );
+        boardMapper.increaseViewCount(vo);
     }
 
     public List<ChangedBoardVO> getChangedBoardList(int boardSeq){

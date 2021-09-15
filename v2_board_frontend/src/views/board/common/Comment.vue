@@ -1,7 +1,8 @@
 <template>
     <div id="demo">
         <div class="comment-form">
-            <textarea v-model="commentDetail.content" type="text" placeholder="Comment is here: with markdown"></textarea>
+            <textarea v-model="commentDetail.content" type="text"
+                      placeholder="Comment is here: with markdown"></textarea>
             <label>
                 <input v-model="commentDetail.writer" type="text" placeholder="Author name here:">
             </label>
@@ -9,13 +10,19 @@
         </div>
         <div class="comments-box"
              v-for="(comment, index) in comments"
-            :key="index">
-            <p class="author">
-                {{comment.writer}}
-            </p>
-            <p class="content-comment">{{comment.content}}</p>
+             :key="index">
+            <p class="author"> {{ comment.writer }}</p>
+            <p v-if="!comment.updateMode" class="content-comment">{{ comment.content }}</p>
+            <div v-else>
+                <textarea
+                    v-model="comment.content"
+                    type="text"
+                    placeholder="Comment is here: with markdown"
+                ></textarea>
+                <b-button @click="updateComment(comment)">저장</b-button>
+            </div>
             <p class="delete" @click="removeComment(comment.seq, index)">Delete</p>
-            <p class="update">Update</p>
+            <p class="update" @click="isUpdateMode(index)">Update</p>
         </div>
     </div>
 </template>
@@ -37,21 +44,17 @@ export default {
                 content: '',
                 writer: '',
                 boardSeq: Number,
-
             },
-
         }
     },
 
     mounted() {
     },
 
-    computed:{
-    },
+    computed: {},
 
-    methods:{
-        save: function() {
-            console.log(this.boardSeq);
+    methods: {
+        save: function () {
             this.commentDetail['boardSeq'] = this.boardSeq;
             this.commentService.insertComment(this.commentDetail);
             // this.comments.unshift(this.commentDetail);
@@ -59,12 +62,27 @@ export default {
             // this.$emit('insert-comment', this.commentDetail);
         },
 
-        removeComment: function(seq, commentsIndex) {
-            if(confirm('해당 댓글을 삭제 하시겠습니까?')){
+        removeComment: function (seq, commentsIndex) {
+            if (confirm('해당 댓글을 삭제 하시겠습니까?')) {
                 this.commentService.deleteComment(seq);
                 this.comments.splice(commentsIndex, 1);
             }
-        }
+        },
+
+        isUpdateMode(index) {
+            this.comments[index].updateMode = !this.comments[index].updateMode;
+        },
+
+        async updateComment(comment){
+            const response = await this.commentService.updateComment(comment);
+            console.log(response);
+            if(response === 200){
+                this.$router.go();
+            }else {
+                alert('에러!');
+                this.$router.go();
+            }
+        },
 
     },
 
@@ -73,24 +91,24 @@ export default {
 
 <style scoped>
 
-*{
+* {
     padding: 0;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
 }
 
-#demo{
+#demo {
     margin: 20px 0 0 0;
 }
 
-.comment-form{
+.comment-form {
     display: block;
     width: 80%;
     margin: auto;
 }
 
-textarea{
+textarea {
     width: 100%;
     border: 2px solid #ccc;
     border-radius: 7px;
@@ -99,13 +117,13 @@ textarea{
     padding: 5px;
 }
 
-input{
+input {
     border: 2px solid #ccc;
     border-radius: 5px;
     padding: 5px;
 }
 
-button{
+button {
     background: #333;
     color: #ccc;
     border: 0;
@@ -115,14 +133,14 @@ button{
 
 /*Comment Box*/
 
-.comments-box{
+.comments-box {
     width: 90%;
     margin: auto;
     padding: 20px 0;
     border-bottom: 1px solid #000;
 }
 
-.delete{
+.delete {
     background: red;
     color: #fff;
     font-size: 12px;
@@ -132,7 +150,7 @@ button{
     line-height: 10px;
 }
 
-.update{
+.update {
     background: #0048ff;
     color: #fff;
     font-size: 12px;
@@ -142,7 +160,7 @@ button{
     margin-left: 50px;
 }
 
-.author{
+.author {
     margin: 10px 0;
     font-weight: bold;
 }

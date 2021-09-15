@@ -31,7 +31,9 @@
                 </div>
             </div>
 
-            <div class="content-detail-change-info">
+            <div class="content-detail-change-info"
+                v-if="boardDetail.createdDate !== boardDetail.modifiedDate"
+            >
                 <p @click="goChanges">수정된 날짜: {{ boardDetail.modifiedDate }}</p>
             </div>
 
@@ -44,15 +46,23 @@
             ></file-list>
 
             <div class="content-detail-button">
-                <b-button @click="goList">목록</b-button>
-                <b-button variant="primary" @click="updateBoard">수정</b-button>&nbsp;
-                <b-button variant="danger" @click="deleteBoard">삭제</b-button>
+                <b-button @click="goList" class="m-2">목록</b-button>
+                <b-button variant="primary" @click="updateBoard('update')">수정</b-button>&nbsp;
+                <b-button variant="danger" @click="deleteBoard('delete')">삭제</b-button>
             </div>
 
             <Comment
                 :comments="comments"
                 :board-seq="boardDetail.seq"
             ></Comment>
+
+            <password-modal
+                v-if="showModal"
+                :boardPassword="boardDetail.password"
+                :gotoPage="gotoPage"
+                @close-modal="closeModal"
+                @password-check="passwordCheck"
+            ></password-modal>
 
         </b-card>
     </div>
@@ -61,9 +71,10 @@
 <script>
 import FileList from "./common/FileList";
 import Comment from "./common/Comment";
+import PasswordModal from "../../components/PasswordModal"
 export default {
     name: "BoardView",
-    components: {Comment, FileList},
+    components: {Comment, FileList, PasswordModal},
     props: {
         seq: {
             type: String,
@@ -96,6 +107,10 @@ export default {
 
             isRecommended: Boolean,
 
+            showModal: false,
+
+            gotoPage: '',
+
         }
     },
 
@@ -111,23 +126,54 @@ export default {
             let {boardDetail, files, comments, recommendCount, isRecommended} = await this.boardService.getBoardDetail(this.seq);
             this.boardDetail = boardDetail;
             this.files = files;
-            this.comments = comments;
             this.recommendCount = recommendCount;
             this.isRecommended = isRecommended;
+            this.comments = comments.map(function(comment){
+                comment.updateMode = false;
+                return comment
+            });
         },
 
-        async deleteBoard() {
-            let result = await this.boardService.deleteBoard((this.seq));
-            if (result.status === 200) {
-                this.$router.push('/');
+        closeModal() {
+            this.showModal = false;
+        },
+
+        async passwordCheck(gotoPage) {
+            if( gotoPage === 'update' ) {
+                this.$router.push({
+                    path: `/board/update/${this.seq}`,
+                    query: this.query
+                })
+            }else if( gotoPage === 'delete' ) {
+                let result = await this.boardService.deleteBoard((this.seq));
+                if (result.status === 200) {
+                    this.$router.push('/board/list');
+                }
             }
         },
 
-        updateBoard() {
-            this.$router.push({
-                path: '/board/update/' + this.seq,
-                query: this.query
-            })
+        async deleteBoard(gotoPage) {
+            if(this.boardDetail.password !== null) {
+                this.gotoPage = gotoPage;
+                this.showModal = true;
+            }else {
+                let result = await this.boardService.deleteBoard((this.seq));
+                if (result.status === 200) {
+                    this.$router.push('/board/list');
+                }
+            }
+        },
+
+        updateBoard(gotoPage) {
+            if(this.boardDetail.password !== null) {
+                this.gotoPage = gotoPage;
+                this.showModal = true;
+            }else {
+                this.$router.push({
+                    path: '/board/update/' + this.seq,
+                    query: this.query
+                })
+            }
         },
 
         goList() {
@@ -159,7 +205,9 @@ export default {
                 path: `/board/changes/${this.seq}`,
                 query: this.query
             })
-        }
+        },
+
+
 
     }
 }

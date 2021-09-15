@@ -33,10 +33,12 @@ export default {
     name: "PasswordModal",
 
     props:{
-        clickedBoard: {
+        /*clickedBoard: {
             type: Object,
             default: () => {}
-        },
+        },*/
+        boardPassword: String,
+        gotoPage: String,
     },
 
     data() {
@@ -53,12 +55,15 @@ export default {
         },
 
         passwordCheck(){
-            if( !(this.clickedBoard.password === this.inputPassword) ){
+
+            if( !(this.boardPassword === this.inputPassword) ){
                 this.pwCheck = false;
+                this.$emit('password-check', undefined);
             }else {
                 this.pwCheck = true;
+                this.$emit('password-check', this.gotoPage);
             }
-            this.$emit('password-check', this.pwCheck);
+
 
         }
     }

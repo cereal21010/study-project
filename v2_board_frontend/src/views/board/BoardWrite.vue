@@ -104,11 +104,11 @@ export default {
 
     methods: {
         async fatchBoardDetail() {
-            let result = await this.boardService.getBoardDetail(this.seq);
-            this.boardDetail.title = result.data.board.title;
-            this.boardDetail.contents = result.data.board.contents;
-            this.boardDetail.category = result.data.board.category;
-            this.files = result.data.files;
+            let {boardDetail} = await this.boardService.getBoardDetail(this.seq);
+            this.boardDetail.title = boardDetail.title;
+            this.boardDetail.contents = boardDetail.contents;
+            this.boardDetail.category = boardDetail.category;
+            this.files = boardDetail.files;
         },
 
         async save() {

@@ -76,10 +76,11 @@ export class BoardService {
 
     updateBoard(boardDetail, uploadFiles, deleteFileList) {
         const formData = new FormData();
-        formData.append('seq', boardDetail.seq );
-        formData.append('title', boardDetail.title );
-        formData.append('contents', boardDetail.contents);
-        formData.append('category', boardDetail.category);
+        const json = JSON.stringify(boardDetail);
+        const blob = new Blob([json], {
+            type: 'application/json'
+        });
+        formData.append('requestBody', blob);
         if( uploadFiles.length > 0 ) {
             for (let index = 0; index < uploadFiles.length; index++) {
                 formData.append('files', uploadFiles[index]);
@@ -132,7 +133,7 @@ export class BoardService {
 
     getChangedBoardList(seq) {
         return axios
-            .get(this.testUrl+`/api/board/changes/`+seq)
+            .get(this.testUrl+`/api/board/changes/${seq}`)
             .then(response => {
                 return response.data;
             })

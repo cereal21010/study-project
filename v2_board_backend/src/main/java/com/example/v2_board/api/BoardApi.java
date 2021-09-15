@@ -35,21 +35,8 @@ public class BoardApi {
     private final CommentService commentService;
     private final RecommendService recommendService;
 
-    @RequestMapping(value = "/comment/insert", method = RequestMethod.POST)
-    public ResponseEntity<?> insertComment(CommentVO vo ) {
-
-//        try {
-//            commentService.insertCommnet(vo);
-//        }catch ( Exception e) {
-//            e.printStackTrace();
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        }
-        System.out.println(vo);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/moreList", method = {RequestMethod.GET})
-    public ResponseEntity<?> moreGetList(SearchVO searchVO) throws Exception {
+    public ResponseEntity<?> moreGetList(SearchVO searchVO) {
         log.info("-- api more list --");
 
         List<BoardVO> boardList = boardService.moreGetList(searchVO);
@@ -78,7 +65,8 @@ public class BoardApi {
 
         int testMemberSeq = 2;
 
-        boardService.addViewCount( boardService.getOne(seq) );   //조회수 증가
+        boardService.increaseViewCount(seq);    //조회수 증가
+
         BoardVO boardDetail =  boardService.getOne(seq);
         List<FileVO> files = fileService.selectList(boardDetail.getSeq());
         List<CommentVO> comments = commentService.getCommentList(seq);
@@ -135,7 +123,7 @@ public class BoardApi {
     @RequestMapping(value = "/update", method = {RequestMethod.PUT})
     public ResponseEntity<?> updateBoard(@RequestParam(value = "files", required = false) List<MultipartFile> files
                                          , @RequestParam(value = "deleteFileList", required = false) List<Integer> deleteFileList
-                                         , BoardVO vo) throws Exception{
+                                         , @RequestPart("requestBody") BoardVO vo) throws Exception{
         log.info("-- api board update --");
 
         BoardVO boardVO = boardService.getOne(vo.getSeq());

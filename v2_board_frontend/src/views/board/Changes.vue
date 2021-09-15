@@ -2,29 +2,17 @@
     <div>
         <b-card>
             <h3>현재 글</h3>
-            <div class="content-detail-content-info">
-                <div class="content-detail-content-info-left">
-                    <div class="content-detail-content-info-left-number">{{ boardDetail.seq }}</div>
-                    <div class="content-detail-content-info-left-category">카테고리: {{ boardDetail.category }}</div>
-                    <div class="content-detail-content-info-left-subject">제목: {{ boardDetail.title }}</div>
-                </div>
-                <div class="content-detail-content-info-right">
-                    <div class="content-detail-content-info-right-user">글쓴이: {{ boardDetail.writer }}</div>
-                    <div class="content-detail-content-info-right-created">등록일: {{ boardDetail.changedDate }}</div>
-                </div>
-            </div>
-
-            <div class="content-detail-content">
-                {{ boardDetail.contents }}
-            </div>
+            <view-form
+                :board-list="[boardDetail]"
+            ></view-form>
 
             <h3>수정 이력</h3>
-
+            <view-form
+                :board-list="changedBoardList"
+            ></view-form>
 
             <div class="content-detail-button">
-                <b-button @click="goList">목록</b-button>
-                <b-button variant="primary" @click="updateBoard">수정</b-button>&nbsp;
-                <b-button variant="danger" @click="deleteBoard">삭제</b-button>
+                <b-button @click="goView">이전</b-button>
             </div>
 
         </b-card>
@@ -32,9 +20,10 @@
 </template>
 
 <script>
+import ViewForm from "./common/ViewForm";
 export default {
     name: "Changes",
-
+    components: {ViewForm},
     inject: ['boardService'],
 
     props: {
@@ -51,7 +40,8 @@ export default {
 
     data() {
         return {
-
+            boardDetail: {},
+            changedBoardList: [],
         }
     },
 
@@ -61,10 +51,17 @@ export default {
 
     methods: {
         async fatchList() {
-            const {boardDetail, changedBoardList} = await this.boardService.getChangedBoardList()
-            console.log(boardDetail);
-            console.log(changedBoardList);
+            const {boardDetail, changedBoardList} = await this.boardService.getChangedBoardList(this.seq);
+            this.boardDetail = boardDetail;
+            this.changedBoardList = changedBoardList;
         },
+
+        goView() {
+            this.$router.push({
+                path: `/board/view/${this.seq}`,
+                query: this.query
+            })
+        }
 
     }
 }

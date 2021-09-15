@@ -7,6 +7,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import {BoardService} from "./service/BoardService";
 import {CommentService} from "./service/CommentService";
 import {RecommendService} from "./service/RecommendService";
+import {MemberService} from "./service/MemberService";
 
 Vue.config.productionTip = false
 
@@ -20,7 +21,8 @@ new Vue({
   provide: {
     boardService: new BoardService(API_URL_HOST),
     commentService: new CommentService(),
-    recommendService: new RecommendService()
+    recommendService: new RecommendService(),
+    memberService: new MemberService(),
   },
   render: h => h(App),
 }).$mount('#app')

@@ -31,6 +31,19 @@ public class CommentApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public ResponseEntity updateComment(@RequestPart("requestBody") CommentVO vo) {
+
+        try {
+            commentService.updateComment(vo);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/delete/{seq}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteComment(@PathVariable("seq") int seq) {
 

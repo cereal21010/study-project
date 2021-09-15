@@ -72,10 +72,11 @@
              , contents = #{contents}
              , modifiedDate = NOW()
              , category = #{category}
+             , password = #{password}
          WHERE seq = #{seq}
     </update>
     
-    <update id="addViewCount" parameterType="BoardVO">
+    <update id="increaseViewCount" parameterType="BoardVO">
         update board
            set viewCount = #{viewCount}
          where seq = #{seq}

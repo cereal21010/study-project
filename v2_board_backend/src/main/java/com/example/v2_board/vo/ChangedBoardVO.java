@@ -1,11 +1,13 @@
 package com.example.v2_board.vo;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter @Setter
+@NoArgsConstructor
 public class ChangedBoardVO {
     private int seq;
     private String title;

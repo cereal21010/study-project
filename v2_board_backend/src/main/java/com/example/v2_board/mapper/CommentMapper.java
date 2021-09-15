@@ -8,4 +8,6 @@ public interface CommentMapper {
     public List<CommentVO> getCommentList(int boardSeq);
     public void insertComment(CommentVO vo);
     public void deleteComment(int seq);
+    public void updateComment(CommentVO vo);
+    public CommentVO getCommentOne(int seq);
 }
