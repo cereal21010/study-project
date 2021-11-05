@@ -58,6 +58,6 @@ methods: {
 - https://coding-groot.tistory.com/91
 - https://shinsunyoung.tistory.com/86 (spring boot에서 cors 설정)
 
-### Javascript: 함수(function) 다시 보기 
+### Javascript: 함수(function) 특징과 설명
 - https://www.nextree.co.kr/p4150/
 
