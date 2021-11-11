@@ -10,7 +10,7 @@ Vue.use(Router);    //vue 라우터 사용
 export default new Router({
     routes: [
         {
-            path:'/'
+            path: '/'
             , name: HelloWorld
             , component: HelloWorld
         },

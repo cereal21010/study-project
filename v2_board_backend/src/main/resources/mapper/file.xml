@@ -6,15 +6,15 @@
 
     <select id="getOne" parameterType="int" resultType="FileVO">
         SELECT *
-          FROM file
-         WHERE seq = #{seq}
+        FROM file
+        WHERE seq = #{seq}
     </select>
 
     <select id="selectList" parameterType="int" resultType="FileVO">
         SELECT *
-          FROM file
-         WHERE boardSeq = #{boardSeq}
-           AND deleteYn = 'N'
+        FROM file
+        WHERE boardSeq = #{boardSeq}
+        AND deleteYn = 'N'
     </select>
 
     <insert id="insert" parameterType="FileVO">
@@ -25,14 +25,14 @@
     <update id="deleteOne" parameterType="FileVO">
         UPDATE file
         SET deleteYn = 'Y'
-          , deletedDate = NOW()
+        , deletedDate = NOW()
         WHERE seq = #{seq}
     </update>
 
     <update id="deleteBoard" parameterType="int">
         UPDATE file
         SET deleteYn = 'Y'
-          , deletedDate = NOW()
+        , deletedDate = NOW()
         WHERE boardSeq = #{boardSeq}
     </update>
 </mapper>

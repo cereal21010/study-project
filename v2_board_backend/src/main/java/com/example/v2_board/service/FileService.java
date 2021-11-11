@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileService {
 
-//    private final Path dirLocation;
+    //    private final Path dirLocation;
     private final FileMapper fileMapper;
     private final FileUtils fileUtils;
 
@@ -43,14 +43,14 @@ public class FileService {
 
     public void saveFile(List<MultipartFile> files, BoardVO vo) throws Exception {
 
-        for( MultipartFile file : files ){
-            if(isPermissionFileMimeType(file.getOriginalFilename())) {
+        for (MultipartFile file : files) {
+            if (isPermissionFileMimeType(file.getOriginalFilename())) {
                 throw new Exception("잘못된 확장자 입니다.");
             }
         }
 
         List<FileVO> fileInfos = fileUtils.parseFileInfo(vo, files);
-        for( FileVO fileInfo : fileInfos ) {
+        for (FileVO fileInfo : fileInfos) {
             fileMapper.insert(fileInfo);
         }
     }
@@ -60,16 +60,15 @@ public class FileService {
     }
 
 
-
-    private boolean isPermissionFileMimeType( String saveName ) throws Exception {
+    private boolean isPermissionFileMimeType(String saveName) throws Exception {
 
         final String[] PERMISSION_FILE_EXT_ARR = {"exe", "sh", "zip", "alz"};
 
         String ext = saveName.substring(saveName.lastIndexOf(".") + 1).toLowerCase();
         boolean isPermissionFileMimeType = false;
 
-        for( int i = 0; i < PERMISSION_FILE_EXT_ARR.length; i++ ) {
-            if( PERMISSION_FILE_EXT_ARR[i].equals(ext) ) {
+        for (int i = 0; i < PERMISSION_FILE_EXT_ARR.length; i++) {
+            if (PERMISSION_FILE_EXT_ARR[i].equals(ext)) {
                 isPermissionFileMimeType = true;
                 break;
             }

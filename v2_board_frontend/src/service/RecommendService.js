@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/AxiosInterceptors";
 
 export class RecommendService {
     constructor() {
@@ -7,23 +7,25 @@ export class RecommendService {
 
     getRecommendCount(boardSeq) {
         return axios
-            .get(this.testUrl+'/api/recommend/getCount/'+boardSeq)
+            .get(this.testUrl + '/api/recommend/getCount/' + boardSeq)
             .then(response => {
                 console.log('>>== response', response);
                 return response.data;
             })
-            .catch((e) => { console.log(e); });
+            .catch((e) => {
+                console.log(e);
+            });
     }
 
-    insertRecommend(boardSeq, memberSeq) {
+    insertRecommend(boardSeq, loginId) {
 
         let data = {
             boardSeq: boardSeq,
-            memberSeq: memberSeq
+            loginId: loginId
         }
 
         return axios
-            .post(this.testUrl+'/api/recommend/insert', JSON.stringify(data) ,{
+            .post(this.testUrl + '/api/recommend/insert', JSON.stringify(data), {
                 headers: {
                     "Content-Type": `application/json`
                 },
@@ -32,17 +34,30 @@ export class RecommendService {
                 console.log('>>== response', response);
                 return response
             })
-            .catch((e) => { console.log(e); })
+            .catch((e) => {
+                console.log(e);
+            })
 
     }
 
-    deleteRecommend(boardSeq) {
+    deleteRecommend(boardSeq, loginId) {
+
+        let data = {
+            boardSeq: boardSeq,
+            loginId: loginId
+        }
 
         return axios
-            .delete(this.testUrl+'/api/recommend/delete/'+boardSeq)
+            .post(this.testUrl + '/api/recommend/delete', JSON.stringify(data), {
+                headers: {
+                    "Content-Type": `application/json`
+                },
+            })
             .then(response => {
                 console.log(`>>== response`, response);
             })
-            .catch((e) => {console.log(e); })
+            .catch((e) => {
+                console.log(e);
+            })
     }
 }

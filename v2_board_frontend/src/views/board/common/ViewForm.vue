@@ -12,15 +12,16 @@
                         <div class="content-detail-content-info-right-user">글쓴이: {{ boardDetail.writer }}</div>
                         <div class="content-detail-content-info-right-created"
                              v-if="boardDetail.changedDate !== undefined"
-                        >수정일: {{ boardDetail.changedDate }}</div>
+                        >수정일: {{ boardDetail.changedDate }}
+                        </div>
                     </div>
                 </div>
 
                 <div class="content-detail-content">
-                    {{ boardDetail.content }}
+                    {{ boardDetail.contents }}
                 </div>
             </div>
-            <br />
+            <br/>
         </b-card>
     </div>
 </template>
@@ -75,7 +76,7 @@ export default {
     display: flex;
 }
 
-.content-detail-content-info2-item{
+.content-detail-content-info2-item {
     flex: 1;
 }
 

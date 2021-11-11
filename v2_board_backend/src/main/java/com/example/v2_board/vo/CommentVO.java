@@ -7,11 +7,13 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Getter @Setter
+@Getter
+@Setter
 public class CommentVO {
     private int seq;
     private String writer;
     private String content;
+    private String password;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private int boardSeq;

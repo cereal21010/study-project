@@ -52,44 +52,50 @@ public class BoardApi {
 
 //        PageMaker pagination = boardService.getPageMaker(searchVO);
         List<BoardVO> boardList = boardService.selectList(searchVO);
-        searchVO.setTotalCount( boardService.totalCount(searchVO) );
+        searchVO.setTotalCount(boardService.totalCount(searchVO));
         Map<String, Object> response = new HashMap<>();
         response.put("boardList", boardList);
         response.put("search", searchVO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/detail/{seq}", method = {RequestMethod.GET})
-    public ResponseEntity<?> boardDetail(@PathVariable("seq") int seq) throws Exception {
+    @RequestMapping(value = "/detail/{seq}/{loginId}", method = {RequestMethod.GET})
+    public ResponseEntity<?> boardDetail(@PathVariable("seq") int seq
+            , @PathVariable("loginId") String loginId) throws Exception {
         log.info("-- board detail --");
 
-        int testMemberSeq = 2;
-
-        boardService.increaseViewCount(seq);    //조회수 증가
-
-        BoardVO boardDetail =  boardService.getOne(seq);
-        List<FileVO> files = fileService.selectList(boardDetail.getSeq());
-        List<CommentVO> comments = commentService.getCommentList(seq);
-        int recommendCount = recommendService.getReCommendCount(seq);
-        Boolean isRecommended = recommendService.isRecommended(seq, testMemberSeq); //테스트로 memberSeq: 1, 2
-        
+//        int testMemberSeq = 2;
         Map<String, Object> response = new HashMap<>();
-        response.put("boardDetail", boardDetail);
-        response.put("files", files);
-        response.put("comments", comments);
-        response.put("recommendCount", recommendCount);
-        response.put("isRecommended", isRecommended);
+
+        try {
+            boardService.increaseViewCount(seq);    //조회수 증가
+
+            BoardVO boardDetail = boardService.getOne(seq);
+            List<FileVO> files = fileService.selectList(boardDetail.getSeq());
+            List<CommentVO> comments = commentService.getCommentList(seq);
+            int recommendCount = recommendService.getReCommendCount(seq);
+            Boolean isRecommended = recommendService.isRecommended(seq, loginId);
+
+            response.put("boardDetail", boardDetail);
+            response.put("files", files);
+            response.put("comments", comments);
+            response.put("recommendCount", recommendCount);
+            response.put("isRecommended", isRecommended);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 //        List<FileVO> files = fileService.selectList(board.getSeq());
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/insert", method = {RequestMethod.POST})
-    public ResponseEntity<?> saveBoard( @RequestPart("requestBody") BoardVO vo
-                                    , HttpServletRequest request ) throws Exception{
+    public ResponseEntity<?> saveBoard(@RequestPart("requestBody") BoardVO vo
+            , HttpServletRequest request) throws Exception {
         log.info("-- api board insert --");
 
-        vo.setWriterSeq(1);
-        vo.setWriter("user01");
+//        vo.setWriterSeq(1);
+//        vo.setWriter("user01");
 
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         List<MultipartFile> files = multipartRequest.getFiles("files");
@@ -99,20 +105,20 @@ public class BoardApi {
 
             System.out.println(files.size());
 
-            if( files != null && files.size() > 0) {
+            if (files != null && files.size() > 0) {
                 if (!files.get(0).isEmpty()) {
                     fileService.saveFile(files, vo);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping( value = "/delete/{seq}", method = {RequestMethod.DELETE} )
-    public ResponseEntity<?> deleteBoard(@PathVariable("seq") int seq) throws Exception{
+    @RequestMapping(value = "/delete/{seq}", method = {RequestMethod.DELETE})
+    public ResponseEntity<?> deleteBoard(@PathVariable("seq") int seq) throws Exception {
         log.info("-- api board delete --");
         Map<String, Object> map = new HashMap<>();
         boardService.delete(seq);
@@ -122,22 +128,22 @@ public class BoardApi {
 
     @RequestMapping(value = "/update", method = {RequestMethod.PUT})
     public ResponseEntity<?> updateBoard(@RequestParam(value = "files", required = false) List<MultipartFile> files
-                                         , @RequestParam(value = "deleteFileList", required = false) List<Integer> deleteFileList
-                                         , @RequestPart("requestBody") BoardVO vo) throws Exception{
+            , @RequestParam(value = "deleteFileList", required = false) List<Integer> deleteFileList
+            , @RequestPart("requestBody") BoardVO vo) throws Exception {
         log.info("-- api board update --");
 
         BoardVO boardVO = boardService.getOne(vo.getSeq());
-        boardService.insertChangedBoard( boardVO );
+        boardService.insertChangedBoard(boardVO);
 
         boardService.update(vo);
-        if( files != null ) {
+        if (files != null) {
             if (!files.get(0).isEmpty()) {
                 fileService.saveFile(files, vo);
             }
         }
-        for(Integer seq : deleteFileList){
+        for (Integer seq : deleteFileList) {
             FileVO fileVO = fileService.getOne(seq);
-            if( fileVO != null ) {
+            if (fileVO != null) {
                 fileService.deleteOne(fileVO);
             }
         }
@@ -147,24 +153,24 @@ public class BoardApi {
 
 
     @GetMapping("/downloadFile")
-    public void downloadFile(HttpServletResponse response, @RequestParam("seq")int seq) {
+    public void downloadFile(HttpServletResponse response, @RequestParam("seq") int seq) {
         try {
             FileVO vo = fileService.getOne(seq);
             //vo가 null일 경우 에러 처리
-            String fileName = new String( vo.getSaveName().toString().getBytes("utf-8"), "iso-8859-1" );
+            String fileName = new String(vo.getSaveName().toString().getBytes("utf-8"), "iso-8859-1");
 //            String orgFileName = new String( vo.getOriginalName().toString().getBytes("utf-8"), "iso-8859-1" );
             String orgFileName = URLEncoder.encode(vo.getOriginalName(), "utf-8");
 
-            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir\\"+vo.getSaveName());
+            File file = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir\\" + vo.getSaveName());
             String mimeType = URLConnection.guessContentTypeFromName(fileName);
-            if( mimeType == null ) {
+            if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
             response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=\""+orgFileName+"\"");
-            response.setContentLength( (int)file.length() );
-            InputStream inputStream = new BufferedInputStream( new FileInputStream(file) );
-            FileCopyUtils.copy( inputStream, response.getOutputStream() );
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + orgFileName + "\"");
+            response.setContentLength((int) file.length());
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,11 +189,23 @@ public class BoardApi {
 
             response.put("boardDetail", boardDetail);
             response.put("changedBoardList", changedBoardVOList);
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/passwordCheck/{boardSeq}", method = RequestMethod.GET)
+    public ResponseEntity boardPasswordCheck(@PathVariable("boardSeq") int boardSeq
+            , @RequestParam("inputPassword") String inputPassword) {
+
+        Boolean passwordCheck = boardService.boardPasswordCheck(boardSeq, inputPassword);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("passwordCheck", passwordCheck);
+
+        return new ResponseEntity(resultMap, HttpStatus.OK);
     }
 
 

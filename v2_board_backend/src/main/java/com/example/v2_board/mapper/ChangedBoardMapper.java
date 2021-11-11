@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface ChangedBoardMapper {
     public List<ChangedBoardVO> getBoardList(int boardSeq);
+
     public void insertChangedBoard(ChangedBoardVO vo);
 }

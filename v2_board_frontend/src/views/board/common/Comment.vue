@@ -1,28 +1,44 @@
 <template>
     <div id="demo">
         <div class="comment-form">
-            <textarea v-model="commentDetail.content" type="text"
-                      placeholder="Comment is here: with markdown"></textarea>
-            <label>
-                <input v-model="commentDetail.writer" type="text" placeholder="Author name here:">
-            </label>
-            <button @click="save">Add Comment</button>
+            <textarea
+                v-model="commentDetail.content"
+                type="text"
+                placeholder="Comment is here: with markdown"
+            ></textarea>
+            <b-row v-if="!isLogin">
+                <b-col sm="2">
+                    <label>Password: </label>
+                </b-col>
+                <b-col sm="9">
+                    <b-form-input v-model="commentDetail.password" placeholder="password enter"></b-form-input>
+                </b-col>
+            </b-row>
+
+            <b-button variant="success" @click="save">Add Comment</b-button>
         </div>
         <div class="comments-box"
              v-for="(comment, index) in comments"
              :key="index">
             <p class="author"> {{ comment.writer }}</p>
-            <p v-if="!comment.updateMode" class="content-comment">{{ comment.content }}</p>
+            <div v-if="!comment.updateMode">
+                <p class="content-comment">{{ comment.content }}</p>
+                <b-button variant="primary" v-if="writerCheck(comment.writer)" @click="isUpdateMode(index)">Update
+                </b-button>
+                <b-button variant="danger" v-if="writerCheck(comment.writer)"
+                          @click="removeComment(comment.seq, index)">Delete
+                </b-button>
+            </div>
             <div v-else>
                 <textarea
                     v-model="comment.content"
                     type="text"
                     placeholder="Comment is here: with markdown"
                 ></textarea>
-                <b-button @click="updateComment(comment)">저장</b-button>
+                <b-button variant="primary" @click="updateComment(comment)">저장</b-button>
+                <b-button variant="danger" @click="isUpdateMode(index)">취소</b-button>
             </div>
-            <p class="delete" @click="removeComment(comment.seq, index)">Delete</p>
-            <p class="update" @click="isUpdateMode(index)">Update</p>
+
         </div>
     </div>
 </template>
@@ -35,7 +51,7 @@ export default {
 
     props: {
         boardSeq: Number,
-        comments: []
+        comments: [],
     },
 
     data() {
@@ -44,7 +60,12 @@ export default {
                 content: '',
                 writer: '',
                 boardSeq: Number,
+                password: '',
             },
+
+            loginId: this.$store.getters.getMemberId,
+
+            isLogin: this.loginCheck(),
         }
     },
 
@@ -55,11 +76,24 @@ export default {
 
     methods: {
         save: function () {
-            this.commentDetail['boardSeq'] = this.boardSeq;
+            if (this.commentDetail.content === '') {
+                alert("댓글 내용을 입력해주세요~");
+                return;
+            }
+
+            if (this.isLogin) {
+                this.commentDetail.writer = this.loginId;
+            } else {
+                if (this.commentDetail.password === '') {
+                    alert('비밀번호를 입력하세요!');
+                    return false;
+                }
+                this.commentDetail.writer = 'anonymous'
+            }
+            this.commentDetail.boardSeq = this.boardSeq;
             this.commentService.insertComment(this.commentDetail);
-            // this.comments.unshift(this.commentDetail);
             this.$router.go();
-            // this.$emit('insert-comment', this.commentDetail);
+
         },
 
         removeComment: function (seq, commentsIndex) {
@@ -70,19 +104,45 @@ export default {
         },
 
         isUpdateMode(index) {
-            this.comments[index].updateMode = !this.comments[index].updateMode;
+            let updateMode = true;
+
+            if (this.comments[index].updateMode) {
+                updateMode = false;
+            }
+
+            this.comments.map((comment) => comment.updateMode = false)
+            this.comments[index].updateMode = updateMode;
         },
 
-        async updateComment(comment){
+        async updateComment(comment) {
+            if (comment.content === '') {
+                alert("댓글 내용을 입력해주세요~");
+                return;
+            }
             const response = await this.commentService.updateComment(comment);
-            console.log(response);
-            if(response === 200){
+            if (response === 200) {
                 this.$router.go();
-            }else {
+            } else {
                 alert('에러!');
-                this.$router.go();
             }
         },
+
+        writerCheck(writer) {
+            if (this.loginId === writer || writer === 'anonymous') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        loginCheck() {
+            const loginId = this.$store.getters.getMemberId;
+            if (loginId == undefined || loginId === '') {
+                return false;
+            } else {
+                return true;
+            }
+        }
 
     },
 
@@ -123,13 +183,13 @@ input {
     padding: 5px;
 }
 
-button {
+/*button {
     background: #333;
     color: #ccc;
     border: 0;
     padding: 5px;
     cursor: pointer;
-}
+}*/
 
 /*Comment Box*/
 
@@ -140,25 +200,6 @@ button {
     border-bottom: 1px solid #000;
 }
 
-.delete {
-    background: red;
-    color: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    display: inline;
-    padding: 3px;
-    line-height: 10px;
-}
-
-.update {
-    background: #0048ff;
-    color: #fff;
-    font-size: 12px;
-    cursor: pointer;
-    display: inline;
-    padding: 3px;
-    margin-left: 50px;
-}
 
 .author {
     margin: 10px 0;

@@ -5,7 +5,7 @@
   Time: 오전 12:12
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,20 +32,20 @@
 
             <table class="table table-striped table-sm">
                 <colgroup>
-                    <col style="width:5%;" />
-                    <col style="width:auto;" />
-                    <col style="width:15%;" />
-                    <col style="width:20%;" />
-                    <col style="width:20%;" />
+                    <col style="width:5%;"/>
+                    <col style="width:auto;"/>
+                    <col style="width:15%;"/>
+                    <col style="width:20%;"/>
+                    <col style="width:20%;"/>
                 </colgroup>
                 <thead>
-                    <tr>
-                        <th class="column" id="seq">NO</th>
-                        <th class="column" id="title">제목</th>
-                        <th class="column" id="writer">작성자</th>
-                        <th class="column" id="createdDate">작성일</th>
-                        <th class="column" id="modifiedDate">수정일</th>
-                    </tr>
+                <tr>
+                    <th class="column" id="seq">NO</th>
+                    <th class="column" id="title">제목</th>
+                    <th class="column" id="writer">작성자</th>
+                    <th class="column" id="createdDate">작성일</th>
+                    <th class="column" id="modifiedDate">수정일</th>
+                </tr>
                 </thead>
                 <tbody>
                 <%--<tr><td colspan="5" align="center">데이터가 없습니다.</td></tr>--%>
@@ -54,7 +54,8 @@
                         <c:forEach var="board" items="${boardList}">
                             <tr>
                                 <td><c:out value="${board.seq}"/></td>
-                                <td><a href="#;" onclick="main.moveContent(${board.seq})"><c:out value="${board.title}"/></a></td>
+                                <td><a href="#;" onclick="main.moveContent(${board.seq})"><c:out
+                                        value="${board.title}"/></a></td>
                                 <td><c:out value="${board.writer}"/></td>
                                 <td><c:out value="${board.createdDateConvert()}"/></td>
                                 <td><c:out value="${board.modifiedDateConvert()}"/></td>
@@ -70,22 +71,27 @@
                 </tbody>
             </table>
 
-            <button type="button" class="btn btn-sm btn-primary" id = "writeBtn" >글쓰기</button>
+            <button type="button" class="btn btn-sm btn-primary" id="writeBtn">글쓰기</button>
         </div>
         <!-- pagination{s} -->
 
         <div id="paginationBox" style="display: inline-block">
             <ul class="pagination">
                 <c:if test="${pm.prev}">
-                    <li class="page-item"><a class="page-link" href="/board/list?pageNum=${pm.startPage - 1}" >Previous</a></li>
+                    <li class="page-item"><a class="page-link"
+                                             href="/board/list?pageNum=${pm.startPage - 1}">Previous</a></li>
                 </c:if>
 
                 <c:forEach begin="${pm.startPage}" end="${pm.endPage}" var="idx">
-                    <li class="page-item <c:out value="${(pm.pageNum+1) == idx ? 'active' : ''}"/>"><a class="page-link" href="#;" onclick="main.movePage(${idx})"> ${idx} </a></li>
+                    <li class="page-item <c:out value="${(pm.pageNum+1) == idx ? 'active' : ''}"/>"><a class="page-link"
+                                                                                                       href="#;"
+                                                                                                       onclick="main.movePage(${idx})"> ${idx} </a>
+                    </li>
                 </c:forEach>
 
                 <c:if test="${pm.next}">
-                    <li class="page-item"><a class="page-link" href="/board/list?pageNum=${pm.endPage + 1}">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="/board/list?pageNum=${pm.endPage + 1}">Next</a>
+                    </li>
                 </c:if>
             </ul>
         </div>
@@ -118,27 +124,27 @@
 <script>
 
     let main = {
-        init : function(){
+        init: function () {
             let _this = this;
             $('.column').on('click', function () {
                 let sort = $(this).attr('id');
                 let order = '${searchVO.order}'
-                if( order === '' || order === 'asc' ){
+                if (order === '' || order === 'asc') {
                     order = 'desc';
-                }else {
+                } else {
                     order = 'asc'
                 }
                 window.location = _this.urlFunction('/board/list', sort, order);
             });
-            $('#writeBtn').on('click', function (){
+            $('#writeBtn').on('click', function () {
                 window.location = _this.urlFunction('/board/form');
             });
-            $('#btnSearch').on('click', function(){
-                window.location = _this.urlFunction('/board/list',undefined,undefined,1);
+            $('#btnSearch').on('click', function () {
+                window.location = _this.urlFunction('/board/list', undefined, undefined, 1);
             });
         },
 
-        movePage : function( pageNum ){
+        movePage: function (pageNum) {
             // let url = '/board/list';
             // url += '?contentNum='+$('#contentNum').val();
             // url += '&pageNum='+pageNum;
@@ -146,37 +152,37 @@
             //     url += '&searchType=' + $('#searchType option:selected').val();
             //     url += '&keyword=' + $('#keyword').val();
             // }
-            window.location = main.urlFunction('/board/list',undefined,undefined,pageNum);
+            window.location = main.urlFunction('/board/list', undefined, undefined, pageNum);
         },
 
-        moveContent : function(seq){
-            window.location = main.urlFunction('/board/content/'+seq);
+        moveContent: function (seq) {
+            window.location = main.urlFunction('/board/content/' + seq);
         },
 
         //query string 함수
-        urlFunction : function(url, sort, order, pageNum){
-            if( pageNum !== undefined ){
-                url += '?pageNum='+pageNum;
-            } else{
-                if( '${searchVO.pageNum}' !== '' ){
-                    url += '?pageNum='+'${searchVO.pageNum}';
+        urlFunction: function (url, sort, order, pageNum) {
+            if (pageNum !== undefined) {
+                url += '?pageNum=' + pageNum;
+            } else {
+                if ('${searchVO.pageNum}' !== '') {
+                    url += '?pageNum=' + '${searchVO.pageNum}';
                 }
             }
-            url += '&contentNum='+$('#contentNum').val();
-            if( $('#keyword').val() !== undefined ){
+            url += '&contentNum=' + $('#contentNum').val();
+            if ($('#keyword').val() !== undefined) {
                 url += '&searchType=' + $('#searchType option:selected').val();
                 url += '&keyword=' + $('#keyword').val();
-            } else{
-                if( '${searchVO.keyword}' !== '' ){
+            } else {
+                if ('${searchVO.keyword}' !== '') {
                     url += '&searchType=' + '${searchVO.searchType}';
                     url += '&keyword=' + '${searchVO.keyword}';
                 }
             }
-            if( sort !== undefined ) {
+            if (sort !== undefined) {
                 url += '&sort=' + sort;
                 url += '&order=' + order;
-            } else{
-                if( '${searchVO.sort}' !== '' ){
+            } else {
+                if ('${searchVO.sort}' !== '') {
                     url += '&sort=' + '${searchVO.sort}';
                     url += '&order=' + '${searchVO.order}';
                 }
@@ -188,7 +194,7 @@
     //초기화..  =$(document).ready(function(){ //실행될 코드 });
     document.addEventListener('DOMContentLoaded', () => {
         $('#contentNum').val('${searchVO.contentNum}');
-        if(${not empty searchVO.keyword} ){
+        if (${not empty searchVO.keyword}) {
             $('#keyword').val('${searchVO.keyword}');
             $('#searchType').val('${searchVO.searchType}').prop("selected", true);
         }

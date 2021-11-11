@@ -12,6 +12,6 @@ Vue.prototype.$axios = axios; //전역변수로 설정. 컴포넌트에서 this.
 Vue.use(BootstrapVue);
 
 new Vue({
-  router,
-  render: h => h(App)
+    router,
+    render: h => h(App)
 }).$mount('#app')

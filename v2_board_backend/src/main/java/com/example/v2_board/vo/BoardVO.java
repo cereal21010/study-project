@@ -6,12 +6,12 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Setter @Getter
+@Setter
+@Getter
 public class BoardVO {
     private int seq;
     private String title;
     private String contents;
-    private int writerSeq;
     private String writer;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -19,11 +19,11 @@ public class BoardVO {
     private String password;
     private int viewCount;
 
-    public String createdDateConvert(){
+    public String createdDateConvert() {
         return this.createdDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public String modifiedDateConvert(){
+    public String modifiedDateConvert() {
         return this.modifiedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

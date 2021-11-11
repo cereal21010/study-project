@@ -30,6 +30,8 @@ dependencies {
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
     //파일 다운로드
     implementation 'commons-io:commons-io:2.6'
     // https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
@@ -41,6 +43,10 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.tika/tika-core
     implementation 'org.apache.tika:tika-core:2.0.0'
 
+    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+
+
     //-----------------------
     compileOnly("org.springframework.boot:spring-boot-devtools")
     compileOnly 'org.projectlombok:lombok'
@@ -51,7 +57,7 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-//    testImplementation 'org.springframework.security:spring-security-test
+//    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 test {
@@ -64,6 +70,6 @@ asciidoctor {
     dependsOn test
 }
 
-bootRun{
+bootRun {
     systemProperties System.properties
 }

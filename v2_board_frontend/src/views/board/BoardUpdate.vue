@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "BoardUpdate"
+    name: "BoardUpdate"
 }
 </script>
 

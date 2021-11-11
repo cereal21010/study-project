@@ -9,7 +9,9 @@
                 </div>
                 <div class="content-detail-content-info-right">
                     <div class="content-detail-content-info-right-user">글쓴이: {{ boardDetail.writer }}</div>
-                    <div class="content-detail-content-info-right-created">등록일: {{ boardDetail.createdDate }}</div>
+                    <div class="content-detail-content-info-right-created">등록일: {{
+                        this.$moment(boardDetail.modifiedDate).format('YYYY-MM-DD HH:mm:ss') }}
+                    </div>
                 </div>
             </div>
             <div class="content-detail-content-info2">
@@ -32,7 +34,7 @@
             </div>
 
             <div class="content-detail-change-info"
-                v-if="boardDetail.createdDate !== boardDetail.modifiedDate"
+                 v-if="boardDetail.createdDate !== boardDetail.modifiedDate"
             >
                 <p @click="goChanges">수정된 날짜: {{ boardDetail.modifiedDate }}</p>
             </div>
@@ -45,11 +47,44 @@
                 @file-download="fileDownload"
             ></file-list>
 
-            <div class="content-detail-button">
+            <div class="content-detail-button" v-if="boardDetail.password !== null">
                 <b-button @click="goList" class="m-2">목록</b-button>
-                <b-button variant="primary" @click="updateBoard('update')">수정</b-button>&nbsp;
-                <b-button variant="danger" @click="deleteBoard('delete')">삭제</b-button>
+                <!--                <b-button v-if="writerCheck" variant="primary" @click="updateBoard('update')">수정</b-button>-->
+                <b-button
+                    v-if="writerCheck"
+                    variant="primary"
+                    v-b-modal.modal-prevent-closing
+                    @click="nextPage = 'update'"
+                >수정
+                </b-button>
+                &nbsp;
+                <b-button
+                    v-if="writerCheck"
+                    variant="danger"
+                    v-b-modal.modal-prevent-closing
+                    @click="nextPage = 'delete'"
+                >삭제
+                </b-button>
             </div>
+
+            <div class="content-detail-button" v-else>
+                <b-button @click="goList" class="m-2">목록</b-button>
+                <!--                <b-button v-if="writerCheck" variant="primary" @click="updateBoard('update')">수정</b-button>-->
+                <b-button
+                    v-if="writerCheck"
+                    variant="primary"
+                    @click="nextPage = 'update'"
+                >수정
+                </b-button>
+                &nbsp;
+                <b-button
+                    v-if="writerCheck"
+                    variant="danger"
+                    @click="nextPage = 'delete'"
+                >삭제
+                </b-button>
+            </div>
+
 
             <Comment
                 :comments="comments"
@@ -57,11 +92,9 @@
             ></Comment>
 
             <password-modal
-                v-if="showModal"
-                :boardPassword="boardDetail.password"
-                :gotoPage="gotoPage"
-                @close-modal="closeModal"
-                @password-check="passwordCheck"
+                :board-seq="String(boardDetail.seq)"
+                :nextPage="nextPage"
+                @goto-page="gotoPage"
             ></password-modal>
 
         </b-card>
@@ -71,10 +104,11 @@
 <script>
 import FileList from "./common/FileList";
 import Comment from "./common/Comment";
-import PasswordModal from "../../components/PasswordModal"
+import PasswordModal from "../../components/PasswordModal";
+
 export default {
     name: "BoardView",
-    components: {Comment, FileList, PasswordModal},
+    components: {PasswordModal, Comment, FileList},
     props: {
         seq: {
             type: String,
@@ -89,8 +123,8 @@ export default {
     },
 
     inject: ['boardService',
-            'commentService',
-            'recommendService'
+        'commentService',
+        'recommendService'
     ],
 
     data() {
@@ -109,70 +143,57 @@ export default {
 
             showModal: false,
 
-            gotoPage: '',
+            nextPage: '',
+
+            loginId: '',
+
+            writerCheck: false,
 
         }
     },
+
+    computed: {},
 
     mounted() {
         /*Object.keys(src).forEach(function(key) {
           Vue.set(target, key, src[key]); // 또는
         })*/
-        this.fatchBoardDetail()
+        this.loginUserSetting();
+
+        this.fatchBoardDetail();
     },
 
     methods: {
         async fatchBoardDetail() {
-            let {boardDetail, files, comments, recommendCount, isRecommended} = await this.boardService.getBoardDetail(this.seq);
+            let {
+                boardDetail,
+                files,
+                comments,
+                recommendCount,
+                isRecommended
+            } = await this.boardService.getBoardDetail(this.seq, this.loginId);
             this.boardDetail = boardDetail;
             this.files = files;
             this.recommendCount = recommendCount;
             this.isRecommended = isRecommended;
-            this.comments = comments.map(function(comment){
+            this.comments = comments.map(function (comment) {
                 comment.updateMode = false;
                 return comment
             });
+
+            this.writerCheck = this.writerChecker();
         },
 
-        closeModal() {
-            this.showModal = false;
-        },
+        async gotoPage() {
+            if (this.nextPage === 'update') {
+                this.$router.push({path: `/board/update/${this.seq}`, query: this.query,})
 
-        async passwordCheck(gotoPage) {
-            if( gotoPage === 'update' ) {
-                this.$router.push({
-                    path: `/board/update/${this.seq}`,
-                    query: this.query
-                })
-            }else if( gotoPage === 'delete' ) {
+            } else if (this.nextPage === 'delete') {
                 let result = await this.boardService.deleteBoard((this.seq));
-                if (result.status === 200) {
-                    this.$router.push('/board/list');
-                }
-            }
-        },
 
-        async deleteBoard(gotoPage) {
-            if(this.boardDetail.password !== null) {
-                this.gotoPage = gotoPage;
-                this.showModal = true;
-            }else {
-                let result = await this.boardService.deleteBoard((this.seq));
                 if (result.status === 200) {
-                    this.$router.push('/board/list');
+                    this.$router.push({path: '/board/list', query: this.query,});
                 }
-            }
-        },
-
-        updateBoard(gotoPage) {
-            if(this.boardDetail.password !== null) {
-                this.gotoPage = gotoPage;
-                this.showModal = true;
-            }else {
-                this.$router.push({
-                    path: '/board/update/' + this.seq,
-                    query: this.query
-                })
             }
         },
 
@@ -187,16 +208,19 @@ export default {
             this.boardService.downloadFile(fileSeq)
         },
 
-        async toRecommend(status){
-            if( status ){
-                const testMemberSeq = 2;
-                await this.recommendService.insertRecommend(this.seq, testMemberSeq);
+        async toRecommend(status) {
+            if (status) {
+                if (this.loginId == undefined || this.loginId === '') {
+                    this.$router.push({
+                        path: '/login'
+                    })
+                } else {
+                    await this.recommendService.insertRecommend(this.seq, this.loginId);
+                    this.recommendCount = await this.recommendService.getRecommendCount(this.seq);
+                }
+            } else {
+                await this.recommendService.deleteRecommend(this.seq, this.loginId);
                 this.recommendCount = await this.recommendService.getRecommendCount(this.seq);
-                // this.isRecommended = true;
-            }else {
-                await this.recommendService.deleteRecommend(this.seq);
-                this.recommendCount = await this.recommendService.getRecommendCount(this.seq);
-                // this.isRecommended = false;
             }
         },
 
@@ -207,7 +231,22 @@ export default {
             })
         },
 
+        loginUserSetting() {
+            const loginUser = this.$store.getters.getMemberId
+            if (loginUser == undefined || loginUser === '') {
+                this.loginId = null;
+            } else {
+                this.loginId = loginUser;
+            }
+        },
 
+        writerChecker() {
+            if (this.boardDetail.writer === this.loginId || this.boardDetail.password !== null) {
+                return true;
+            } else {
+                return false;
+            }
+        },
 
     }
 }
@@ -252,7 +291,7 @@ export default {
     display: flex;
 }
 
-.content-detail-content-info2-item{
+.content-detail-content-info2-item {
     flex: 1;
 }
 

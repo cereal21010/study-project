@@ -17,13 +17,13 @@ public class CommentApi {
     private final CommentService commentService;
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public ResponseEntity<?> insertComment(@RequestPart("requestBody") CommentVO vo ) {
+    public ResponseEntity<?> insertComment(@RequestPart("requestBody") CommentVO vo) {
 
-        vo.setWriter("user01");
+//        vo.setWriter("user01");   //test data
 
         try {
             commentService.insertCommnet(vo);
-        }catch ( Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -36,7 +36,7 @@ public class CommentApi {
 
         try {
             commentService.updateComment(vo);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -49,7 +49,7 @@ public class CommentApi {
 
         try {
             commentService.deleteComment(seq);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -4,15 +4,15 @@ import lombok.ToString;
 
 
 public class PageMaker {
-    private int totalCount;	// 전체 데이터 갯수
-    private int pageNum;	//현재 페이지 번호
-    private int contentNum;	//한 페이지에 표시할 데이터 갯수
-    private int startPage=1;	//현재페이지 블록의 시작 페이지
-    private int endPage=5;	//현재 페이지 블록의 마지막 페이지
+    private int totalCount;    // 전체 데이터 갯수
+    private int pageNum;    //현재 페이지 번호
+    private int contentNum;    //한 페이지에 표시할 데이터 갯수
+    private int startPage = 1;    //현재페이지 블록의 시작 페이지
+    private int endPage = 5;    //현재 페이지 블록의 마지막 페이지
     private boolean prev;
     private boolean next;
-    private int currentblock;	//현재 페이지 블록
-    private int lastblock;	//마지막 페이지 블록
+    private int currentblock;    //현재 페이지 블록
+    private int lastblock;    //마지막 페이지 블록
 
     protected PageMaker() {
     }
@@ -21,7 +21,7 @@ public class PageMaker {
     public static PageMaker createPageMaker(int pageNum, int contentNum, int totalCount) {
         PageMaker pm = new PageMaker();
         pm.setTotalCount(totalCount);
-        pm.setPageNum(pageNum-1);
+        pm.setPageNum(pageNum - 1);
         pm.setContentNum(contentNum);
         pm.setCurrentblock(pageNum);
         pm.setLastblock(pm.getTotalCount());
@@ -32,18 +32,18 @@ public class PageMaker {
         return pm;
     }
 
-    public void prevOrNext(int pageNum) {	//이전, 다음 페이지 블록 설정
-        if(calcpage(totalCount, contentNum)<6) {
+    public void prevOrNext(int pageNum) {    //이전, 다음 페이지 블록 설정
+        if (calcpage(totalCount, contentNum) < 6) {
             setPrev(false);
             setNext(false);
 
-        }else if(pageNum > 0 && pageNum < 6) {
+        } else if (pageNum > 0 && pageNum < 6) {
             setPrev(false);
             setNext(true);
-        }else if(currentblock >= lastblock) {
+        } else if (currentblock >= lastblock) {
             setPrev(true);
             setNext(false);
-        }else {
+        } else {
             setPrev(true);
             setNext(true);
         }
@@ -51,7 +51,7 @@ public class PageMaker {
 
     private int calcpage(int totalCount, int contentNum) {
         int totalPage = totalCount / contentNum;
-        if(totalCount % contentNum > 0) {
+        if (totalCount % contentNum > 0) {
             totalPage++;
         }
 
@@ -87,7 +87,7 @@ public class PageMaker {
     }
 
     public void setStartPage(int startPage) {
-        this.startPage = (currentblock*5)-4;
+        this.startPage = (currentblock * 5) - 4;
     }
 
     public int getEndPage() {
@@ -95,9 +95,9 @@ public class PageMaker {
     }
 
     public void setEndPage(int lastblock, int currentblock) {
-        if(lastblock == currentblock) {
+        if (lastblock == currentblock) {
             this.endPage = calcpage(getTotalCount(), getContentNum());
-        }else {
+        } else {
             this.endPage = getStartPage() + 4;
         }
     }
@@ -123,9 +123,9 @@ public class PageMaker {
     }
 
     public void setCurrentblock(int pageNum) {
-        this.currentblock = pageNum/5;
-        if(pageNum%5 > 0) {
-            this.currentblock ++;
+        this.currentblock = pageNum / 5;
+        if (pageNum % 5 > 0) {
+            this.currentblock++;
         }
     }
 
@@ -134,14 +134,14 @@ public class PageMaker {
     }
 
     public void setLastblock(int lastblock) {
-        this.lastblock = totalCount / (5*this.contentNum);
+        this.lastblock = totalCount / (5 * this.contentNum);
 
-        if(totalCount %(5*this.contentNum)>0 || this.lastblock <= 0){
+        if (totalCount % (5 * this.contentNum) > 0 || this.lastblock <= 0) {
             this.lastblock++;
         }
     }
 
-    public int startList(){
-        return this.pageNum * contentNum ;
+    public int startList() {
+        return this.pageNum * contentNum;
     }
 }

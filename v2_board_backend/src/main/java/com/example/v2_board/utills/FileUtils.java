@@ -12,26 +12,26 @@ import java.util.*;
 @Component
 @Slf4j
 public class FileUtils {
-    public List<FileVO> parseFileInfo(BoardVO vo, List<MultipartFile> files) throws Exception{
+    public List<FileVO> parseFileInfo(BoardVO vo, List<MultipartFile> files) throws Exception {
 
         int boardSeq = vo.getSeq();
 
-        List<FileVO> fileList =  new ArrayList<>();
+        List<FileVO> fileList = new ArrayList<>();
 
         File target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir");
-        if(!target.exists()) target.mkdirs();
+        if (!target.exists()) target.mkdirs();
 
-        for(MultipartFile file : files) {
+        for (MultipartFile file : files) {
             String orgFileName = file.getOriginalFilename();
             String orgFileExtension = orgFileName.substring(orgFileName.lastIndexOf("."));
-            String saveFileName = UUID.randomUUID().toString().replace("-", "")+orgFileExtension;
+            String saveFileName = UUID.randomUUID().toString().replace("-", "") + orgFileExtension;
             Long saveFileSize = file.getSize();
 
             log.info("================== file start ==================");
-            log.info("파일 실제 이름: "+orgFileName);
-            log.info("파일 저장 이름: "+saveFileName);
-            log.info("파일 크기: "+saveFileSize);
-            log.info("content type: "+file.getContentType());
+            log.info("파일 실제 이름: " + orgFileName);
+            log.info("파일 저장 이름: " + saveFileName);
+            log.info("파일 크기: " + saveFileSize);
+            log.info("content type: " + file.getContentType());
             log.info("================== file   END ==================");
 
             target = new File("C:\\Users\\tlduf\\workspace\\study-project\\v2_board_backend\\file_dir", saveFileName);

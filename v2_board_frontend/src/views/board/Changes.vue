@@ -21,6 +21,7 @@
 
 <script>
 import ViewForm from "./common/ViewForm";
+
 export default {
     name: "Changes",
     components: {ViewForm},
@@ -106,7 +107,7 @@ export default {
     display: flex;
 }
 
-.content-detail-content-info2-item{
+.content-detail-content-info2-item {
     flex: 1;
 }
 

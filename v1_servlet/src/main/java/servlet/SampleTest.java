@@ -12,14 +12,14 @@ import vo.SampleVo;
 
 public class SampleTest {
 
-	public static void main(String[] args) {
-		SampleSessionFactory fac = new SampleSessionFactory();
-		SqlSession session = fac.openSession(false);
-		
-		DashboardDao mapper = session.getMapper(DashboardDao.class);
-				
-		List<DashboardVO> metainfo = mapper.findAll();
-		System.out.println(metainfo);
-	}
+    public static void main(String[] args) {
+        SampleSessionFactory fac = new SampleSessionFactory();
+        SqlSession session = fac.openSession(false);
+
+        DashboardDao mapper = session.getMapper(DashboardDao.class);
+
+        List<DashboardVO> metainfo = mapper.findAll();
+        System.out.println(metainfo);
+    }
 
 }

@@ -5,13 +5,13 @@
 
     <select id="getBoardList" parameterType="int" resultType="com.example.v2_board.vo.ChangedBoardVO">
         select *
-          from changed_board
-         where originBoardSeq = #{boardSeq}
-         order by changedDate desc
+        from changed_board
+        where originBoardSeq = #{boardSeq}
+        order by changedDate desc
     </select>
 
     <insert id="insertChangedBoard" parameterType="ChangedBoardVO">
-        insert into changed_board(title, content, writer, category, changedDate, originBoardSeq)
-        values (#{title}, #{content}, #{writer}, #{category}, now(), #{originBoardSeq})
+        insert into changed_board(title, contents, writer, category, changedDate, originBoardSeq)
+        values (#{title}, #{contents}, #{writer}, #{category}, now(), #{originBoardSeq})
     </insert>
 </mapper>

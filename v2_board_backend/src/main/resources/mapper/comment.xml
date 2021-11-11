@@ -4,32 +4,32 @@
 <mapper namespace="com.example.v2_board.mapper.CommentMapper">
     <select id="getCommentList" parameterType="int" resultType="com.example.v2_board.vo.CommentVO">
         select *
-          from comment
-         where boardSeq = #{boardSeq}
+        from comment
+        where boardSeq = #{boardSeq}
     </select>
 
     <select id="getCommentOne" parameterType="int" resultType="CommentVO">
         select *
-          from comment
-         where seq = #{seq}
+        from comment
+        where seq = #{seq}
     </select>
 
     <insert id="insertComment" parameterType="CommentVO">
-        insert into comment(writer, content, createdDate, boardSeq)
-        values( #{writer}, #{content}, NOW(), #{boardSeq} );
+        insert into comment(writer, content, password, createdDate, boardSeq)
+        values( #{writer}, #{content}, #{password}, NOW(), #{boardSeq} );
     </insert>
 
     <delete id="deleteComment" parameterType="int">
         delete
-          from comment
-         where seq = #{seq};
+        from comment
+        where seq = #{seq};
     </delete>
 
     <update id="updateComment" parameterType="CommentVO">
         UPDATE comment
-           SET content = #{content}
-             , modifiedDate = NOW()
-         WHERE seq = #{seq}
+        SET content = #{content}
+        , modifiedDate = NOW()
+        WHERE seq = #{seq}
     </update>
-    
+
 </mapper>    

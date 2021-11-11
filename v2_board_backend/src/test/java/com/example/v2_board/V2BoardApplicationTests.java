@@ -21,7 +21,7 @@ class V2BoardApplicationTests {
     @Test
     @Transactional
     @Rollback(false)
-    void dataInsert() throws Exception{
+    void dataInsert() throws Exception {
 
 //        for(int i = 0; i < 100; i++) {
 //            BoardDTO dto = new BoardDTO();

@@ -29,7 +29,7 @@ public class BoardController {
     private final FileService fileService;
 
     @GetMapping("/hello")
-    public String hello(){
+    public String hello() {
         return "board/hello";
     }
 
@@ -47,7 +47,7 @@ public class BoardController {
     }
 
     @GetMapping("/form")
-    public String boardForm(Model model, SearchVO searchVO){
+    public String boardForm(Model model, SearchVO searchVO) {
         log.info("-- board form --");
         model.addAttribute("searchVO", searchVO);
         return "board/form";
@@ -56,7 +56,7 @@ public class BoardController {
     @GetMapping("/content/{seq}")
     public String boardContent(Model model, @PathVariable("seq") int seq, SearchVO searchVO) throws Exception {
         log.info("-- board content --");
-        BoardVO board =  boardService.getOne(seq);
+        BoardVO board = boardService.getOne(seq);
         List<FileVO> files = fileService.selectList(board.getSeq());
         model.addAttribute("board", board);
         model.addAttribute("files", files);
@@ -65,7 +65,7 @@ public class BoardController {
     }
 
     @GetMapping("/edit/{seq}")
-    public String boardEdit(Model model, @PathVariable("seq") int seq, SearchVO searchVO) throws Exception{
+    public String boardEdit(Model model, @PathVariable("seq") int seq, SearchVO searchVO) throws Exception {
         //작성자 본인인지 확인하는 로직 추가해야뎅..
         log.info("-- board edit --");
         BoardVO board = boardService.getOne(seq);
@@ -78,21 +78,20 @@ public class BoardController {
 
 
     @RequestMapping(value = "/insert", method = {RequestMethod.POST})
-    public ResponseEntity<?> saveBoard(BoardVO vo, List<MultipartFile> files ) throws Exception{
+    public ResponseEntity<?> saveBoard(BoardVO vo, List<MultipartFile> files) throws Exception {
         log.info("-- api board insert --");
 
-        vo.setWriterSeq(1);
-        vo.setWriter("user01");
+//        vo.setWriter("user01");   //testData
 
         try {
             boardService.insert(vo);
 
-            if( files != null ) {
+            if (files != null) {
                 if (!files.get(0).isEmpty()) {
                     fileService.saveFile(files, vo);
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -14,13 +14,13 @@ export default {
 
 <style scoped>
 
-.comment-form{
+.comment-form {
     display: block;
     width: 80%;
     margin: auto;
 }
 
-textarea{
+textarea {
     width: 100%;
     border: 2px solid #ccc;
     border-radius: 7px;
@@ -29,7 +29,7 @@ textarea{
     padding: 5px;
 }
 
-button{
+button {
     background: #333;
     color: #ccc;
     border: 0;

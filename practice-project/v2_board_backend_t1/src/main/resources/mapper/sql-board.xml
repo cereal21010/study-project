@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.example.v2_board_backend_t1.mapper.BoardMapper">
+
+    <sql id="boardListWhere">
+        <if test=" title != null and title != '' ">
+            AND title like CONCAT('%', #{title}, '%')
+        </if>
+        <if test=" content != null and content != '' ">
+            AND content like CONCAT('%', #{content}, '%')
+        </if>
+        <if test=" writer != null and writer != '' ">
+            AND writer like CONCAT('%', #{writer}, '%')
+        </if>
+        <if test=" category != null and category != '' ">
+            AND category like CONCAT('%', #{category}, '%')
+        </if>
+    </sql>
+
+    <select id="getAll" resultType="com.example.v2_board_backend_t1.vo.BoardVO">
+        SELECT *
+        FROM board
+    </select>
+
+    <select id="getBoardList" parameterType="com.example.v2_board_backend_t1.vo.SearchVO" resultType="com.example.v2_board_backend_t1.vo.BoardVO">
+        SELECT *
+        FROM board
+        <where>
+            <include refid="boardListWhere"></include>
+        </where>
+        <choose>
+            <when test=" sort != null and sort != '' ">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY createdDate DESC
+            </otherwise>
+        </choose>
+        LIMIT ${startPage}, ${prePage}
+    </select>
+
+    <select id="findBySeq" parameterType="int" resultType="com.example.v2_board_backend_t1.vo.BoardVO">
+        SELECT *
+        FROM board
+        WHERE seq = #{seq}
+    </select>
+    
+    <insert id="insertBoard" parameterType="com.example.v2_board_backend_t1.vo.BoardVO" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO board( title, content, writer, createdDate, modifiedDate, category, password )
+        VALUES ( #{title}, #{content}, #{writer}, NOW(), NULL, #{category}, #{password} )
+    </insert>
+
+
+    <update id="updateBoard" parameterType="com.example.v2_board_backend_t1.vo.BoardVO" useGeneratedKeys="true" keyProperty="seq">
+        UPDATE board
+        SET title = #{title}
+          , content = #{content}
+          , modifiedDate = NOW()
+          , category = #{category}
+          , password =  #{password}
+        WHERE seq = #{seq}
+
+    </update>
+
+    <delete id="deleteBoard" parameterType="int">
+        DELETE
+        FROM board
+        WHERE seq = #{seq}
+    </delete>
+
+    <update id="increaseViewCount" parameterType="int">
+        UPDATE board
+        SET viewCount = viewCount + 1
+        WHERE seq = #{seq}
+    </update>
+
+    <select id="getBoardFiles" resultType="com.example.v2_board_backend_t1.vo.BoardFileVO" parameterType="java.util.Map">
+        SELECT *
+        FROM file
+        <where>
+            <if test=" boardSeq != null and boardSeq > 0 ">
+                AND boardSeq = #{boardSeq}
+            </if>
+            
+            <if test=" seqs != null and seqs.size > 0">
+                AND seq IN
+                <foreach collection="seqs" item="seq" open="(" separator="," close=")">
+                    #{seq}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteBoardFile" parameterType="java.util.Map">
+        DELETE
+        FROM file
+        <where>
+            AND seq IN 
+            <foreach collection="seqs" item="seq" open="(" separator="," close=")">
+                #{seq}
+            </foreach>
+        </where>
+    </delete>
+
+    <insert id="insertBoardFile" parameterType="java.util.Map">
+        INSERT INTO file( originalName, saveName, saveSize, createdDate, boardSeq )
+        VALUES ( #{originalName}, #{saveName}, #{saveSize}, NOW(), #{boardSeq} )
+    </insert>
+
+
+    <select id="getBoardComments" parameterType="java.util.Map" resultType="com.example.v2_board_backend_t1.vo.BoardCommentVO">
+        SELECT *
+        FROM comment
+        <where>
+            <if test="boardSeq != null and boardSeq > 0">
+                AND boardSeq = #{boardSeq}
+            </if>
+            <if test="seqs != null and seqs.size > 0">
+                AND seq IN
+                <foreach collection="seqs" item="seq" open="(" separator="," close=")">
+                    #{seq}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertBoardComment" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO comment( writer, content, createdDate, boardSeq, password )
+        VALUES ( #{writer}, #{content}, NOW(), #{boardSeq}, #{password} )
+    </insert>
+
+    <delete id="deleteBoardComment" parameterType="java.util.Map">
+        DELETE
+        FROM comment
+        <where>
+            AND seq IN
+            <foreach collection="seqs" item="seq" open="(" separator="," close=")">
+                #{seq}
+            </foreach>
+        </where>
+    </delete>
+    
+    <insert id="insertLikeBoard" parameterType="java.util.Map">
+        INSERT INTO board_like(board_seq, member_seq )
+        VALUES ( #{boardSeq}, #{memberSeq} )
+    </insert>
+
+    <select id="getLikeBoardCount" parameterType="java.util.Map">
+
+    </select>
+
+    <insert id="insertChangeBoard" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO change_board( title, content, writer, createdDate, category, originBoardSeq)
+        VALUES ( #{title}, #{content}, #{writer}, NOW(), #{category}, #{originBoardSeq} )
+    </insert>
+
+</mapper>

@@ -3,7 +3,8 @@ package com.example.v2_board.vo;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class SearchVO {
     int pageNum = 1;
     //페이징 처리시 시작하는 게시글 지정할 때 사용
@@ -16,7 +17,6 @@ public class SearchVO {
     String order = "desc";
     int totalCount = 0;
     int listLength = 0;
-
 
 
 }

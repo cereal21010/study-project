@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>
+        <div v-if="boardDetail.error !== true">
             <b-input v-model="boardDetail.title" placeholder="제목을 입력해주세요."></b-input>
             <b-form-textarea
                 v-model="boardDetail.contents"
@@ -17,11 +17,8 @@
                 ></b-form-select>
             </div>
 
-            <div>
-                <b-form-checkbox v-model="passwordMode" name="check-button" switch>
-                    set password
-                </b-form-checkbox>
-                <b-input v-model="boardDetail.password" placeholder="비밀 번호를 입력해주세요." :disabled="!passwordMode"></b-input>
+            <div class="mt-3" v-if="passwordMode">
+                <b-input v-model="boardDetail.password" placeholder="비밀 번호를 입력해주세요."></b-input>
             </div>
 
             <file-upload
@@ -38,8 +35,14 @@
             ></file-list>
 
             <br>
-            <b-button @click="updateMode ? update() : save()">{{ updateMode ? "수정" : "저장" }}</b-button>&nbsp;
-            <b-button @click="cancel">취소</b-button>
+            <b-button variant="primary" @click="updateMode ? update() : save()">{{ updateMode ? "수정" : "저장" }}
+            </b-button>&nbsp;
+            <b-button variant="danger" @click="cancel">취소</b-button>
+        </div>
+
+        <div v-else>
+            게시글을 찾을 수 없습니다.
+            <b-button to="/">돌아가기</b-button>
         </div>
     </div>
 </template>
@@ -72,7 +75,8 @@ export default {
                 title: '',
                 contents: '',
                 category: 'free',
-                password: ''
+                password: '',
+                writer: '',
             },
 
             contentOptions: [
@@ -89,49 +93,56 @@ export default {
 
             updateMode: this.seq !== undefined ? true : false,
 
-            passwordMode: false
+            passwordMode: false,
         }
     },
 
+
     created() {
-        if (this.updateMode) {
-            this.fatchBoardDetail();
-        }
     },
 
     mounted() {
+        if (this.updateMode) {
+            this.fatchBoardDetail();
+        }
+
+        this.loginUserSetting();
     },
 
     methods: {
         async fatchBoardDetail() {
             let {boardDetail} = await this.boardService.getBoardDetail(this.seq);
-            this.boardDetail.title = boardDetail.title;
-            this.boardDetail.contents = boardDetail.contents;
-            this.boardDetail.category = boardDetail.category;
-            this.files = boardDetail.files;
+            this.boardDetail = boardDetail;
         },
 
         async save() {
-            const response = await this.boardService.insertBoard(this.boardDetail, this.selectFiles);
-            if (response.status === 200) {
+            if (this.passwordMode) {
+                if (this.boardDetail.password === '') {
+                    alert('게시글 비밀번호를 입력해 주세요');
+                    return false;
+                }
+            }
+
+            try {
+                await this.boardService.insertBoard(this.boardDetail, this.selectFiles);
                 this.$router.push({
                     path: `/board/list`
                 })
-            } else {
+            } catch (e) {
                 alert('게시글 등록 실패');
             }
 
         },
 
         async update() {
-            console.log(this.boardDetail)
-            const status = await this.boardService.updateBoard(this.boardDetail, this.selectFiles, this.fileRemoveList);
-            console.log(status);
-            if (status === 200) {
+            try {
+                await this.boardService.updateBoard(this.boardDetail, this.selectFiles, this.fileRemoveList);
                 this.$router.push({
                     path: `/board/view/${this.seq}`,
                     query: this.query
                 })
+            } catch (e) {
+                alert('게시글 수정에 실패 했습니다.')
             }
         },
 
@@ -167,7 +178,19 @@ export default {
             console.log(`====selectFileListRemove====`)
             console.log(this.selectFiles);
             console.log(`===========================`)
-        }
+        },
+
+        loginUserSetting() {
+            const loginUser = this.$store.getters.getMemberId;
+            if (loginUser === null || loginUser === '') {
+                this.passwordMode = true;
+                this.boardDetail.writer = 'anonymous'
+            } else {
+                this.passwordMode = false;
+                this.boardDetail.writer = loginUser;
+            }
+        },
+
     }
 }
 </script>

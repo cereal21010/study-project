@@ -25,7 +25,7 @@ public class CommentService {
         commentMapper.deleteComment(seq);
     }
 
-    public void updateComment(CommentVO vo){
+    public void updateComment(CommentVO vo) {
         commentMapper.updateComment(vo);
     }
 }

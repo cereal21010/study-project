@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -19,12 +18,12 @@ public class RecommendApi {
     private final RecommendService recommendService;
 
     @RequestMapping(value = "/getCount/{boardSeq}", method = RequestMethod.GET)
-    public ResponseEntity getRecommendCount(@PathVariable("boardSeq") int boardSeq){
+    public ResponseEntity getRecommendCount(@PathVariable("boardSeq") int boardSeq) {
 
         int recommendCount = 0;
-        try{
+        try {
             recommendCount = recommendService.getReCommendCount(boardSeq);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -33,11 +32,11 @@ public class RecommendApi {
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public ResponseEntity insertRecommend(@RequestBody Map<String, Integer> requestMap){
+    public ResponseEntity insertRecommend(@RequestBody Map<String, String> requestMap) {
 
-        try{
+        try {
             recommendService.insertRecommend(requestMap);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -45,13 +44,13 @@ public class RecommendApi {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/delete/{boardSeq}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteRecommend(@PathVariable("boardSeq") int boardSeq) {
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public ResponseEntity deleteRecommend(@RequestBody Map<String, String> requestMap) {
 
-        int testMemberSeq = 2; //test data
-        try{
-            recommendService.deleteRecommend(boardSeq, testMemberSeq);
-        }catch (Exception e) {
+//        int testMemberSeq = 2; //test data
+        try {
+            recommendService.deleteRecommend(requestMap);
+        } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

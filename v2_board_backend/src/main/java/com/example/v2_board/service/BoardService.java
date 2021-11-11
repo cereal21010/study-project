@@ -18,11 +18,11 @@ public class BoardService {
     private final BoardMapper boardMapper;
     private final ChangedBoardMapper changedBoardMapper;
 
-    public List<BoardVO> getAll() throws Exception{
+    public List<BoardVO> getAll() throws Exception {
         return boardMapper.getAll();
     }
 
-    public int totalCount(SearchVO vo) throws Exception{
+    public int totalCount(SearchVO vo) throws Exception {
         return boardMapper.getAllCount(vo);
     }
 
@@ -30,42 +30,42 @@ public class BoardService {
         return boardMapper.selectList(vo);
     }
 
-    public List<BoardVO> selectList(SearchVO vo) throws Exception{
+    public List<BoardVO> selectList(SearchVO vo) throws Exception {
 //        Map<String, Object> paramMap = new HashMap<>();
 //        paramMap.put("pageNum", pm.startList());
 //        paramMap.put("contentNum", pm.getContentNum());
 //        paramMap.put("searchType", searchType);
 //        paramMap.put("keyword", keyword);
-        vo.setStartContentNum( (vo.getPageNum()-1) * vo.getContentNum() );
+        vo.setStartContentNum((vo.getPageNum() - 1) * vo.getContentNum());
         return boardMapper.selectList(vo);
     }
 
-    public int insert(BoardVO vo) throws Exception{
-        if(vo.getPassword() == null || vo.getPassword() == ""){
+    public int insert(BoardVO vo) throws Exception {
+        if (vo.getPassword() == null || vo.getPassword() == "") {
             vo.setPassword(null);
         }
         return boardMapper.insert(vo);
     }
 
-    public BoardVO getOne(int seq) throws Exception{
+    public BoardVO getOne(int seq) throws Exception {
         return boardMapper.getOne(seq);
     }
 
-    public int delete(int seq) throws Exception{
+    public int delete(int seq) throws Exception {
         return boardMapper.delete(seq);
     }
 
-    public int update(BoardVO vo) throws Exception{
+    public int update(BoardVO vo) throws Exception {
         return boardMapper.update(vo);
     }
 
-    public PageMaker getPageMaker(SearchVO vo) throws Exception{
+    public PageMaker getPageMaker(SearchVO vo) throws Exception {
 //        Map<String, Object> paramMap = new HashMap<>();
 //        paramMap.put("searchType", searchType);
 //        paramMap.put("keyword", keyword);
-        return PageMaker.createPageMaker( vo.getPageNum()
-                                        , vo.getContentNum()
-                                        , boardMapper.getAllCount(vo) );
+        return PageMaker.createPageMaker(vo.getPageNum()
+                , vo.getContentNum()
+                , boardMapper.getAllCount(vo));
     }
 
     /*public void addViewCount(BoardVO vo) {
@@ -75,17 +75,26 @@ public class BoardService {
 
     public void increaseViewCount(int boardSeq) throws Exception {
         BoardVO vo = getOne(boardSeq);
-        vo.setViewCount( vo.getViewCount() + 1 );
+        vo.setViewCount(vo.getViewCount() + 1);
         boardMapper.increaseViewCount(vo);
     }
 
-    public List<ChangedBoardVO> getChangedBoardList(int boardSeq){
+    public List<ChangedBoardVO> getChangedBoardList(int boardSeq) {
         return changedBoardMapper.getBoardList(boardSeq);
     }
 
-    public void insertChangedBoard(BoardVO boardVO){
+    public void insertChangedBoard(BoardVO boardVO) {
         ChangedBoardVO changeVO = new ChangedBoardVO(boardVO);
         changedBoardMapper.insertChangedBoard(changeVO);
+    }
+
+    public Boolean boardPasswordCheck(int boardSeq, String inputPassword) {
+        BoardVO boardVO = boardMapper.getOne(boardSeq);
+        if (inputPassword.equals(boardVO.getPassword())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

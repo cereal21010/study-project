@@ -5,7 +5,7 @@
   Time: 오후 7:21
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,8 +28,8 @@
         <h2>Board Form</h2>
         <form id="boardForm">
             <div class="mb-3">
-                <c:set var="board" value="${board}"></c:set>    <%--scope 영역 확인--%>
-                <c:if test="${not empty board}"><input type="hidden" name="seq" id="seq" value="${board.seq}" > </c:if>
+                <c:set var="board" value="${board}"></c:set> <%--scope 영역 확인--%>
+                <c:if test="${not empty board}"><input type="hidden" name="seq" id="seq" value="${board.seq}"> </c:if>
                 <label for="title">제목</label>
                 <input type="text" class="form-control" name="title" id="title" placeholder="제목을 입력해 주세요"
                        <c:if test="${not empty board}">value="${board.title}" </c:if>>
@@ -44,7 +44,7 @@
             <div class="mb-3">
                 <label for="contents">내용</label>
                 <textarea class="form-control" rows="5" name="contents" id="contents" placeholder="내용을 입력해 주세요"
-                       > <c:if test="${not empty board}">${board.contents} </c:if> </textarea>
+                > <c:if test="${not empty board}">${board.contents} </c:if> </textarea>
             </div>
 
             <div class="mb-3">
@@ -67,7 +67,8 @@
                         <c:forEach var="file" items="${files}">
                             <div>
                                 <span> ${file.originalName} &nbsp </span>
-                                <button id="${file.seq}" type='button' class="btn btn-warning btn-circle" onclick="deleteFile(this, ${file.seq})"><i class="fa fa-times">X</i></button>
+                                <button id="${file.seq}" type='button' class="btn btn-warning btn-circle"
+                                        onclick="deleteFile(this, ${file.seq})"><i class="fa fa-times">X</i></button>
                             </div>
                         </c:forEach>
                     </div>
@@ -76,7 +77,7 @@
 
         </form>
 
-        <div >
+        <div>
             <c:choose>
                 <c:when test="${not empty board}">
                     <button type="button" class="btn btn-sm btn-primary" id="btnEdit">저장</button>
@@ -96,7 +97,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
     let main = {
-        init : function() {
+        init: function () {
             let _this = this;
 
             $('#btnRegister').on('click', function () {
@@ -113,25 +114,25 @@
             });
         },
 
-        deleteFileList : new Array(),
+        deleteFileList: new Array(),
 
-        urlFunction : function(url){
-            url += '?pageNum='+'${searchVO.pageNum}';
-            url += '&contentNum='+'${searchVO.contentNum}';
-            url += '&searchType='+'${searchVO.searchType}';
-            url += '&keyword='+'${searchVO.keyword}';
-            url += '&sort='+'${searchVO.sort}';
-            url += '&order='+'${searchVO.order}';
+        urlFunction: function (url) {
+            url += '?pageNum=' + '${searchVO.pageNum}';
+            url += '&contentNum=' + '${searchVO.contentNum}';
+            url += '&searchType=' + '${searchVO.searchType}';
+            url += '&keyword=' + '${searchVO.keyword}';
+            url += '&sort=' + '${searchVO.sort}';
+            url += '&order=' + '${searchVO.order}';
             return url;
         },
 
-        save : function(){
+        save: function () {
 
             let form = $('#boardForm')[0];
 
             fileList = $('#files')[0].files;
-            for( let i=0; i < fileList.length; i++ ){
-                if( !checkExtension(fileList[i].name) ) {
+            for (let i = 0; i < fileList.length; i++) {
+                if (!checkExtension(fileList[i].name)) {
                     return false;
                 }
             }
@@ -144,23 +145,23 @@
                 processData: false,
                 contentType: false,
                 cache: false
-            }).done(function (reponse){
+            }).done(function (reponse) {
                 console.log('success');
                 alert('글이 등록되었습니다.');
                 window.location.href = '/board/list'
-            }).fail(function (error){
+            }).fail(function (error) {
                 console.log('fail');
                 alert(JSON.stringify(error));
             });
         },
 
-        edit : function(){
-            let formData = new FormData( $('#boardForm')[0] );
+        edit: function () {
+            let formData = new FormData($('#boardForm')[0]);
             formData.append('deleteFileList', main.deleteFileList);
 
             fileList = $('#files')[0].files;
-            for( let i=0; i < fileList.length; i++ ){
-                if( !checkExtension(fileList[i].name) ) {
+            for (let i = 0; i < fileList.length; i++) {
+                if (!checkExtension(fileList[i].name)) {
                     return false;
                 }
             }
@@ -173,22 +174,22 @@
                 processData: false,
                 contentType: false,
                 cache: false
-            }).done(function (reponse){
+            }).done(function (reponse) {
                 console.log('success');
                 alert('글이 수정되었습니다.');
                 window.location.href = '/board/content/${board.seq}'
-            }).fail(function (error){
+            }).fail(function (error) {
                 console.log('fail');
                 alert(JSON.stringify(error));
             });
         },
 
-        fileCheck : function(){
+        fileCheck: function () {
 
             fileList = $('#files')[0].files;
 
-            for( let i=0; i < fileList.length; i++ ){
-                if( !checkExtension(fileList[i].name) ) {
+            for (let i = 0; i < fileList.length; i++) {
+                if (!checkExtension(fileList[i].name)) {
                     return false;
                 }
             }
@@ -196,14 +197,14 @@
         }
 
     };
-    deleteFile = function(_this, seq){
+    deleteFile = function (_this, seq) {
         main.deleteFileList.push(seq)
         _this.parentNode.remove();
     }
 
-    checkExtension = function (fileName){
+    checkExtension = function (fileName) {
         let regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
-        if( regex.test(fileName) ) {
+        if (regex.test(fileName)) {
             alert('해당 종류의 파일은 업로드할 수 없습니다.(' + fileName + ')');
             return false;
         }
@@ -211,7 +212,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        if(${not empty board} ){
+        if (${not empty board}) {
             $('#category').val('${board.category}').prop("selected", true);
         }
     });

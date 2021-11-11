@@ -5,12 +5,12 @@
 <mapper namespace="com.example.v2_board.mapper.BoardMapper">
     <select id="getAll" resultType="BoardVO">
         SELECT *
-          FROM board
+        FROM board
     </select>
 
     <select id="getAllCount" parameterType="com.example.v2_board.vo.SearchVO" resultType="int">
         SELECT COUNT(*)
-          FROM board
+        FROM board
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test="searchType=='title' and keyword != null and keyword != '' ">
                 AND title like CONCAT('%', #{keyword}, '%')
@@ -26,7 +26,7 @@
 
     <select id="selectList" parameterType="com.example.v2_board.vo.SearchVO" resultType="BoardVO">
         SELECT *
-          FROM board
+        FROM board
         <trim prefix="WHERE" prefixOverrides="AND|OR">
             <if test="searchType=='title' and keyword != null and keyword != '' ">
                 AND title like CONCAT('%', #{keyword}, '%')
@@ -46,40 +46,40 @@
                 ORDER BY createdDate DESC
             </otherwise>
         </choose>
-              LIMIT #{ startContentNum}, #{ endContentNum}
+        LIMIT #{ startContentNum}, #{ endContentNum}
     </select>
 
     <insert id="insert" parameterType="BoardVO" useGeneratedKeys="true" keyProperty="seq">
-        INSERT INTO board( title, contents, writerSeq, writer, createdDate, modifiedDate, category, password )
-         VALUE( #{title}, #{contents}, #{writerSeq}, #{writer}, NOW(), NOW(), #{category}, #{password} )
+        INSERT INTO board( title, contents, writer, createdDate, modifiedDate, category, password )
+        VALUE( #{title}, #{contents}, #{writer}, NOW(), NOW(), #{category}, #{password} )
     </insert>
 
     <select id="getOne" parameterType="int" resultType="BoardVO">
         SELECT *
-          FROM board
-         WHERE seq = #{seq};
+        FROM board
+        WHERE seq = #{seq};
     </select>
-    
+
     <delete id="delete" parameterType="int">
         DELETE
-          FROM board
-         WHERE seq = #{seq};
+        FROM board
+        WHERE seq = #{seq};
     </delete>
 
     <update id="update" parameterType="BoardVO">
         UPDATE board
-           SET title = #{title}
-             , contents = #{contents}
-             , modifiedDate = NOW()
-             , category = #{category}
-             , password = #{password}
-         WHERE seq = #{seq}
+        SET title = #{title}
+        , contents = #{contents}
+        , modifiedDate = NOW()
+        , category = #{category}
+        , password = #{password}
+        WHERE seq = #{seq}
     </update>
-    
+
     <update id="increaseViewCount" parameterType="BoardVO">
         update board
-           set viewCount = #{viewCount}
-         where seq = #{seq}
+        set viewCount = #{viewCount}
+        where seq = #{seq}
     </update>
 
 </mapper>

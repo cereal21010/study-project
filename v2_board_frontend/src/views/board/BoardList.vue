@@ -16,7 +16,8 @@
                 <b-button
                     variant="outline-success"
                     @click="doSearch"
-                >Search</b-button>
+                >Search
+                </b-button>
             </b-input-group-append>
         </b-input-group>
 
@@ -36,7 +37,8 @@
                 size="lg"
                 @click="moreGetBoardList"
 
-            >더 보기</b-button>
+            >더 보기
+            </b-button>
         </b-col>
 
         <b-form-select
@@ -146,8 +148,7 @@ export default {
         await this.fetchList();
     },
 
-    computed: {
-    },
+    computed: {},
 
     methods: {
 
@@ -155,6 +156,11 @@ export default {
             this.searchParams.startContentNum = 0;
             this.searchParams.endContentNum = this.searchParams.listLength > 0 ? this.searchParams.listLength : 10;
             const {boardList, search} = await this.boardService.moreGetBoardList(this.searchParams);
+            boardList.map(board => {
+                board.createdDate = this.$moment(board.createdDate).format('YYYY-MM-DD HH:mm:ss')
+                board.modifiedDate = this.$moment(board.modifiedDate).format('YYYY-MM-DD HH:mm:ss')
+            })
+
             this.boardList.push(...boardList);
             this.searchParams = search;
             this.searchParams.listLength = this.boardList.length;
@@ -244,10 +250,10 @@ export default {
             // this.boardList = boardList;
         },
 
-        async moreGetBoardList(){
+        async moreGetBoardList() {
             this.searchParams.startContentNum = this.boardList.length;
             this.searchParams.endContentNum = this.searchParams.contentNum;
-            const {boardList, search} = await  this.boardService.moreGetBoardList(this.searchParams);
+            const {boardList, search} = await this.boardService.moreGetBoardList(this.searchParams);
             this.boardList.push(...boardList);
             this.searchParams = search;
             this.searchParams.listLength = this.boardList.length;

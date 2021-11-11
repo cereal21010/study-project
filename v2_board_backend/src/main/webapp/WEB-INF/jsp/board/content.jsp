@@ -5,7 +5,7 @@
   Time: 오후 10:02
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
@@ -19,31 +19,37 @@
         padding-top: 70px;
         padding-bottom: 30px;
     }
+
     .board_title {
-        font-weight : 700;
-        font-size : 22pt;
-        margin : 10pt;
+        font-weight: 700;
+        font-size: 22pt;
+        margin: 10pt;
     }
+
     .board_info_box {
-        color : #6B6B6B;
-        margin : 10pt;
+        color: #6B6B6B;
+        margin: 10pt;
     }
+
     .board_author {
-        font-size : 10pt;
-        margin-right : 10pt;
+        font-size: 10pt;
+        margin-right: 10pt;
     }
+
     .board_date {
-        font-size : 10pt;
+        font-size: 10pt;
     }
+
     .board_content {
-        color : #444343;
-        font-size : 12pt;
-        margin : 10pt;
+        color: #444343;
+        font-size: 12pt;
+        margin: 10pt;
     }
+
     .board_tag {
-        font-size : 11pt;
-        margin : 10pt;
-        padding-bottom : 10pt;
+        font-size: 11pt;
+        margin: 10pt;
+        padding-bottom: 10pt;
     }
 </style>
 <body>
@@ -54,18 +60,19 @@
         <div class="bg-white rounded shadow-sm">
             <div class="board_title"><c:out value="${board.title}"/></div>
             <div class="board_info_box">
-                <span class="board_author"><c:out value="${board.writer}"/>,</span><span class="board_date"><c:out value="${board.modifiedDateConvert()}"/></span>
+                <span class="board_author"><c:out value="${board.writer}"/>,</span><span class="board_date"><c:out
+                    value="${board.modifiedDateConvert()}"/></span>
             </div>
             <div class="board_content">${board.contents}</div>
             <div class="board_tag">category : <c:out value="${board.category}"/></div>
 
             <c:if test="${files.size() > 0}">
-            <span>파일 목록</span>
-            <div class="form-group" style="border: 1px solid #dbdbdb;">
-                <c:forEach var="file" items="${files}">
-                    <a href="/api/board/downloadFile?seq=${file.seq}">${file.originalName}</a></br>
-                </c:forEach>
-            </div>
+                <span>파일 목록</span>
+                <div class="form-group" style="border: 1px solid #dbdbdb;">
+                    <c:forEach var="file" items="${files}">
+                        <a href="/api/board/downloadFile?seq=${file.seq}">${file.originalName}</a></br>
+                    </c:forEach>
+                </div>
             </c:if>
         </div>
 
@@ -80,13 +87,13 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
     let main = {
-        init : function() {
+        init: function () {
             let _this = this;
             $('#btnList').on('click', function () {
                 window.location = _this.urlFunction('/board/list');
             });
             $('#btnDelete').on('click', function () {
-                if(confirm('게시글을 삭제 하시겠습니까?')) {
+                if (confirm('게시글을 삭제 하시겠습니까?')) {
                     _this.delete(_this);
                 }
             });
@@ -94,7 +101,7 @@
                 window.location = _this.urlFunction('/board/edit/${board.seq}');
             });
         },
-        delete : function(_this){
+        delete: function (_this) {
             let data = {
                 seq: ${board.seq}
             };
@@ -103,20 +110,20 @@
                 type: 'POST',
                 url: '/api/board/delete',
                 data: data
-            }).done(function (){
+            }).done(function () {
                 alert('게시글이 삭제되었습니다.');
                 window.location = _this.urlFunction('/board/list');
-            }).fail(function (error){
+            }).fail(function (error) {
                 alert(JSON.stringify(error));
             });
         },
-        urlFunction : function(url){
-            url += '?pageNum='+'${searchVO.pageNum}';
-            url += '&contentNum='+'${searchVO.contentNum}';
-            url += '&searchType='+'${searchVO.searchType}';
-            url += '&keyword='+'${searchVO.keyword}';
-            url += '&sort='+'${searchVO.sort}';
-            url += '&order='+'${searchVO.order}';
+        urlFunction: function (url) {
+            url += '?pageNum=' + '${searchVO.pageNum}';
+            url += '&contentNum=' + '${searchVO.contentNum}';
+            url += '&searchType=' + '${searchVO.searchType}';
+            url += '&keyword=' + '${searchVO.keyword}';
+            url += '&sort=' + '${searchVO.sort}';
+            url += '&order=' + '${searchVO.order}';
             return url;
         }
     };

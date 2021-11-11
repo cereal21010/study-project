@@ -11,7 +11,8 @@
                     v-if="updateMode"
                     variant="danger"
                     @click="fileRemoveListAdd( file.seq, index )"
-                >x</b-button>
+                >x
+                </b-button>
             </b-list-group-item>
         </b-list-group>
     </div>
@@ -43,7 +44,7 @@ export default {
         },
 
         fileDownload(fileSeq) {
-            if(!this.updateMode){
+            if (!this.updateMode) {
                 this.$emit('file-download', fileSeq);
             }
         }

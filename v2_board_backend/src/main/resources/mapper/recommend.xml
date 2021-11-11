@@ -4,15 +4,15 @@
 <mapper namespace="com.example.v2_board.mapper.RecommendMapper">
     <select id="getRecommendCount" parameterType="int" resultType="int">
         select count(*)
-          from recommend
-         where boardSeq = #{boardSeq}
+        from recommend
+        where boardSeq = #{boardSeq}
     </select>
 
     <select id="isRecommended" parameterType="hashMap" resultType="int">
         select count(*)
-          from recommend
-         where boardSeq = #{boardSeq}
-           and memberSeq = #{memberSeq}
+        from recommend
+        where boardSeq = #{boardSeq}
+        and memberSeq = #{memberSeq}
     </select>
 
     <insert id="insertRecommend" parameterType="hashMap">
@@ -22,8 +22,8 @@
 
     <delete id="deleteRecommend" parameterType="hashMap">
         delete
-          from recommend
-         where boardSeq = #{boardSeq}
-           and memberSeq = #{memberSeq}
+        from recommend
+        where boardSeq = #{boardSeq}
+        and memberSeq = #{memberSeq}
     </delete>
 </mapper>
