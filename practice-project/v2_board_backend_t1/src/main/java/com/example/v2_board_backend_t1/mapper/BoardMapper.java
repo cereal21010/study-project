@@ -22,4 +22,5 @@ public interface BoardMapper {
     public void deleteBoardComment(Map paramMap);
     public int insertLikeBoard(Map boardSeq);
     public void insertChangeBoard(ChangeBoardVO changeBoardVO);
+    public int getBoardCount(SearchVO searchVO);
 }

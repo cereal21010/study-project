@@ -3,8 +3,6 @@ package com.example.v2_board_backend_t1.service;
 import com.example.v2_board_backend_t1.mapper.BoardMapper;
 import com.example.v2_board_backend_t1.util.FileHandler;
 import com.example.v2_board_backend_t1.vo.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -255,5 +253,9 @@ public class BoardService {
                                                 .build();
 
         boardMapper.insertChangeBoard(changeBoardVO);
+    }
+
+    public int getBoardCount(SearchVO searchVO) {
+        return boardMapper.getBoardCount(searchVO);
     }
 }

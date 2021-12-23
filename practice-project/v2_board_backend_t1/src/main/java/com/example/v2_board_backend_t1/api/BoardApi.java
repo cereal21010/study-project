@@ -46,18 +46,22 @@ public class BoardApi {
     }
 
 
+
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public Result getBoardList(SearchVO searchVO) {
+    public Map getBoardList(SearchVO searchVO) {
 
         log.info("-- api getBoardList --");
 
         HashMap<String, Object> responseMap = new HashMap<>();
 
         List<BoardVO> boardList = boardService.getBoardList(searchVO);
+        int boardCount = boardService.getBoardCount(searchVO);
 
         responseMap.put("boardList", boardList);
+        responseMap.put("boardCount", boardCount);
+        responseMap.put("search", searchVO);
 
-        return new Result(responseMap);
+        return responseMap;
     }
 
     @RequestMapping(value = "/detail/{seq}", method = RequestMethod.GET)

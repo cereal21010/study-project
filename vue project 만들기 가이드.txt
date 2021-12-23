@@ -1,0 +1,128 @@
+npm -v
+node -v
+vue --version
+vue create vue-todo
+-> 프로젝트명을 카멜식으로 입력할 경우 에러발생
+-> 반드시 케밥식으로 작성한다.
+default [Vue 2] 생성
+------------------------
+vue3 router
+설치 : npm i vue-router@next
+
+npm i vue-router@next --save //3.x
+npm i vue-router //2.x
+-------------------------
+* 라우터 설정
+npm install vue-router (라우터 설치)
+-> /route/index.js 파일생성
+
+import Vue from "vue";
+import VueRouter from "vue-router";
+import List from "@/views/List";
+
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+    mode: "history",
+    routes: [
+        {
+            path: '/',
+            redirect: '/list'
+        },
+        {
+            path: '/list',
+            component: List,
+            meta: {
+                layout: "DefaultLayout"
+            }
+        }
+    ]
+});
+
+export default router;
+
+
+* main.js에 라우터 등록하기
+import router from "./router";
+
+new Vue({
+    router,
+})
+
+-------------------------
+
+* 레이아웃 분리하기 (ex)DefaultLayout, SidebarLayout)
+-> /views/layout/DefaultLayout.vue 파일 생성
+-> /views/layout/SidebarLayout.vue 파일 생성
+
+<template>
+    <div class="wrapper">
+        Default Layout
+
+        <router-view />
+    </div>
+</template>
+
+<script>
+    export default {
+
+    }
+</script>
+
+->
+
+* 레이아웃 종류 관리 파일
+-> /plugins/inject-layout.js
+
+import Vue from 'vue';
+import DefaultLayout from "../views/layout/DefaultLayout";
+import SidebarLayout from "../views/layout/SidebarLayout";
+
+Vue.component('DefaultLayout', DefaultLayout);
+Vue.component('SidebarLayout', SidebarLayout);
+
+-> main.js에 등록
+--> import "./plugins/inject-layout";
+
+-> App.vue
+
+<template>
+    <div id="app">
+        <component :is="layout" />
+    </div>
+</template>
+
+<script>
+    const default_layout = "DefaultLayout";
+
+    export default {
+        name: 'App',
+        computed: {
+            layout() {
+                return (this.$route.meta.layout || default_layout);
+            }
+        }
+    }
+</script>
+
+
+
+SASS
+npm install --save node-sass
+
+next-redux-wrapper
+=> npm i next-redux-wrapper
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -16,4 +16,4 @@ export default class ApiServiceFactoryBuilder {
         return serviceMap;
     }
 
-};
+}

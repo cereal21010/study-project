@@ -38,8 +38,16 @@
                 ORDER BY createdDate DESC
             </otherwise>
         </choose>
-        LIMIT ${startPage}, ${prePage}
+        LIMIT ${startInPage}, ${prePage}
     </select>
+
+    <select id="getBoardCount" parameterType="java.util.Map" resultType="int">
+        SELECT COUNT(*)
+        FROM board
+        <where>
+            <include refid="boardListWhere"></include>
+        </where>
+    </select>        
 
     <select id="findBySeq" parameterType="int" resultType="com.example.v2_board_backend_t1.vo.BoardVO">
         SELECT *
