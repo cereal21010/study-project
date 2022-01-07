@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class BookRentalBackendApplicationTests {
+class BookRentalMapperBackendApplicationTests {
 
     @Autowired
     BookService bookService;

@@ -1,28 +1,62 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <v-app>
+        <v-card >
+          <v-card-title class="blue white--text">
+              <span class="text-h5">Menu</span>
+
+              <v-spacer></v-spacer>
+
+              <v-menu
+                  bottom
+                  left
+              >
+                  <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          dark
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                          <v-icon>mdi-dots-vertical</v-icon>
+                      </v-btn>
+                  </template>
+
+                  <v-list>
+                      <v-list-item
+                          v-for="(item, i) in menuList"
+                          :key="i"
+                          :to="item.to"
+                      >
+                          <v-list-item-title>{{ item.title }}</v-list-item-title>
+                      </v-list-item>
+                  </v-list>
+              </v-menu>
+          </v-card-title>
+        </v-card>
+
+        <v-main>
+          <router-view/>
+        </v-main>
+    </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
-}
-</script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  data: () => ({
+    //
+      menuList: [
+          {
+              title: '도서',
+              to: '/book/list'
+          },
+          {
+              title: '고객',
+              to: '/customer/list'
+          },
+      ]
+  }),
+};
+</script>

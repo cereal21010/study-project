@@ -8,7 +8,7 @@
 
 <script>
 
-import Header from "@/components/Header";
+import Header from "../../../book-rental-project-v1/book-rental-frontend/src/views/layout/Header";
 export default {
   name: 'App',
   components: {

@@ -13,6 +13,7 @@ public class BookVO {
     private long seq;
     private String idNo;
     private String name;
+    private String author;
     private int price;
     private int rentalFee;
     private int rentalPeriod;

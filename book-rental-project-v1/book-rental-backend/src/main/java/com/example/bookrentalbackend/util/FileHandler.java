@@ -1,6 +1,7 @@
 package com.example.bookrentalbackend.util;
 
 import com.example.bookrentalbackend.vo.BookFileVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class FileHandler {
 
@@ -30,7 +32,7 @@ public class FileHandler {
             String saveFileName = UUID.randomUUID().toString().replace("-", "") + orgFileExtension;
             long saveFileSize = file.getSize();
 
-            System.out.println("========= file start =========");
+            log.info("========= file start =========");
             System.out.println("파일 실제 이름: " + orgFileName);
             System.out.println("파일 저장 이름: " + saveFileName);
             System.out.println("파일 크기: " + saveFileSize);
@@ -56,9 +58,13 @@ public class FileHandler {
         for (BookFileVO bookFileVO : bookFiles) {
             File file = new File(filePath, bookFileVO.getSaveName());
             if (file.isFile()) {
-                System.out.println("success file delete");
+                if(file.delete()) {
+                    System.out.println("success file delete");
+                } else {
+                    System.out.println("fail file delete");
+                }
             } else {
-                System.out.println("Cannot delete file.");
+                System.out.println("not find file.");
             }
         }
     }

@@ -11,6 +11,7 @@ public interface BookMapper {
 
     public List<BookVO> getAll();
     public List<BookVO> getBookList(BookSearchVO bookSearchVO);
+    public int getBookCount(BookSearchVO bookSearchVO);
     public BookVO findBookBySeq(long bookSeq);
     public void insertBook(BookVO bookVO);
     public void updateBook(BookVO bookVO);

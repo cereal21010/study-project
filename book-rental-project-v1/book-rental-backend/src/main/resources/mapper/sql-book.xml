@@ -5,10 +5,13 @@
 
     <sql id="bookListWhere">
         <if test=" idNo != null and idNo != '' ">
-            AND id_no like CONCAT('%' #{idNo}, '%')
+            AND id_no LIKE CONCAT('%' #{idNo}, '%')
         </if>
         <if test=" name != null and name != '' ">
-            AND name like CONCAT('%' #{name}, '%')
+            AND name LIKE CONCAT('%' #{name}, '%')
+        </if>
+        <if test=" author != null and author != '' ">
+            AND author LIKE CONCAT('%' #{author}, '%')
         </if>
     </sql>
 
@@ -31,6 +34,15 @@
                 ORDER BY name ASC
             </otherwise>
         </choose>
+        LIMIT #{startInPage}, #{prePage}
+    </select>
+
+    <select id="getBookCount" parameterType="Map" resultType="int">
+        SELECT COUNT(*)
+        FROM book
+        <where>
+            <include refid="bookListWhere"></include>
+        </where>
     </select>
 
     <select id="findBookBySeq" parameterType="Long" resultType="com.example.bookrentalbackend.vo.BookVO">
@@ -40,14 +52,15 @@
     </select>
 
     <insert id="insertBook" parameterType="Map" useGeneratedKeys="true" keyProperty="seq">
-        INSERT INTO book (id_no, name, price, rental_fee, rental_period, memo)
-        VALUES (#{idNo}, #{name}, #{price}, #{rentalFee}, #{rentalPeriod}, #{memo});
+        INSERT INTO book (id_no, name, author, price, rental_fee, rental_period, memo)
+        VALUES (#{idNo}, #{name}, #{author}, #{price}, #{rentalFee}, #{rentalPeriod}, #{memo});
     </insert>
 
     <update id="updateBook" parameterType="Map" useGeneratedKeys="true" keyProperty="seq">
         UPDATE book
         SET id_no = #{idNo}
             , name = #{name}
+            , author = #{author}
             , price = #{price}
             , rental_fee = #{rentalFee}
             , rental_period = #{rentalPeriod}

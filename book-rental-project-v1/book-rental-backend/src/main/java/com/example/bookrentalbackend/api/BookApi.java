@@ -1,6 +1,7 @@
 package com.example.bookrentalbackend.api;
 
 import com.example.bookrentalbackend.service.BookService;
+import com.example.bookrentalbackend.vo.BookFileVO;
 import com.example.bookrentalbackend.vo.search.BookSearchVO;
 import com.example.bookrentalbackend.vo.BookVO;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,26 +27,40 @@ public class BookApi {
     private final BookService bookService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ResponseEntity getBookList(BookSearchVO searchVO) {
+    public ResponseEntity getBookList(BookSearchVO bookSearchVO) {
 
         System.out.println("== getBookList ==");
 
-        List<BookVO> books = bookService.getBookList(searchVO);
+        Map<String, Object> responseMap = new HashMap<>();
 
-        return new ResponseEntity(books, HttpStatus.OK);
+        List<BookVO> bookList = bookService.getBookList(bookSearchVO);
+        int totalRows = bookService.getBookCount(bookSearchVO);
+
+        responseMap.put("bookList", bookList);
+        responseMap.put("totalRows", totalRows);
+        responseMap.put("searchParams", bookSearchVO);
+
+        return new ResponseEntity(responseMap, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/detail/{seq}", method = RequestMethod.GET)
     public ResponseEntity getBoardDetail(@PathVariable(value = "seq") long bookSeq) {
 
         System.out.println("== getBoardDetail ==");
-        BookVO bookVO = bookService.getBookDetail(bookSeq);
 
-        return new ResponseEntity(bookVO, HttpStatus.OK);
+        Map<String, Object> responseMap = new HashMap<>();
+
+        BookVO bookVO = bookService.getBookDetail(bookSeq);
+        List<BookFileVO> bookFileVOS = bookService.getBookFileList(bookSeq);
+
+        responseMap.put("bookDetail", bookVO);
+        responseMap.put("bookFileList", bookFileVOS);
+
+        return new ResponseEntity(responseMap, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public ResponseEntity insertBook(@RequestPart(value = "responseBody") BookVO bookVO
+    public ResponseEntity insertBook(@RequestPart(value = "requestBody") BookVO bookVO
                                 , @RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
 
         System.out.println("== insertBook ==");
@@ -54,18 +71,29 @@ public class BookApi {
     }
 
     @RequestMapping(value = "/update/{seq}", method = RequestMethod.PUT)
-    public ResponseEntity updateBook(@RequestPart(value = "responseBody") BookVO bookVO
-                                , @RequestPart(value = "files", required = false) List<MultipartFile> files
-                                , @RequestPart(value = "deleteFileSeqs", required = false) List<Long> deleteFileSeqs
+    public ResponseEntity updateBook(@RequestBody BookVO bookVO
                                 , @PathVariable("seq") long bookSeq) throws IOException {
 
         System.out.println("== updateBook ==");
 
         bookVO.setSeq(bookSeq);
-        bookService.updateBook(bookVO, files, deleteFileSeqs);
+        bookService.updateBook(bookVO);
 
         return new ResponseEntity(bookSeq, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/file/update/{seq}", method = RequestMethod.PUT)
+    public ResponseEntity updateBookFile(@RequestParam(value = "files", required = false) List<MultipartFile> files
+                                , @RequestParam(value = "deleteFileSeqs", required = false) List<Long> deleteFileSeqs
+                                , @PathVariable("seq") long bookSeq) throws IOException {
+
+        System.out.println("== updateBookFile ==");
+
+        bookService.updateBookFile(bookSeq, files, deleteFileSeqs);
+
+        return new ResponseEntity(bookSeq, HttpStatus.OK);
+    }
+
 
     @RequestMapping(value = "/delete/{seq}", method = RequestMethod.DELETE)
     public ResponseEntity deleteBook(@PathVariable(value = "seq") long bookSeq) {
