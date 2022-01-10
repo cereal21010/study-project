@@ -159,14 +159,14 @@ export default {
 
         gotoView(row) {
             this.$router.push({
-                path: `/book/view/${row.seq}`,
+                path: `/admin/book/view/${row.seq}`,
                 query: this.searchParams,
             })
         },
 
         gotoRegister() {
             this.$router.push({
-                path: `/book/register`,
+                path: `/admin/book/register`,
                 query: this.searchParams,
             })
         },

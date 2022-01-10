@@ -34,96 +34,6 @@
                         img-src="https://picsum.photos/1024/480/?image=23"
                     ></b-carousel-slide>
                 </b-carousel>
-
-                <!--   dialog     -->
-                <v-dialog
-                    v-model="imageDialog"
-                    persistent
-                    max-width="600px"
-                    height="1000px"
-                >
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            color="primary"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                            @click="onEditModal"
-                        >
-                            사진 수정
-                        </v-btn>
-                    </template>
-                    <v-card>
-                        <v-card-title>
-                            <span class="text-h5">Image Edit</span>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-container>
-                                <v-row>
-                                    <v-file-input
-                                        small-chips
-                                        multiple
-                                        label="add image files"
-                                        v-model="addFileList"
-                                    ></v-file-input>
-
-                                    <v-divider></v-divider>
-
-                                    <v-simple-table>
-                                        <template v-slot:default>
-                                            <thead>
-                                            <tr>
-                                                <th class="text-left">
-                                                    file name
-                                                </th>
-                                                <th class="text-left">
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr
-                                                v-for="(file, index) in bookFileList"
-                                                :key="file.seq"
-                                            >
-                                                <td>{{ file.originalName }}</td>
-                                                <td>
-                                                    <v-btn
-                                                        depressed
-                                                        color="error"
-                                                        @click="onDeleteFile(file, index)"
-                                                    >
-                                                        X
-                                                    </v-btn>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </template>
-                                    </v-simple-table>
-
-                                </v-row>
-                            </v-container>
-                        </v-card-text>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="cancelEditFile"
-                            >
-                                Close
-                            </v-btn>
-                            <v-btn
-                                color="blue darken-1"
-                                text
-                                @click="onFileEditSave"
-                            >
-                                File Save
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <!--   dialog     -->
-
             </b-col>
 
             <b-col class="main-text-area">
@@ -184,7 +94,7 @@
                         v-on="on"
                         @click="onEditModal"
                     >
-                        수정
+                        대여
                     </v-btn>
                 </template>
                 <v-card>
@@ -258,21 +168,15 @@
                         <v-btn
                             color="blue darken-1"
                             text
-                            @click="onEditSave"
+                            @click="onRental"
                         >
-                            Save
+                            Rental
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
             <!--   dialog     -->
 
-            <b-button
-                variant="danger"
-                v-b-modal.modal-prevent-closing
-                @click="onDeleteBook"
-            >삭제
-            </b-button>
 
         </div>
 

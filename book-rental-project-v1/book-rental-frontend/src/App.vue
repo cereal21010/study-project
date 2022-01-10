@@ -50,11 +50,11 @@ export default {
       menuList: [
           {
               title: '도서',
-              to: '/book/list'
+              to: '/admin/book/list'
           },
           {
               title: '고객',
-              to: '/customer/list'
+              to: '/admin/customer/list'
           },
       ]
   }),

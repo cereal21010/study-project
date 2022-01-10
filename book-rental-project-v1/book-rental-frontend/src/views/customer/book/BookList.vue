@@ -3,17 +3,24 @@
         <b-container fluid>
             <b-row>
                 <b-col sm="3">
-                    <label>고객 ID</label>
+                    <label>idNo</label>
                     <b-form-input
                         type="text"
-                        v-model="searchParams.id"
+                        v-model="searchParams.idNo"
                     />
                 </b-col>
                 <b-col sm="3">
-                    <label>고객 이름</label>
+                    <label>책 이름</label>
                     <b-form-input
                         type="text"
                         v-model="searchParams.name"
+                    />
+                </b-col>
+                <b-col sm="3">
+                    <label>저자</label>
+                    <b-form-input
+                        type="text"
+                        v-model="searchParams.author"
                     />
                 </b-col>
 
@@ -35,10 +42,10 @@
 
         </b-container>
 
-        <b-table striped hover id="board-table" :items="customerList" :fields="fields" @row-clicked="gotoView"></b-table>
+        <b-table striped hover id="board-table" :items="bookList" :fields="fields" @row-clicked="gotoView"></b-table>
 
         <v-btn
-            class="customerForm mx-2"
+            class="bookForm mx-2"
             fab
             dark
             large
@@ -67,7 +74,7 @@
 
 <script>
 export default {
-    name: "CustomerList",
+    name: "BookList",
 
     props:{
         query: {
@@ -80,26 +87,35 @@ export default {
         return {
             fields: [
                 {
-                    key: 'id',
-                    label: 'ID'
+                    key: 'idNo',
+                    label: 'idNo'
                 },
                 {
                     key: 'name',
-                    label: 'name',
+                    label: '책 이름',
 
                 },
                 {
-                    key: 'birthday',
-                    label: '생일'
+                    key: 'author',
+                    label: '저자'
                 },
+                {
+                    key: 'rentalFee',
+                    label: '대여비용',
+                },
+                {
+                    key: 'rentalPeriod',
+                    label: '대여기간(일)'
+                }
             ],
-            customerList: [],
+
+            bookList: [],
 
             searchParams: {
                 currentPage: 1,
                 prePage: 10,
-                id: '',
                 name: '',
+                idNo: '',
             },
 
             prePageOption: [
@@ -130,10 +146,10 @@ export default {
         },
 
         async fetchList() {
-            const {customerList, totalRows, searchParams} = await this.$customerService.getCustomerList(this.searchParams);
-            this.customerList = customerList;
-            this.totalRows = totalRows;
+            const {bookList, totalRows, searchParams} = await this.$bookService.getBookList(this.searchParams);
+            this.bookList = bookList;
             this.searchParams = searchParams;
+            this.totalRows = totalRows;
         },
 
         gotoPage(pageNum) {
@@ -143,25 +159,25 @@ export default {
 
         gotoView(row) {
             this.$router.push({
-                path: `/admin/customer/view/${row.seq}`,
+                path: `/customer/book/view/${row.seq}`,
                 query: this.searchParams,
             })
         },
 
         gotoRegister() {
             this.$router.push({
-                path: `/admin/customer/register`,
+                path: `/customer/book/register`,
                 query: this.searchParams,
             })
         },
 
-    },
+    }
 
 }
 </script>
 
 <style scoped>
-.customerForm {
+.bookForm {
     display: inline-block;
     float: right;
 }

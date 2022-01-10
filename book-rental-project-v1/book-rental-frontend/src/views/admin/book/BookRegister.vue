@@ -118,7 +118,7 @@ export default {
 
         gotoList() {
             this.$router.push({
-                path: `/book/list`,
+                path: `/admin/book/list`,
                 query: this.query,
             })
         },
