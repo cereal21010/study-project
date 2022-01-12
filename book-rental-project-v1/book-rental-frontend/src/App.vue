@@ -50,11 +50,23 @@ export default {
       menuList: [
           {
               title: '도서',
-              to: '/admin/book/list'
+              to: '/customer/book/list'
           },
           {
               title: '고객',
               to: '/admin/customer/list'
+          },
+          {
+              title: '대여 내역',
+              to: '/customer/rental/list'
+          },
+          {
+              title: '포인트 내역',
+              to: '/customer/point/list'
+          },
+          {
+              title: '로그인',
+              to: '/customer/login'
           },
       ]
   }),

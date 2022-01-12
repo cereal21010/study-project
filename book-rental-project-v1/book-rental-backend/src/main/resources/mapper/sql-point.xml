@@ -23,12 +23,11 @@
         </where>
     </select>
 
-    <select id="findPointByIdLastOrder" parameterType="Map" resultType="com.example.bookrentalbackend.vo.PointVO">
+    <select id="findPointByCustomer" parameterType="Map" resultType="com.example.bookrentalbackend.vo.PointVO">
         SELECT *
         FROM point
         WHERE customer_seq = 1
         ORDER BY seq DESC
-        LIMIT 1
     </select>
 
     <insert id="insertPoint" parameterType="Map">

@@ -1,7 +1,10 @@
 package com.example.bookrentalbackend.api;
 
+import com.example.bookrentalbackend.exception.ApiException;
 import com.example.bookrentalbackend.service.CustomerService;
+import com.example.bookrentalbackend.service.login.JwtService;
 import com.example.bookrentalbackend.vo.CustomerVO;
+import com.example.bookrentalbackend.vo.LoginVO;
 import com.example.bookrentalbackend.vo.search.CustomerSearchVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +24,7 @@ import java.util.Map;
 public class CustomerApi {
 
     private final CustomerService customerService;
+    private final JwtService jwtService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseEntity getCustomerList(CustomerSearchVO customerSearchVO) {
@@ -74,6 +79,24 @@ public class CustomerApi {
         customerService.deleteCustomer(customersSeq);
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public ResponseEntity loginCustomer(@RequestBody LoginVO loginVO, HttpServletResponse response) {
+        Map<String, Object> responseMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+            CustomerVO customerVO = customerService.loginCustomer(loginVO.getId(), loginVO.getPassword());
+            String token = jwtService.create(customerVO);
+            response.setHeader("Authorization", token);
+            responseMap.put("status", true);
+            responseMap.put("customerInfo", customerVO);
+            status = HttpStatus.ACCEPTED;
+        } catch (ApiException e) {
+            throw new ApiException(e.getError());
+        }
+        return new ResponseEntity(responseMap, status);
     }
 
     /*@RequestMapping(value = "/test/data/insert", method = RequestMethod.GET)

@@ -5,13 +5,16 @@ import com.example.bookrentalbackend.service.RentalService;
 import com.example.bookrentalbackend.vo.BookVO;
 import com.example.bookrentalbackend.vo.CustomerVO;
 import com.example.bookrentalbackend.vo.RentalVO;
+import com.example.bookrentalbackend.vo.response.ResponseRentalVO;
 import com.example.bookrentalbackend.vo.search.RentalSearchVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,18 +27,23 @@ public class RentalApi {
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseEntity getRentalList(RentalSearchVO rentalSearchVO) {
 
-        List<RentalVO> rentalVOS = rentalService.getRentalList(rentalSearchVO);
+        Map<String, Object> responseMap = new HashMap<>();
 
-        return new ResponseEntity(rentalVOS, HttpStatus.OK);
+//        List<RentalVO> rentalVOS = rentalService.getRentalList(rentalSearchVO);
+        List<ResponseRentalVO> rentalVOS = rentalService.getResponseRental(rentalSearchVO);
+
+        responseMap.put("rentalList", rentalVOS);
+        responseMap.put("searchParams", rentalSearchVO);
+
+        return new ResponseEntity(responseMap, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
     public ResponseEntity rentalBook(@RequestBody BookVO bookVO) {
 
         String testCustomer = "tid01";
-        CustomerVO customerVO = customerService.findCustomerById(testCustomer);
 
-        rentalService.insertRental(bookVO, customerVO.getSeq());
+        rentalService.rentalBook(bookVO, testCustomer);
 
         return new ResponseEntity(HttpStatus.OK);
     }

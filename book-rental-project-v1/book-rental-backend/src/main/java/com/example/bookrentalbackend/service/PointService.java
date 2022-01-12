@@ -1,5 +1,7 @@
 package com.example.bookrentalbackend.service;
 
+import com.example.bookrentalbackend.exception.ApiException;
+import com.example.bookrentalbackend.exception.ExceptionEnum;
 import com.example.bookrentalbackend.mapper.CustomerMapper;
 import com.example.bookrentalbackend.mapper.PointMapper;
 import com.example.bookrentalbackend.vo.CustomerVO;
@@ -40,26 +42,48 @@ public class PointService {
         return  pointMapper.getPointList(pointSearchVO);
     }
 
-    public PointVO getPointDetail(String customerId) {
+    public List<PointVO> getPointListByCustomer(String customerId) {
         CustomerVO customerVO = customerMapper.findCustomerById(customerId);
-        return pointMapper.findPointByIdLastOrder(customerVO.getSeq());
+        return pointMapper.findPointByCustomer(customerVO.getSeq());
     }
 
-    public void insertPoint(PointVO pointVO, String customerId) {
 
+
+    public void chargePoint(String customerId, int chargePoint) {
         CustomerVO customerVO = customerMapper.findCustomerById(customerId);
+        PointVO beforePointVO = pointMapper.findPointByCustomer( customerVO.getSeq() ).get(0);
 
-        PointVO beforePointVO = pointMapper.findPointByIdLastOrder( customerVO.getSeq() );
-        pointVO.setBeforePoint( beforePointVO.getRemainPoint() );
-
-        if ( "use".equals(pointVO.getState()) ) {
-            pointVO.setRemainPoint(beforePointVO.getRemainPoint() - pointVO.getPointAmount());
-        }
-        else if ( "charge".equals(pointVO.getState()) ) {
-            pointVO.setRemainPoint( beforePointVO.getRemainPoint() + pointVO.getPointAmount() );
-        }
+        PointVO pointVO = new PointVO();
+        pointVO.setCustomerSeq(customerVO.getSeq());
+        pointVO.setState("charge");
+        pointVO.setPointAmount(chargePoint);
+        pointVO.setRemainPoint(beforePointVO.getRemainPoint() + chargePoint);
+        pointVO.setBeforePoint(beforePointVO.getBeforePoint());
 
         pointMapper.insertPoint(pointVO);
+
+    }
+
+    public void usePoint(long rentalSeq, String customerId, int usePoint){
+        CustomerVO customerVO = customerMapper.findCustomerById(customerId);
+        PointVO beforePointVO = pointMapper.findPointByCustomer( customerVO.getSeq() ).get(0);
+        _pointValidation(beforePointVO.getRemainPoint(), usePoint);
+
+        PointVO pointVO = new PointVO();
+        pointVO.setRentalSeq(rentalSeq);
+        pointVO.setCustomerSeq(customerVO.getSeq());
+        pointVO.setState("use");
+        pointVO.setPointAmount(usePoint);
+        pointVO.setRemainPoint(beforePointVO.getRemainPoint() - usePoint);
+        pointVO.setBeforePoint(beforePointVO.getRemainPoint());
+
+        pointMapper.insertPoint(pointVO);
+    }
+
+    private void _pointValidation(int remainPoint, int usePoint) {
+        if ((remainPoint - usePoint) < 0) {
+            throw new ApiException(ExceptionEnum.LACK_POINT);
+        }
     }
 
 }

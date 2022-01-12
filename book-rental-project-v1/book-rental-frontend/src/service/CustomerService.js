@@ -37,6 +37,16 @@ export class CustomerService {
         return response.data;
     }
 
+    async loginCustomer(id, password) {
+        console.log(`CustomerService loginCustomer`);
+        const response = await this.axiosInstance.post(`/api/customer/login`, {id: id, password: password}, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        const responseMap = {'accessToken': response.headers["Authorization"], 'customerInfo': response.data.customerInfo};
+        return responseMap;
+    }
 
 
 }

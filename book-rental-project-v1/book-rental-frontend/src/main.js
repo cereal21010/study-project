@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import ApiServices from "@/plugins/api-service-plugin";
 import vuetify from './plugins/vuetify'
+import store from './store'
 
 Vue.config.productionTip = false
 
@@ -17,5 +18,6 @@ Vue.use(ApiServices, {host: 'http://localhost:8080'})
 new Vue({
   render: h => h(App),
   vuetify,
-  router
+  router,
+  store,
 }).$mount('#app')

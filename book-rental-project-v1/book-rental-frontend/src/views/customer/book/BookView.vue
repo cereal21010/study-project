@@ -40,24 +40,24 @@
                 <b-card title="Book Info">
                     <div class="main-text">
                         <div>
-                            <p class="label">idNo : </p>
-                            <p class="label">{{bookDetail.idNo}}</p>
+                            <p class="customerInfo label">idNo : </p>
+                            <p class="customerInfo">{{bookDetail.idNo}}</p>
                         </div>
                         <div>
-                            <p class="label">이름 : </p>
-                            <p class="label">{{ bookDetail.name }}</p>
+                            <p class="customerInfo label">이름 : </p>
+                            <p class="customerInfo">{{ bookDetail.name }}</p>
                         </div>
                         <div>
-                            <p class="label">저자 : </p>
-                            <p class="label">{{ bookDetail.author }}</p>
+                            <p class="customerInfo label">저자 : </p>
+                            <p class="customerInfo">{{ bookDetail.author }}</p>
                         </div>
                         <div>
-                            <p class="label">대여 비용 : </p>
-                            <p class="label">{{ bookDetail.rentalFee }}</p>
+                            <p class="customerInfo label">대여 비용 : </p>
+                            <p class="customerInfo">{{ bookDetail.rentalFee }}</p>
                         </div>
                         <div>
-                            <p class="label">대여 기간 : </p>
-                            <p class="label">{{ bookDetail.rentalPeriod }}</p>
+                            <p class="customerInfo label">대여 기간 : </p>
+                            <p class="customerInfo">{{ bookDetail.rentalPeriod }}</p>
                         </div>
                     </div>
                 </b-card>
@@ -103,57 +103,28 @@
                     </v-card-title>
                     <v-card-text>
                         <v-container>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="idNo*"
-                                        v-model="bookEditForm.idNo"
-                                        required
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="name*"
-                                        v-model="bookEditForm.name"
-                                        required
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="author*"
-                                        v-model="bookEditForm.author"
-                                        required
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="price"
-                                        v-model="bookEditForm.price"
-                                        required
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="rental fee*"
-                                        v-model="bookEditForm.rentalFee"
-                                        required
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-text-field
-                                        label="rental period*"
-                                        v-model="bookEditForm.rentalPeriod"
-                                        required
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12">
-                                    <v-textarea
-                                        outlined
-                                        label="memo*"
-                                        v-model="bookEditForm.memo"
-                                    ></v-textarea>
-                                </v-col>
-                            </v-row>
+                            <div class="main-text">
+                                <div>
+                                    <p class="customerInfo label">Name : </p>
+                                    <p class="customerInfo">{{bookDetail.name}}</p>
+                                </div>
+                                <div>
+                                    <p class="customerInfo label">ID : </p>
+                                    <p class="customerInfo">{{ bookDetail.author }}</p>
+                                </div>
+                                <div>
+                                    <p class="customerInfo label">Password : </p>
+                                    <p class="customerInfo">{{ bookDetail.rentalFee }}</p>
+                                </div>
+                                <div>
+                                    <p class="customerInfo label">Birthday : </p>
+                                    <p class="customerInfo">{{ bookDetail.rentalPeriod }}</p>
+                                </div>
+                            </div>
+                            <v-spacer></v-spacer>
+                            <div>
+                                사용가능한 포인트 : 00
+                            </div>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -238,32 +209,11 @@ export default {
             this.bookEditForm = JSON.parse( JSON.stringify(this.bookDetail) );
         },
 
-        async onEditSave() {
-            await this.$bookService.updateBook(this.bookEditForm);
-            alert('도서 정보가 수정 되었습니다!');
-            await this.fetchBookDetail();
-            this.dialog = false;
-        },
-
         gotoList() {
             this.$router.push({
-                path: `/admin/book/list`,
+                path: `/customer/book/list`,
                 query: this.query,
             })
-        },
-
-        async onDeleteBook() {
-            if ( confirm('등록된 도서 정보를 삭제 하시겠습니까?') ) {
-                await this.$bookService.deleteBook(this.bookDetail.seq);
-                alert('도서 정보가 삭제 되었습니다!');
-                this.gotoList();
-            }
-
-        },
-
-        onDeleteFile(file, index) {
-            this.deleteFileList.push(file);
-            this.bookFileList.splice(index, 1);
         },
 
         async onFileEditSave() {
@@ -280,7 +230,13 @@ export default {
             this.deleteFileSeqs = [];
             this.addFileList = [];
             this.imageDialog = false;
-        }
+        },
+
+        async onRental() {
+            await this.$rentalService.insertRental(this.bookDetail);
+            alert(`${this.bookDetail.name}에 대한 대여 신청이 완료 되었습니다.`);
+            this.gotoList();
+        },
 
     }
 }
@@ -300,7 +256,10 @@ export default {
 .sub-text {
     text-align: left;
 }
-.label {
+.customerInfo {
     display: inline-block;
+}
+.label {
+    font-weight: bold;
 }
 </style>

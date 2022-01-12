@@ -29,6 +29,7 @@ public class RentalVO {
         this.returnDate = _convertDate(bookVO.getRentalPeriod());
     }
 
+    //DB시간이랑 안 맞아서 만들어봄...
     private Timestamp _convertDate(int periodDate) {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Calendar calendar = Calendar.getInstance();

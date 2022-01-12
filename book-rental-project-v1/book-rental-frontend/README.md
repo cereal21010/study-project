@@ -46,4 +46,9 @@ npm install vue bootstrap bootstrap-vue
 npm i --save lodash
 ```
 
+### vuex
+```
+npm install vuex --save
+```
+
 

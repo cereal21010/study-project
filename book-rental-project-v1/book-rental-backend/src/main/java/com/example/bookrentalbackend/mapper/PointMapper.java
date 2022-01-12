@@ -9,6 +9,6 @@ public interface PointMapper {
 
     public List<PointVO> getPointList(PointSearchVO pointSearchVO);
     public void insertPoint(PointVO pointVO);
-    public PointVO findPointByIdLastOrder(long customerSeq);
+    public List<PointVO> findPointByCustomer(long customerSeq);
 
 }

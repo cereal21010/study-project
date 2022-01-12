@@ -1,6 +1,8 @@
 import createAxiosInstance from "@/plugins/api-service-plugin/axios-instance";
 import {BookService} from "@/service/BookService";
 import {CustomerService} from "@/service/CustomerService";
+import {RentalService} from "@/service/RentalService";
+import {PointService} from "@/service/PointService";
 
 export default class ApiServiceFactoryBuilder {
 
@@ -15,6 +17,8 @@ export default class ApiServiceFactoryBuilder {
 
         serviceMap.$bookService = new BookService(axiosInstance);
         serviceMap.$customerService = new CustomerService(axiosInstance);
+        serviceMap.$rentalService = new RentalService(axiosInstance);
+        serviceMap.$pointService = new PointService(axiosInstance);
         return serviceMap;
     }
 }

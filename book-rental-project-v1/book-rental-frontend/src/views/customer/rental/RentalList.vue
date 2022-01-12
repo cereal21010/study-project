@@ -5,20 +5,28 @@
                 <thead>
                 <tr>
                     <th class="text-left">
-                        Name
+                        Book Name
                     </th>
                     <th class="text-left">
-                        Calories
+                        return
+                    </th>
+                    <th class="text-left">
+                        Rental Date
+                    </th>
+                    <th class="text-left">
+                        Return Date
                     </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr
-                    v-for="item in desserts"
-                    :key="item.name"
+                    v-for="rental in rentalList"
+                    :key="rental.seq"
                 >
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.calories }}</td>
+                    <td>{{ rental.bookName }}</td>
+                    <td>{{ rental.return }}</td>
+                    <td>{{ rental.rentalDate }}</td>
+                    <td>{{ rental.returnDate }}</td>
                 </tr>
                 </tbody>
             </template>
@@ -28,19 +36,33 @@
 
 <script>
 export default {
-    name: "rentalList",
+    name: "RentalList",
 
     props: {
         query: {
             type: Object,
-            default: () => {},
+            default: () => {
+            },
         }
     },
 
     data() {
         return {
             rentalList: {},
+            searchParams: {},
         }
+    },
+
+    mounted() {
+        this.fetchRentalList();
+    },
+
+    methods: {
+        async fetchRentalList() {
+            const {rentalList, searchParams} = await this.$rentalService.getRentalList(this.searchParams);
+            this.rentalList = rentalList;
+            this.searchParams = searchParams;
+        },
     }
 }
 </script>

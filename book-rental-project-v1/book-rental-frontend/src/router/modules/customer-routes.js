@@ -2,6 +2,9 @@ import Container from "@/views/Container";
 import _ from "lodash";
 import BookList from "@/views/customer/book/BookList";
 import BookView from "@/views/customer/book/BookView";
+import Login from "@/views/customer/customer/Login";
+import RentalList from "@/views/customer/rental/RentalList";
+import PointList from "@/views/customer/point/PointList";
 
 const bookProps = (route)  => {
     const props = {
@@ -38,24 +41,23 @@ const customerRoutes = [
                 props: route => bookProps(route),
             },
             {
-                path: 'book/register',
-                // component: BookRegister,
-                props: route => bookProps(route),
-            },
-
-            {
-                path: 'customer/list',
-                // component: CustomerList,
-                props: route => customerProps(route),
-            },
-            {
-                path: 'customer/register',
-                // component: CustomerRegister,
-                props: route => customerProps(route),
-            },
-            {
-                path: 'customer/view/:seq',
+                path: 'view/:seq',
                 // component: CustomerView,
+                props: route => customerProps(route),
+            },
+            {
+                path: 'login',
+                component: Login,
+                props: route => customerProps(route),
+            },
+            {
+                path: 'rental/list',
+                component: RentalList,
+                props: route => customerProps(route),
+            },
+            {
+                path: 'point/list',
+                component: PointList,
                 props: route => customerProps(route),
             },
         ]

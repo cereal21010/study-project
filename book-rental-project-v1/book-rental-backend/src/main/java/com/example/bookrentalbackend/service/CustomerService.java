@@ -1,5 +1,7 @@
 package com.example.bookrentalbackend.service;
 
+import com.example.bookrentalbackend.exception.ApiException;
+import com.example.bookrentalbackend.exception.ExceptionEnum;
 import com.example.bookrentalbackend.mapper.CustomerMapper;
 import com.example.bookrentalbackend.vo.CustomerVO;
 import com.example.bookrentalbackend.vo.search.CustomerSearchVO;
@@ -45,6 +47,18 @@ public class CustomerService {
         customerMapper.deleteCustomer(customerSeq);
     }
 
+    public CustomerVO loginCustomer(String id, String password) {
+        CustomerVO customerVO = customerMapper.findCustomerById(id);
 
+        if (customerVO != null) {
+            if ( password.equals(customerVO.getPassword()) ) {
+                return customerVO;
+            } else {
+                throw new ApiException(ExceptionEnum.PASSWORD_MISMATCH);
+            }
+        } else {
+            throw new ApiException(ExceptionEnum.NOT_FIND_EMAIL);
+        }
+    }
 
 }
