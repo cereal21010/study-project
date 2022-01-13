@@ -1,39 +1,17 @@
 <template>
     <div>
-
         <b-row class="main-contain">
             <b-col>
-                <b-carousel
-                    id="carousel-1"
-                    v-model="slide"
-                    :interval="4000"
-                    no-animation
-                    controls
-                    indicators
-                    background="#ababab"
-                    img-width="1024"
-                    img-height="480"
-                    style="text-shadow: 1px 1px 2px #333;"
-                    @sliding-start="onSlideStart"
-                    @sliding-end="onSlideEnd"
-                >
-                    <b-carousel-slide
-                        caption="First slide"
-                        img-src="https://picsum.photos/1024/480/?image=10"
-                    ></b-carousel-slide>
-                    <b-carousel-slide
-                        caption="Second Slide"
-                        img-src="https://picsum.photos/1024/480/?image=12"
-                    ></b-carousel-slide>
-                    <b-carousel-slide
-                        caption="Third Slide"
-                        img-src="https://picsum.photos/1024/480/?image=22"
-                    ></b-carousel-slide>
-                    <b-carousel-slide
-                        caption="Fourth Slide"
-                        img-src="https://picsum.photos/1024/480/?image=23"
-                    ></b-carousel-slide>
-                </b-carousel>
+                <v-carousel>
+                    <v-carousel-item
+                        v-for="(item,i) in imageSrcList"
+                        :key="i"
+                        :src="item.src"
+                        reverse-transition="fade-transition"
+                        transition="fade-transition"
+                        style="width:auto;height:auto;"
+                    ></v-carousel-item>
+                </v-carousel>
             </b-col>
 
             <b-col class="main-text-area">
@@ -99,7 +77,7 @@
                 </template>
                 <v-card>
                     <v-card-title>
-                        <span class="text-h5">Book Edit</span>
+                        <span class="text-h5">Book Rental</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -123,8 +101,14 @@
                             </div>
                             <v-spacer></v-spacer>
                             <div>
-                                사용가능한 포인트 : 00
+                                사용가능한 포인트 : {{ remainPoint }}
                             </div>
+                            <small
+                                class="late-mention"
+                                v-if="isLate"
+                            >
+                                *미납된 도서가 존재합니다.
+                            </small>
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -140,6 +124,7 @@
                             color="blue darken-1"
                             text
                             @click="onRental"
+                            :disabled="isLate"
                         >
                             Rental
                         </v-btn>
@@ -150,7 +135,6 @@
 
 
         </div>
-
     </div>
 </template>
 
@@ -172,6 +156,9 @@ export default {
             sliding: null,
             bookDetail: {},
             bookFileList: [],
+            imageSrcList: [],
+            remainPoint: 0,
+            isLate: true,
 
             dialog: false,
             imageDialog: false,
@@ -200,9 +187,14 @@ export default {
         },
 
         async fetchBookDetail() {
-            const {bookDetail, bookFileList} = await this.$bookService.getBookDetail(this.seq);
+            const {bookDetail, bookFileList, remainPoint, isLate} = await this.$bookService.getBookDetail(this.seq);
             this.bookDetail = bookDetail;
             this.bookFileList = bookFileList;
+            this.isLate = isLate;
+            for (const bookFile of bookFileList) {
+                this.imageSrcList.push( { src: `http://localhost:8080/api/book/image/${bookFile.seq}` } );
+            }
+            this.remainPoint = remainPoint;
         },
 
         onEditModal() {
@@ -261,5 +253,8 @@ export default {
 }
 .label {
     font-weight: bold;
+}
+.late-mention {
+    color: red;
 }
 </style>

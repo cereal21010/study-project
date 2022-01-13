@@ -7,6 +7,7 @@ import BookRegister from "@/views/admin/book/BookRegister";
 import CustomerList from "@/views/admin/customer/CustomerList";
 import CustomerRegister from "@/views/admin/customer/CustomerRegister";
 import CustomerView from "@/views/admin/customer/CustomerView";
+import RentalList from "@/views/admin/customer/RentalList";
 
 const bookProps = (route)  => {
     const props = {
@@ -65,6 +66,11 @@ const adminRoutes = [
             {
                 path: 'customer/view/:seq',
                 component: CustomerView,
+                props: route => customerProps(route),
+            },
+            {
+                path: 'customer/rental/list/:seq',
+                component: RentalList,
                 props: route => customerProps(route),
             },
         ]

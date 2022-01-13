@@ -68,42 +68,81 @@
             남은 포인트 : {{remainPoint}}
         </div>
 
-        <v-tabs>
+        <v-tabs v-model="tab">
             <v-tab>Charge Point</v-tab>
             <v-tab>Use Point</v-tab>
         </v-tabs>
 
-        <v-simple-table>
-            <template v-slot:default>
-                <thead>
-                <tr>
-                    <th class="text-left">
-                        Date
-                    </th>
-                    <th class="text-left">
-                        state
-                    </th>
-                    <th class="text-left">
-                        Point Amount
-                    </th>
-                    <th class="text-left">
-                        Remain Point
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr
-                    v-for="point in chargePointList"
-                    :key="point.seq"
-                >
-                    <td>{{ point.transactionDate }}</td>
-                    <td>{{ point.state }}</td>
-                    <td>{{ point.pointAmount }}</td>
-                    <td>{{ point.remainPoint }}</td>
-                </tr>
-                </tbody>
-            </template>
-        </v-simple-table>
+        <v-tabs-items v-model="tab">
+            <v-tab-item>
+                <v-simple-table>
+                    <template v-slot:default>
+                        <thead>
+                        <tr>
+                            <th class="text-left">
+                                Date
+                            </th>
+                            <th class="text-left">
+                                state
+                            </th>
+                            <th class="text-left">
+                                Point Amount
+                            </th>
+                            <th class="text-left">
+                                Remain Point
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr
+                            v-for="point in chargePointList"
+                            :key="point.seq"
+                        >
+                            <td>{{ point.transactionDate }}</td>
+                            <td>{{ point.state }}</td>
+                            <td>{{ point.pointAmount }}</td>
+                            <td>{{ point.remainPoint }}</td>
+                        </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
+            </v-tab-item>
+            <v-tab-item>
+                <v-simple-table>
+                    <template v-slot:default>
+                        <thead>
+                        <tr>
+                            <th class="text-left">
+                                Date
+                            </th>
+                            <th class="text-left">
+                                state
+                            </th>
+                            <th class="text-left">
+                                Point Amount
+                            </th>
+                            <th class="text-left">
+                                Remain Point
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr
+                            v-for="point in usePointList"
+                            :key="point.seq"
+                        >
+                            <td>{{ point.transactionDate }}</td>
+                            <td>{{ point.state }}</td>
+                            <td>{{ point.pointAmount }}</td>
+                            <td>{{ point.remainPoint }}</td>
+                        </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
+            </v-tab-item>
+        </v-tabs-items>
+
+
     </div>
 </template>
 
@@ -126,6 +165,7 @@ export default {
             searchParams: {},
             chargeDialog : false,
             chargeInput: null,
+            tab: null,
         }
     },
 

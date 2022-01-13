@@ -22,7 +22,7 @@ import java.util.List;
 public class PointService {
 
     final private PointMapper pointMapper;
-    final private CustomerMapper customerMapper;
+    final private CustomerService customerService;
 
     public List<PointVO> getPointList(PointSearchVO pointSearchVO) {
 
@@ -30,7 +30,7 @@ public class PointService {
 
         if(customerId != null){
             if ( !"".equals(customerId) ) {
-                CustomerVO customerVO = customerMapper.findCustomerById(customerId);
+                CustomerVO customerVO = customerService.findCustomerById(customerId);
                 if (customerVO != null) {
                     pointSearchVO.setCustomerSeq(customerVO.getSeq());
                 } else {    // 검색한 고객 ID가 없는 경우 빈 리스트 객체를 반환한다
@@ -43,30 +43,51 @@ public class PointService {
     }
 
     public List<PointVO> getPointListByCustomer(String customerId) {
-        CustomerVO customerVO = customerMapper.findCustomerById(customerId);
-        return pointMapper.findPointByCustomer(customerVO.getSeq());
+        CustomerVO customerVO = customerService.findCustomerById(customerId);
+        return pointMapper.findPointListByCustomer(customerVO.getSeq());
     }
 
-
+    public int getRemainPoint(String customerId) {
+        CustomerVO customerVO = customerService.findCustomerById(customerId);
+        PointVO pointVO = pointMapper.findPointByCustomer(customerVO.getSeq());
+        if (pointVO != null) {
+            return pointVO.getRemainPoint();
+        } else {
+            return 0;
+        }
+    }
 
     public void chargePoint(String customerId, int chargePoint) {
-        CustomerVO customerVO = customerMapper.findCustomerById(customerId);
-        PointVO beforePointVO = pointMapper.findPointByCustomer( customerVO.getSeq() ).get(0);
 
         PointVO pointVO = new PointVO();
+
+        CustomerVO customerVO = customerService.findCustomerById(customerId);
+
+        PointVO beforePointVOS = pointMapper.findPointByCustomer( customerVO.getSeq() );
+
+        if (beforePointVOS == null) {
+            pointVO.setRemainPoint(chargePoint);
+            pointVO.setBeforePoint(0);
+        } else {
+            pointVO.setRemainPoint(beforePointVOS.getRemainPoint() + chargePoint);
+            pointVO.setBeforePoint(beforePointVOS.getRemainPoint());
+        }
+
         pointVO.setCustomerSeq(customerVO.getSeq());
         pointVO.setState("charge");
         pointVO.setPointAmount(chargePoint);
-        pointVO.setRemainPoint(beforePointVO.getRemainPoint() + chargePoint);
-        pointVO.setBeforePoint(beforePointVO.getBeforePoint());
+
 
         pointMapper.insertPoint(pointVO);
 
     }
 
     public void usePoint(long rentalSeq, String customerId, int usePoint){
-        CustomerVO customerVO = customerMapper.findCustomerById(customerId);
-        PointVO beforePointVO = pointMapper.findPointByCustomer( customerVO.getSeq() ).get(0);
+        CustomerVO customerVO = customerService.findCustomerById(customerId);
+        PointVO beforePointVO = pointMapper.findPointByCustomer( customerVO.getSeq() );
+        if (beforePointVO == null) {
+            throw new ApiException(ExceptionEnum.LACK_POINT);
+        }
         _pointValidation(beforePointVO.getRemainPoint(), usePoint);
 
         PointVO pointVO = new PointVO();

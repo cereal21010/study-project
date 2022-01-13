@@ -15,6 +15,11 @@ export class BookService {
         return response.data;
     }
 
+    async getBookImage(fileSeq) {
+        const response = await this.axiosInstance.get(`/api/book/image/${fileSeq}`);
+        return response.data;
+    }
+
     async insertBook(bookForm, fileList) {
         const formData = new FormData();
         const json = JSON.stringify(bookForm);

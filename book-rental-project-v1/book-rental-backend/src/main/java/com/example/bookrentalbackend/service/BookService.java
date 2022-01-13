@@ -1,5 +1,7 @@
 package com.example.bookrentalbackend.service;
 
+import com.example.bookrentalbackend.exception.ApiException;
+import com.example.bookrentalbackend.exception.ExceptionEnum;
 import com.example.bookrentalbackend.mapper.BookMapper;
 import com.example.bookrentalbackend.util.FileHandler;
 import com.example.bookrentalbackend.vo.BookFileVO;
@@ -7,11 +9,14 @@ import com.example.bookrentalbackend.vo.search.BookSearchVO;
 import com.example.bookrentalbackend.vo.BookVO;
 import com.example.bookrentalbackend.vo.search.RentalSearchVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +45,20 @@ public class BookService {
 //        bookVO.setBookFiles(bookFileVOS);
 
         return bookVO;
+    }
+
+    public Map<String, Object> getImageByte(long bookFileSeq) throws IOException {
+
+        Map<String, Object> resultMap = new HashMap<>();
+
+        List<BookFileVO> bookFileVOS = bookMapper.getBookFileList( Map.of("seqs", Arrays.asList(bookFileSeq)) );
+        if (bookFileVOS != null) {
+            resultMap.put( "image", fileHandler.imagePrint(bookFileVOS.get(0)) );
+            resultMap.put( "headers", fileHandler.getHeaders(bookFileVOS.get(0)) );
+        } else {
+            throw new ApiException(ExceptionEnum.RUNTIME_EXCEPTION);
+        }
+        return resultMap;
     }
 
     public List<BookFileVO> getBookFileList(long bookSeq) {

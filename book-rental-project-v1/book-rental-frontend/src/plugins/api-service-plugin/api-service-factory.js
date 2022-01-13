@@ -3,6 +3,7 @@ import {BookService} from "@/service/BookService";
 import {CustomerService} from "@/service/CustomerService";
 import {RentalService} from "@/service/RentalService";
 import {PointService} from "@/service/PointService";
+import {AdminService} from "@/service/AdminService";
 
 export default class ApiServiceFactoryBuilder {
 
@@ -19,6 +20,7 @@ export default class ApiServiceFactoryBuilder {
         serviceMap.$customerService = new CustomerService(axiosInstance);
         serviceMap.$rentalService = new RentalService(axiosInstance);
         serviceMap.$pointService = new PointService(axiosInstance);
+        serviceMap.$adminService = new AdminService(axiosInstance);
         return serviceMap;
     }
 }

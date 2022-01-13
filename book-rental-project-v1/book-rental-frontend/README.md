@@ -51,4 +51,9 @@ npm i --save lodash
 npm install vuex --save
 ```
 
+### vuex-persistedstate
+```
+npm install --save vuex-persistedstate
+```
+
 

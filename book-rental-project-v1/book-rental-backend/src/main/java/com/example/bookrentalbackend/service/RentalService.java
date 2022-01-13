@@ -1,5 +1,7 @@
 package com.example.bookrentalbackend.service;
 
+import com.example.bookrentalbackend.exception.ApiException;
+import com.example.bookrentalbackend.exception.ExceptionEnum;
 import com.example.bookrentalbackend.mapper.BookMapper;
 import com.example.bookrentalbackend.mapper.RentalMapper;
 import com.example.bookrentalbackend.vo.BookVO;
@@ -28,8 +30,8 @@ public class RentalService {
         return rentalMapper.getRentalList(searchVO);
     }
 
-    public List<ResponseRentalVO> getResponseRental(RentalSearchVO searchVO) {
-        List<RentalVO> rentalVOS = rentalMapper.getRentalList(searchVO);
+    public List<ResponseRentalVO> getResponseRental(long customerSeq) {
+        List<RentalVO> rentalVOS = rentalMapper.findRentalByCustomerSeq(customerSeq);
         List<ResponseRentalVO> responseRentalVOS = rentalVOS.stream().map(ResponseRentalVO::new).collect(Collectors.toList());
         responseRentalVOS.forEach( vo -> {
             String bookName = bookMapper.findBookBySeq(vo.getBookSeq()).getName();
@@ -44,7 +46,7 @@ public class RentalService {
         rentalMapper.insertRental(rentalVO);
     }
 
-    public void updateRental(long rentalSeq) {
+    public void updateReturn(long rentalSeq) {
         rentalMapper.updateRental(rentalSeq);
     }
 
@@ -52,12 +54,21 @@ public class RentalService {
     public void rentalBook(BookVO bookVO, String customerId) {
         BookVO findBookVO = bookMapper.findBookBySeq(bookVO.getSeq());
         CustomerVO findCustomerVO = customerService.findCustomerById(customerId);
+        if (findLateCustomer(customerId)) {
+            throw new ApiException(ExceptionEnum.LATE_RETURN);
+        }
 
         RentalVO rentalVO = new RentalVO(findBookVO, findCustomerVO.getSeq());
         rentalMapper.insertRental(rentalVO);
 
         pointService.usePoint(rentalVO.getSeq(), customerId, bookVO.getRentalFee());
 
+    }
+
+    public boolean findLateCustomer(String customerId) {
+        CustomerVO customerVO = customerService.findCustomerById(customerId);
+        int lateCount = rentalMapper.findLateCustomer(customerVO.getSeq());
+        return lateCount > 0 ? true : false;
     }
 
 }

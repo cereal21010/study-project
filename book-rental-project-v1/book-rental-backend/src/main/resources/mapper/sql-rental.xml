@@ -33,6 +33,12 @@
         </where>
     </select>
 
+    <select id="findRentalByCustomerSeq" parameterType="Map" resultType="com.example.bookrentalbackend.vo.RentalVO">
+        SELECT *
+        FROM rental
+        WHERE customer_seq = #{customerSeq}
+    </select>
+
     <insert id="insertRental" parameterType="Map" useGeneratedKeys="true" keyProperty="seq">
         INSERT INTO rental(book_seq, customer_seq, rental_date, is_return, return_date)
         VALUES (#{bookSeq}, #{customerSeq}, NOW(), 0, #{returnDate})
@@ -45,5 +51,13 @@
         , modified_date = NOW()
         WHERE seq = #{seq}
     </update>
+
+    <select id="findLateCustomer" resultType="int">
+        SELECT count(*)
+        FROM rental
+        WHERE customer_seq = #{seq}
+        AND is_return = 0
+        AND <![CDATA[ DATE(return_date) < DATE_FORMAT(NOW(), '%Y-%m-%d') ]]>
+    </select>
 
 </mapper>

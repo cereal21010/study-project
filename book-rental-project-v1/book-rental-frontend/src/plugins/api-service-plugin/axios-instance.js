@@ -15,6 +15,7 @@ const createAxiosInstance =  (host) => {
             config.headers['Content-Type'] = 'application/json; charset = UTF-8';
             //jwt
             config.headers['Authorization'] = store.getters.getAccessToken;
+            config.headers['Customer-Id'] = store.getters.getCustomerId;
 
             return config;
         }, function (error) {
@@ -28,6 +29,11 @@ const createAxiosInstance =  (host) => {
         }, function (error) {
             console.log(`error::`, error.response);
             if (error.response) {
+                const errorCode = error.response.data.errorCode;
+                if ( errorCode.includes('S') ) {
+                    location.href="http://localhost/customer/login"
+                }
+
                 return Promise.reject(new ApiServiceError(error.response.data))
             }
             return Promise.reject(error);

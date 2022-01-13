@@ -31,6 +31,13 @@
                         <p class="customerInfo">{{ customerDetail.memo }}</p>
                     </div>
                 </div>
+                <v-btn
+                    depressed
+                    color="primary"
+                    @click="gotoRentalList"
+                >
+                    대여 내역
+                </v-btn>
             </b-card>
         </v-card>
 
@@ -203,6 +210,13 @@ export default {
                 this.gotoList();
             }
 
+        },
+
+        gotoRentalList() {
+            this.$router.push({
+                path: `/admin/customer/rental/list/${this.seq}`,
+                query: this.searchParams,
+            })
         },
 
     },
