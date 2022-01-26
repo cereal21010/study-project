@@ -76,6 +76,7 @@ export default {
         },
 
         async onSubmit() {
+            console.log(111);
             const response = await this.$customerService.loginCustomer(this.id, this.password);
             await this.$store
                         .dispatch("LOGIN", {response})

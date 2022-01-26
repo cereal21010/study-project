@@ -1,18 +1,43 @@
 <template>
-    <div>
-        <b-navbar toggleable="lg" type="dark" variant="info">
-            <b-navbar-brand to="/">방탄 Vue</b-navbar-brand>
+    <v-app>
+        <v-card >
+            <v-card-title class="blue white--text">
+                <span class="text-h5">Menu</span>
 
-            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+                <v-spacer></v-spacer>
 
-            <b-collapse id="nav-collapse" is-nav>
-                <b-navbar-nav>
-                    <b-nav-item to="/user-info">User 정보</b-nav-item>
-                    <b-nav-item>로그아웃</b-nav-item>
-                </b-navbar-nav>
-            </b-collapse>
-        </b-navbar>
-    </div>
+                <v-menu
+                    bottom
+                    left
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            dark
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <v-list>
+                        <v-list-item
+                            v-for="(item, i) in customerMenu"
+                            :key="i"
+                            :to="item.to"
+                        >
+                            <v-list-item-title>{{ item.title }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </v-card-title>
+        </v-card>
+
+        <v-main>
+            <router-view/>
+        </v-main>
+    </v-app>
 </template>
 
 <script>
@@ -22,6 +47,7 @@ export default {
 
     data() {
         return {
+
         }
     },
 

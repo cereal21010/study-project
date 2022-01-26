@@ -192,6 +192,7 @@ export default {
             this.bookFileList = bookFileList;
             this.isLate = isLate;
             for (const bookFile of bookFileList) {
+                //TODO: 도서 이미지 보일 때 개선하기 (등록에서 도서 이미지 선택시, 리스트에서, 자세히 보기) 에서도 이미지가 보일 수 있도록 수정( ex-Reader )
                 this.imageSrcList.push( { src: `http://localhost:8080/api/book/image/${bookFile.seq}` } );
             }
             this.remainPoint = remainPoint;
@@ -224,6 +225,7 @@ export default {
             this.imageDialog = false;
         },
 
+        //TODO: 대여완료가 아닌 대여신청으로 기능 완성하고, 신청 중 취소 되면 포인트 환불되고 그에 대한 정보도 포인트 리스트에서 확인 가능하도록 한다(충전, 사용, "취소")
         async onRental() {
             await this.$rentalService.insertRental(this.bookDetail);
             alert(`${this.bookDetail.name}에 대한 대여 신청이 완료 되었습니다.`);

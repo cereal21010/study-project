@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cereal.bookrental.admin.mapper.BookMapper">
+
+    <sql id="bookListWhere">
+        <if test=" idNo != null and idNo != '' ">
+            AND id_no LIKE CONCAT('%' #{idNo}, '%')
+        </if>
+        <if test=" name != null and name != '' ">
+            AND name LIKE CONCAT('%' #{name}, '%')
+        </if>
+        <if test=" author != null and author != '' ">
+            AND author LIKE CONCAT('%' #{author}, '%')
+        </if>
+    </sql>
+
+    <select id="getAll" resultType="com.cereal.bookrental.admin.vo.BookVO">
+        SELECT *
+        FROM book
+    </select>
+
+    <select id="getBookList" parameterType="Map" resultType="com.cereal.bookrental.admin.vo.BookVO">
+        SELECT *
+        FROM book
+        <where>
+            <include refid="bookListWhere"></include>
+        </where>
+        <choose>
+            <when test=" sort != null and sort != '' ">
+                ORDER BY ${sort} ${order}
+            </when>
+            <otherwise>
+                ORDER BY name ASC
+            </otherwise>
+        </choose>
+        LIMIT #{startInPage}, #{prePage}
+    </select>
+
+    <select id="getBookCount" parameterType="Map" resultType="int">
+        SELECT COUNT(*)
+        FROM book
+        <where>
+            <include refid="bookListWhere"></include>
+        </where>
+    </select>
+
+    <select id="findBookBySeq" parameterType="Long" resultType="com.cereal.bookrental.admin.vo.BookVO">
+        SELECT *
+        FROM book
+        WHERE seq = #{seq}
+    </select>
+
+    <insert id="insertBook" parameterType="Map" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO book (id_no, name, author, price, rental_fee, rental_period, memo)
+        VALUES (#{idNo}, #{name}, #{author}, #{price}, #{rentalFee}, #{rentalPeriod}, #{memo});
+    </insert>
+
+    <update id="updateBook" parameterType="Map" useGeneratedKeys="true" keyProperty="seq">
+        UPDATE book
+        SET id_no = #{idNo}
+            , name = #{name}
+            , author = #{author}
+            , price = #{price}
+            , rental_fee = #{rentalFee}
+            , rental_period = #{rentalPeriod}
+            , memo = #{memo}
+            , modified_date = NOW()
+        WHERE
+            seq = #{seq}
+    </update>
+
+    <delete id="deleteBook" parameterType="long">
+        DELETE
+        FROM book
+        WHERE seq = #{seq}
+    </delete>
+
+    <select id="getBookFileList" parameterType="Map" resultType="com.cereal.bookrental.admin.vo.BookFileVO">
+        SELECT *
+        FROM book_file
+        <where>
+            <if test=" bookSeq != null and bookSeq > 0 ">
+                AND book_seq = #{bookSeq}
+            </if>
+            <if test=" seqs != null and seqs.size > 0 ">
+                AND seq IN
+                <foreach collection="seqs" item="seq" open="(" separator="," close=")">
+                    #{seq}
+                </foreach>
+            </if>
+        </where>
+
+    </select>
+
+    <insert id="insertBookFile" parameterType="Map">
+        INSERT INTO book_file ( book_seq, original_name, save_name, file_path, save_size)
+        VALUES ( #{bookSeq}, #{originalName}, #{saveName}, #{filePath}, #{saveSize} );
+    </insert>
+
+    <delete id="deleteBookFile" parameterType="Map">
+        DELETE
+        FROM book_file
+        WHERE seq = #{seq}
+    </delete>
+
+</mapper>

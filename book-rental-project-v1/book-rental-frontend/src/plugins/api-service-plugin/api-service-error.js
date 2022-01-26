@@ -1,5 +1,6 @@
 // import _ from 'lodash'
 
+//TODO: mvc 참고, 소스 분석 후 적용하기
 export default class ApiServiceError {
     constructor({errorCode, errorMessage}) {
         this.errorCode = errorCode;
@@ -57,7 +58,7 @@ export class ApiServiceErrorEventBus {
     _getListeners(errorCode) {
         console.log(`listenerGroup::`, this.listenerGroup);
         if (this.listenerGroup[errorCode]) {
-            //TODO
+            //
         } else {
             this.listenerGroup[errorCode] = [];
             this.listenerGroup[errorCode].push(this.defaultHandler);

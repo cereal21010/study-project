@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.bookrentalbackend.mapper.CustomerMapper">
+<mapper namespace="com.example.bookrental.mapper.CustomerMapper">
 
     <sql id="customerListWhere">
         <if test=" id != null and id != '' ">
@@ -18,7 +18,7 @@
         </if>
     </sql>
 
-    <select id="getCustomerList" parameterType="Map" resultType="com.example.bookrentalbackend.vo.CustomerVO">
+    <select id="getCustomerList" parameterType="Map" resultType="com.example.bookrental.vo.CustomerVO">
         SELECT *
         FROM customer
         <where>
@@ -43,13 +43,13 @@
         </where>
     </select>
 
-    <select id="findCustomerBySeq" resultType="com.example.bookrentalbackend.vo.CustomerVO">
+    <select id="findCustomerBySeq" resultType="com.example.bookrental.vo.CustomerVO">
         SELECT *
         FROM customer
         WHERE seq = #{seq}
     </select>
 
-    <select id="findCustomerById" resultType="com.example.bookrentalbackend.vo.CustomerVO">
+    <select id="findCustomerById" resultType="com.example.bookrental.vo.CustomerVO">
         SELECT *
         FROM customer
         WHERE id = #{id}

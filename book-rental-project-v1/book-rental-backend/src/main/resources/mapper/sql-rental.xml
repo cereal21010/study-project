@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.bookrentalbackend.mapper.RentalMapper">
+<mapper namespace="com.example.bookrental.mapper.RentalMapper">
 
 
     <sql id="rentalListWhere">
@@ -25,7 +25,7 @@
         </if>
     </sql>
 
-    <select id="getRentalList" parameterType="Map" resultType="com.example.bookrentalbackend.vo.RentalVO">
+    <select id="getRentalList" parameterType="Map" resultType="com.example.bookrental.vo.RentalVO">
         SELECT *
         FROM rental
         <where>
@@ -33,7 +33,7 @@
         </where>
     </select>
 
-    <select id="findRentalByCustomerSeq" parameterType="Map" resultType="com.example.bookrentalbackend.vo.RentalVO">
+    <select id="findRentalByCustomerSeq" parameterType="Map" resultType="com.example.bookrental.vo.RentalVO">
         SELECT *
         FROM rental
         WHERE customer_seq = #{customerSeq}

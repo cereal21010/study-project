@@ -15,7 +15,7 @@ const createAxiosInstance =  (host) => {
             config.headers['Content-Type'] = 'application/json; charset = UTF-8';
             //jwt
             config.headers['Authorization'] = store.getters.getAccessToken;
-            config.headers['Customer-Id'] = store.getters.getCustomerId;
+            config.headers['Customer-Id'] = store.getters.getLoginId;
 
             return config;
         }, function (error) {
@@ -27,9 +27,9 @@ const createAxiosInstance =  (host) => {
         function (response) {
             return response;
         }, function (error) {
-            console.log(`error::`, error.response);
             if (error.response) {
                 const errorCode = error.response.data.errorCode;
+                //TODO: 반복되는 if문이 쓰일 경우, java Enum처럼 state화 시켜서 처리는하는 방법 고려해보기
                 if ( errorCode.includes('S') ) {
                     location.href="http://localhost/customer/login"
                 }

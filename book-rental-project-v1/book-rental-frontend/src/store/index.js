@@ -12,30 +12,35 @@ export default new Vuex.Store({
 
     state: {
         accessToken: null,
-        customerId: null,
+        loginId: null,
+        role: null,
     },
 
     getters: {
-        getCustomerId: state => state.customerId,
+        getLoginId: state => state.loginId,
         getAccessToken: state => state.accessToken,
+        getRole: state => state.role,
     },
 
     mutations: {
         LOGIN(state, payload) {
             state.accessToken = payload.accessToken
-            state.customerId = payload.customerId
+            state.loginId = payload.loginId
+            state.role = payload.role
         },
         LOGOUT(state) {
             state.accessToken = null
-            state.customerId = null
+            state.loginId = null
+            state.role = null
         },
     },
 
     actions: {
         async LOGIN({commit}, {response}) {
-            const responseId = response.customerInfo.id
+            const responseId = response.loginInfo.id
             const accessToken = response.accessToken
-            commit("LOGIN", {customerId: responseId, accessToken: accessToken})
+            const role = response.role
+            commit("LOGIN", {loginId: responseId, accessToken: accessToken, role: role})
         },
         LOGOUT({commit}) {
             commit("LOGOUT")

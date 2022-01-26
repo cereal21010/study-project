@@ -56,4 +56,10 @@ npm install vuex --save
 npm install --save vuex-persistedstate
 ```
 
+### vuetify
+```
+//프로젝트로 이동 후 vuetify를 설치
+vue add vuetify
+```
+
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.bookrentalbackend.mapper.AdminMapper">
+<mapper namespace="com.example.bookrental.mapper.AdminMapper">
 
-    <select id="getAdminList" parameterType="Map" resultType="com.example.bookrentalbackend.vo.AdminVO">
+    <select id="getAdminList" parameterType="Map" resultType="com.example.bookrental.vo.AdminVO">
         SELECT *
         FROM admin
         <where>
@@ -13,13 +13,13 @@
         </where>
     </select>
 
-    <select id="findAdminBySeq" resultType="com.example.bookrentalbackend.vo.AdminVO">
+    <select id="findAdminBySeq" resultType="com.example.bookrental.vo.AdminVO">
         SELECT *
         FROM admin
         WHERE seq = #{seq}
     </select>
 
-    <select id="findAdminById" resultType="com.example.bookrentalbackend.vo.AdminVO">
+    <select id="findAdminById" resultType="com.example.bookrental.vo.AdminVO">
         SELECT *
         FROM admin
         WHERE id = #{id}

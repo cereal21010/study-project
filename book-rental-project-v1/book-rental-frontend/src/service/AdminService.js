@@ -13,4 +13,14 @@ export class AdminService {
         return response.data;
     }
 
+    async loginAdmin(id, password) {
+        const response = await this.axiosInstance.post(`/api/admin/login`, {id: id, password: password}, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        const responseMap = {'accessToken': response.headers["authorization"], 'loginInfo': response.data.loginInfo, 'role': response.data.role};
+        return responseMap;
+    }
+
 }

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cereal.bookrental.admin.mapper.RentalMapper">
+
+
+    <sql id="rentalListWhere">
+        <if test="bookSeq != null and bookSeq > 0">
+            AND book_seq = #{bookSeq}
+        </if>
+        <if test="customerSeq != null and customerSeq > 0">
+            AND customer_seq = #{customerSeq}
+        </if>
+        <if test="isReturn != null and isReturn != ''">
+            AND is_return = #{isReturn}
+        </if>
+        <if test="rentalStartDate != null and rentalEndDate != null">
+            AND rental_date BETWEEN #{rentalStartDate} AND #{rentalEndDate}
+        </if>
+        <if test="returnStartDate != null and returnEndDate != null">
+            AND return_date BETWEEN #{returnStartDate} AND #{returnEndDate}
+        </if>
+        <if test="returnedStartDate != null and returnedEndDate != null">
+            AND returned_date BETWEEN #{returnedStartDate} AND #{returnedEndDate}
+        </if>
+    </sql>
+
+    <select id="getRentalList" parameterType="Map" resultType="com.cereal.bookrental.admin.vo.RentalVO">
+        SELECT *
+        FROM rental
+        <where>
+            <include refid="rentalListWhere"></include>
+        </where>
+    </select>
+
+    <select id="findRentalByCustomerSeq" parameterType="Map" resultType="com.cereal.bookrental.admin.vo.RentalVO">
+        SELECT *
+        FROM rental
+        WHERE customer_seq = #{customerSeq}
+    </select>
+
+    <insert id="insertRental" parameterType="Map" useGeneratedKeys="true" keyProperty="seq">
+        INSERT INTO rental(book_seq, customer_seq, rental_date, is_return, return_date)
+        VALUES (#{bookSeq}, #{customerSeq}, NOW(), 0, #{returnDate})
+    </insert>
+
+    <update id="updateRental" parameterType="Map">
+        UPDATE rental
+        SET is_return = 1
+        , returned_date = NOW()
+        , modified_date = NOW()
+        WHERE seq = #{seq}
+    </update>
+
+    <select id="findLateCustomer" resultType="int">
+        SELECT count(*)
+        FROM rental
+        WHERE customer_seq = #{seq}
+        AND is_return = 0
+        AND <![CDATA[ DATE(return_date) < DATE_FORMAT(NOW(), '%Y-%m-%d') ]]>
+    </select>
+
+</mapper>
