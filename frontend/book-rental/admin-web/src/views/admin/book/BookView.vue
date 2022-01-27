@@ -6,18 +6,58 @@
 
                 <v-row>
                     <v-col
-                        v-for="file in bookFileList"
-                        :key="file.seq"
+                        v-for="n in imageMaxCount"
+                        :key="n"
                         cols="auto"
+                        class="lg12"
                     >
                         <v-card
                             class="pa-2"
+                            width="318px"
+                            height="368px"
                             outlined
                             tile
                         >
+
                             <v-img
-                                :src="`http://localhost:8081/api/admin/book/image/${file.seq}`"
+                                v-if="bookFileList[n-1] != undefined"
+                                :src="`http://localhost:8081/api/admin/book/image/${bookFileList[n-1].seq}`"
+                                class="cover-img"
                             ></v-img>
+
+                            <div v-else>
+                                <!-- 1. Create the button that will be clicked to select a file -->
+                                <div v-if="uploadImageFile == null">
+                                    <v-btn
+                                        color="primary"
+                                        rounded
+                                        dark
+                                        :loading="isSelecting"
+                                        @click="handleFileImport"
+                                    >
+                                        Upload File
+                                    </v-btn>
+
+                                    <!-- Create a File Input that will be hidden but triggered with JavaScript -->
+                                    <input
+                                        id="uploader"
+                                        ref="uploader"
+                                        class="d-none"
+                                        type="file"
+                                        @change="onFileSelected"
+                                    />
+                                </div>
+
+                                <div v-else>
+                                    <img
+                                        class="popupImageItem"
+                                        :src="uploadImageFile"
+                                        alt="src"
+                                        width="300px"
+                                        height="350px"
+                                    >
+                                </div>
+                            </div>
                         </v-card>
                     </v-col>
                 </v-row>
@@ -39,7 +79,7 @@
                     <div class="main-text">
                         <div>
                             <p class="label">idNo : </p>
-                            <p class="label">{{bookDetail.idNo}}</p>
+                            <p class="label">{{ bookDetail.idNo }}</p>
                         </div>
                         <div>
                             <p class="label">이름 : </p>
@@ -108,7 +148,8 @@ export default {
     props: {
         query: {
             type: Object,
-            default: () => {},
+            default: () => {
+            },
         },
         seq: String,
     },
@@ -117,6 +158,12 @@ export default {
         return {
             bookDetail: {},
             bookFileList: [],
+
+            imageMaxCount: 4,
+
+            isSelecting: false,
+
+            uploadImageFile: null,
         }
     },
 
@@ -128,6 +175,9 @@ export default {
     },
 
     computed: {
+        isSelects: function () {
+            return new Array(this.imageMaxCount).fill(false);
+        }
     },
 
     methods: {
@@ -146,12 +196,36 @@ export default {
         },
 
         async onDeleteBook() {
-            if ( confirm('등록된 도서 정보를 삭제 하시겠습니까?') ) {
+            if (confirm('등록된 도서 정보를 삭제 하시겠습니까?')) {
                 await this.$bookService.deleteBook(this.bookDetail.seq);
                 alert('도서 정보가 삭제 되었습니다!');
                 this.gotoList();
             }
         },
+
+        handleFileImport() {
+            this.isSelecting = true;
+
+            // After obtaining the focus when closing the FilePicker, return the button state to normal
+            window.addEventListener('focus', () => {
+                this.isSelecting = false
+            }, {once: true});
+
+            // Trigger click on the FileInput
+            document.getElementById("uploader").click();
+        },
+
+        onFileSelected(event) {
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.uploadImageFile = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        },
+
 
     }
 }
@@ -162,13 +236,22 @@ export default {
     display: inline-block;
     margin: 5px;
 }
+
 .main-text-area {
     margin-top: 10px;
 }
+
 .main-text {
     text-align: left;
 }
+
 .label {
     display: inline-block;
+}
+
+.cover-img {
+    width: 300px;
+    height: 350px;
+    object-fit: cover;
 }
 </style>
