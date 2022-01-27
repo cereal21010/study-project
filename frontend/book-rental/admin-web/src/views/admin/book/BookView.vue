@@ -3,11 +3,10 @@
 
         <b-row class="main-contain">
             <b-col>
-
                 <v-row>
                     <v-col
-                        v-for="n in imageMaxCount"
-                        :key="n"
+                        v-for="(file, index) in bookFileList"
+                        :key="file.seq"
                         cols="auto"
                         class="lg12"
                     >
@@ -18,49 +17,110 @@
                             outlined
                             tile
                         >
-
                             <v-img
-                                v-if="bookFileList[n-1] != undefined"
-                                :src="`http://localhost:8081/api/admin/book/image/${bookFileList[n-1].seq}`"
+                                :src="`http://localhost:8081/api/admin/book/image/${file.seq}`"
                                 class="cover-img"
                             ></v-img>
 
-                            <div v-else>
-                                <!-- 1. Create the button that will be clicked to select a file -->
-                                <div v-if="uploadImageFile == null">
-                                    <v-btn
-                                        color="primary"
-                                        rounded
-                                        dark
-                                        :loading="isSelecting"
-                                        @click="handleFileImport"
-                                    >
-                                        Upload File
-                                    </v-btn>
+                            <v-btn
+                                class="mx-2 file-delete-btn"
+                                fab
+                                dark
+                                small
+                                color="error"
+                                @click="onDeleteFile(file.seq, index)"
+                            >
+                                <v-icon dark>
+                                    mdi-minus
+                                </v-icon>
+                            </v-btn>
+                        </v-card>
 
-                                    <!-- Create a File Input that will be hidden but triggered with JavaScript -->
-                                    <input
-                                        id="uploader"
-                                        ref="uploader"
-                                        class="d-none"
-                                        type="file"
-                                        @change="onFileSelected"
-                                    />
-                                </div>
+                    </v-col>
 
-                                <div v-else>
-                                    <img
-                                        class="popupImageItem"
-                                        :src="uploadImageFile"
-                                        alt="src"
-                                        width="300px"
-                                        height="350px"
-                                    >
-                                </div>
+
+                    <!--                    -->
+                    <v-col
+                        v-for="(file, index) in preViewFileList"
+                        :key="index"
+                        cols="auto"
+                        class="lg12"
+                    >
+                        <v-card
+                            class="pa-2"
+                            width="318px"
+                            height="368px"
+                            outlined
+                            tile
+                        >
+                            <div>
+                                <img
+                                    class="popupImageItem"
+                                    :src="file"
+                                    alt="image"
+                                    width="300px"
+                                    height="350px"
+                                >
+
+                                <v-btn
+                                    class="mx-2 file-delete-btn"
+                                    fab
+                                    dark
+                                    small
+                                    color="error"
+                                    @click="onUploadFileCancel(index)"
+                                >
+                                    <v-icon dark>
+                                        mdi-minus
+                                    </v-icon>
+                                </v-btn>
+                            </div>
+                        </v-card>
+                    </v-col>
+                    <!--                    -->
+
+                    <v-col
+                        v-if="bookFileList.length + preViewFileList.length < imageMaxCount"
+                        cols="auto"
+                        class="lg12"
+                    >
+                        <v-card
+                            class="pa-2"
+                            width="318px"
+                            height="368px"
+                            outlined
+                            tile
+                        >
+                            <!-- 1. Create the button that will be clicked to select a file -->
+                            <div>
+                                <v-btn
+                                    color="primary"
+                                    rounded
+                                    dark
+                                    :loading="isSelecting"
+                                    @click="handleFileImport"
+                                >
+                                    Upload File
+                                </v-btn>
+
+                                <!-- Create a File Input that will be hidden but triggered with JavaScript -->
+                                <input
+                                    id="uploader"
+                                    ref="uploader"
+                                    class="d-none"
+                                    type="file"
+                                    @change="onFileSelected"
+                                />
                             </div>
                         </v-card>
                     </v-col>
                 </v-row>
+
+                <v-btn
+                    @click="onFileEditSave"
+                >
+                    이미지 저장
+                </v-btn>
 
                 <!--   ImageEditDialog     -->
                 <ImageEditDialog
@@ -160,10 +220,11 @@ export default {
             bookFileList: [],
 
             imageMaxCount: 4,
-
             isSelecting: false,
+            preViewFileList: [],
 
-            uploadImageFile: null,
+            addFileList: [],
+            deleteFileSeqList: [],
         }
     },
 
@@ -212,21 +273,46 @@ export default {
             }, {once: true});
 
             // Trigger click on the FileInput
-            document.getElementById("uploader").click();
+            document.getElementById(`uploader`).click();
         },
 
         onFileSelected(event) {
+            // const input = document.getElementById(`uploader`);
             const input = event.target;
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    this.uploadImageFile = e.target.result;
+                    // this.uploadImageFile = e.target.result;
+                    this.preViewFileList = [
+                        ...this.preViewFileList,
+                        e.target.result
+                    ]
                 }
                 reader.readAsDataURL(input.files[0]);
+                this.addFileList = [
+                    ...this.addFileList,
+                    input.files[0]
+                ]
             }
         },
 
+        onDeleteFile(fileSeq, index) {
+            this.deleteFileSeqList.push(fileSeq);
+            this.bookFileList.splice(index, 1);
+        },
 
+        onUploadFileCancel(index) {
+            this.addFileList.splice(index, 1);
+            this.preViewFileList.splice(index, 1);
+        },
+
+        async onFileEditSave() {
+            await this.$bookService.updateBookFile(this.seq, this.addFileList, this.deleteFileSeqList);
+            alert('이미지 파일 수정이 완료 되었습니다.');
+            // await this.fetchBookDetail();
+            await this.fetchBookDetail()
+            this.imageDialog = false;
+        },
     }
 }
 </script>
@@ -253,5 +339,10 @@ export default {
     width: 300px;
     height: 350px;
     object-fit: cover;
+}
+.file-delete-btn {
+    position: absolute;
+    right: 5px;
+    top: 10px;
 }
 </style>

@@ -43,6 +43,7 @@ export class BookService {
     }
 
     async updateBookFile(bookSeq, fileList, deleteFileSeqs) {
+        console.log(`fileList::`, fileList);
         const formData = new FormData();
         if (fileList.length > 0) {
             for (let index = 0; index < fileList.length; index++) {
