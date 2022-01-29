@@ -3,7 +3,12 @@
 
         <b-row class="main-contain">
             <b-col>
-                <v-row>
+
+                <!--이미지 수정-->
+                <v-row
+                    v-if="fileEditMode"
+                >
+                    <!--이미 저장된 이미지-->
                     <v-col
                         v-for="(file, index) in bookFileList"
                         :key="file.seq"
@@ -35,11 +40,10 @@
                                 </v-icon>
                             </v-btn>
                         </v-card>
-
                     </v-col>
 
 
-                    <!--                    -->
+                    <!--새로 추가할 이미지-->
                     <v-col
                         v-for="(file, index) in preViewFileList"
                         :key="index"
@@ -77,8 +81,8 @@
                             </div>
                         </v-card>
                     </v-col>
-                    <!--                    -->
 
+                    <!--이미지 추가 버튼 (컬럼)-->
                     <v-col
                         v-if="bookFileList.length + preViewFileList.length < imageMaxCount"
                         cols="auto"
@@ -91,8 +95,8 @@
                             outlined
                             tile
                         >
-                            <!-- 1. Create the button that will be clicked to select a file -->
                             <div>
+                            <!-- 1. Create the button that will be clicked to select a file -->
                                 <v-btn
                                     color="primary"
                                     rounded
@@ -114,20 +118,69 @@
                             </div>
                         </v-card>
                     </v-col>
+
+                    <div>
+                        <v-btn
+                            class="m-1"
+                            depressed
+                            color="success"
+                            @click="onFileEditSave"
+                        >
+                            save
+                        </v-btn>
+
+                        <v-btn
+                            class="m-1"
+                            depressed
+                            color="error"
+                            @click="onFileEditInit"
+                        >
+                            cancel
+                        </v-btn>
+                    </div>
                 </v-row>
 
-                <v-btn
-                    @click="onFileEditSave"
+                <!--일반 이미지-->
+                <v-row
+                    v-else
                 >
-                    이미지 저장
-                </v-btn>
+                    <v-col
+                        v-for="(file) in bookFileList"
+                        :key="file.seq"
+                        cols="auto"
+                        class="lg12"
+                    >
+                        <v-card
+                            class="pa-2"
+                            width="318px"
+                            height="368px"
+                            outlined
+                            tile
+                        >
+                            <v-img
+                                :src="`http://localhost:8081/api/admin/book/image/${file.seq}`"
+                                class="cover-img"
+                            ></v-img>
+                        </v-card>
+                    </v-col>
+
+                    <div>
+                        <v-btn
+                            class="ml-5"
+                            color="primary"
+                            @click="onFileEditMode"
+                        >
+                            이미지 수정
+                        </v-btn>
+                    </div>
+                </v-row>
 
                 <!--   ImageEditDialog     -->
-                <ImageEditDialog
-                    :book-seq="bookDetail.seq"
-                    :file-list="bookFileList"
-                    @fetchBookDetail="fetchBookDetail"
-                ></ImageEditDialog>
+                <!--                <ImageEditDialog
+                                    :book-seq="bookDetail.seq"
+                                    :file-list="bookFileList"
+                                    @fetchBookDetail="fetchBookDetail"
+                                ></ImageEditDialog>-->
                 <!--   ImageEditDialog     -->
 
             </b-col>
@@ -197,13 +250,12 @@
 </template>
 
 <script>
-import ImageEditDialog from "@/components/dialogs/ImageEditDialog";
 import BookEditDialog from "@/components/dialogs/BookEditDialog";
 
 export default {
     name: "BookView",
 
-    components: {BookEditDialog, ImageEditDialog},
+    components: {BookEditDialog},
 
     props: {
         query: {
@@ -225,6 +277,8 @@ export default {
 
             addFileList: [],
             deleteFileSeqList: [],
+
+            fileEditMode: false,
         }
     },
 
@@ -310,9 +364,24 @@ export default {
             await this.$bookService.updateBookFile(this.seq, this.addFileList, this.deleteFileSeqList);
             alert('이미지 파일 수정이 완료 되었습니다.');
             // await this.fetchBookDetail();
-            await this.fetchBookDetail()
-            this.imageDialog = false;
+            await this.fetchBookDetail();
+            // this.imageDialog = false;
+            await this.onFileEditInit();
         },
+
+        onFileEditMode() {
+            this.fileEditMode = true;
+        },
+
+        async onFileEditInit() {
+            this.preViewFileList = [];
+            this.addFileList = [];
+            this.deleteFileSeqList = [];
+            await this.fetchBookDetail();
+            this.fileEditMode = false;
+        }
+
+
     }
 }
 </script>
@@ -340,6 +409,7 @@ export default {
     height: 350px;
     object-fit: cover;
 }
+
 .file-delete-btn {
     position: absolute;
     right: 5px;

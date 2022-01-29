@@ -57,13 +57,62 @@
 
                     <p>이미지 등록</p>
 
-                    <v-file-input
+                    <div>
+                        <!-- 1. Create the button that will be clicked to select a file -->
+                        <v-btn
+                            color="primary"
+                            rounded
+                            dark
+                            :loading="isSelecting"
+                            @click="handleFileImport"
+                        >
+                            Upload File
+                        </v-btn>
+
+                        <!-- Create a File Input that will be hidden but triggered with JavaScript -->
+                        <input
+                            id="uploader"
+                            ref="uploader"
+                            class="d-none"
+                            type="file"
+                            @change="onFileSelected"
+                        />
+                    </div>
+
+                    <v-row>
+                        <!--새로 추가할 이미지-->
+                        <v-col
+                            v-for="(file, index) in preViewFileList"
+                            :key="index"
+                            cols="auto"
+                            class="lg12"
+                        >
+                            <v-card
+                                class="pa-2"
+                                width="318px"
+                                height="368px"
+                                outlined
+                                tile
+                            >
+                                <div>
+                                    <img
+                                        class="popupImageItem"
+                                        :src="file"
+                                        alt="image"
+                                        width="300px"
+                                        height="350px"
+                                    >
+                                </div>
+                            </v-card>
+                        </v-col>
+                    </v-row>
+<!--                    <v-file-input
                         small-chips
                         multiple
                         accept="image/*"
                         label="book image files"
                         v-model="fileList"
-                    ></v-file-input>
+                    ></v-file-input>-->
 
 
                 </v-card-text>
@@ -113,12 +162,16 @@ export default {
                 memo: null,
             },
             fileList: [],
+            addFileList: [],
+            preViewFileList: [],
+
+            isSelecting: false,
         }
     },
 
     methods: {
         async onSubmit() {
-            await this.$bookService.insertBook(this.bookForm, this.fileList);
+            await this.$bookService.insertBook(this.bookForm, this.addFileList);
             alert("도서 정보가 정상적으로 등록되었습니다.");
             this.gotoList();
         },
@@ -128,6 +181,38 @@ export default {
                 path: `/admin/book/list`,
                 query: this.query,
             })
+        },
+
+        handleFileImport() {
+            this.isSelecting = true;
+
+            // After obtaining the focus when closing the FilePicker, return the button state to normal
+            window.addEventListener('focus', () => {
+                this.isSelecting = false
+            }, {once: true});
+
+            // Trigger click on the FileInput
+            document.getElementById(`uploader`).click();
+        },
+
+        onFileSelected(event) {
+            // const input = document.getElementById(`uploader`);
+            const input = event.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // this.uploadImageFile = e.target.result;
+                    this.preViewFileList = [
+                        ...this.preViewFileList,
+                        e.target.result
+                    ]
+                }
+                reader.readAsDataURL(input.files[0]);
+                this.addFileList = [
+                    ...this.addFileList,
+                    input.files[0]
+                ]
+            }
         },
     }
 }
