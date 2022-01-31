@@ -102,6 +102,18 @@
                                         width="300px"
                                         height="350px"
                                     >
+                                    <v-btn
+                                        class="mx-2 file-delete-btn"
+                                        fab
+                                        dark
+                                        small
+                                        color="error"
+                                        @click="onUploadFileCancel(index)"
+                                    >
+                                        <v-icon dark>
+                                            mdi-minus
+                                        </v-icon>
+                                    </v-btn>
                                 </div>
                             </v-card>
                         </v-col>
@@ -214,10 +226,20 @@ export default {
                 ]
             }
         },
+
+        onUploadFileCancel(index) {
+            this.addFileList.splice(index, 1);
+            this.preViewFileList.splice(index, 1);
+        },
+
     }
 }
 </script>
 
 <style scoped>
-
+.file-delete-btn {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+}
 </style>
