@@ -61,3 +61,5 @@ methods: {
 ### Javascript: 함수(function) 특징과 설명
 - https://www.nextree.co.kr/p4150/
 
+### vue에서 front service만들기(provide - inject)
+https://pplucy.tistory.com/86
