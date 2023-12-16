@@ -1,0 +1,22 @@
+{
+  "todos": [
+    {
+      "title": "할 일이 쌓였을 때 훌쩍 여행을",
+      "createdDate": "20231202",
+      "isCompleted": true,
+      "id": 1
+    },
+    {
+      "title": "아파트(저층) 옥상에서 번지점프를",
+      "createdDate": "20231202",
+      "isCompleted": false,
+      "id": 2
+    },
+    {
+      "title": "선보기 하루 전에 홀딱 삭발을",
+      "createdDate": "20231202",
+      "isCompleted": false,
+      "id": 3
+    }
+  ]
+}
