@@ -1,5 +1,0 @@
-rootProject.name = 'book-rental'
-include 'admin'
-include 'user'
-include 'common'
-
